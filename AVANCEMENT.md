@@ -42,7 +42,13 @@ la contrainte du projet.
    accoutumance** : le geste appris sur l'ancienne version confirme désormais là
    où il annulait.
 
-6. **L'application n'est plus disponible qu'en français.** Les traductions
+6. **La grille tarifaire s'appelle « Tarifs » et se réordonne autrement.** Elle
+   s'intitulait « Prestations », le même nom que l'onglet du dossier enfant qui
+   liste les heures de garde. Et pour changer l'ordre des tarifs, un crayon fait
+   désormais apparaître les poignées habituelles d'iOS, au lieu d'une poignée
+   présente en permanence sur chaque ligne.
+
+7. **L'application n'est plus disponible qu'en français.** Les traductions
    anglaises sont abandonnées. **C'est la seule régression visible de cette
    liste** : une utilisatrice dont l'appareil est en anglais voyait jusqu'ici
    l'app en anglais, elle la verra désormais en français.
@@ -65,7 +71,7 @@ la contrainte du projet.
 
 ## État d'avancement
 
-**Phase 2 (fondations) faite.** Le projet compile pour iOS et macOS, et la build macOS lit la base réelle de développement (24 enfants, 1787 prestations, 266 factures) sans conversion.
+**Phase 2 (fondations) faite.** Le projet compile, et l'app lit la base réelle (24 enfants, 1787 prestations, 266 factures) sans conversion. *Le projet a d'abord porté une cible macOS, retirée depuis ; les paragraphes ci-dessous qui la mentionnent relatent ce qui s'est passé à l'époque.*
 
 - `project.yml` — deux cibles, `NannyPlus-iOS` et `NannyPlus-macOS`, partageant `Sources/Shared`. Cibles de déploiement iOS 26.0 / macOS 26.0, alignées sur les `Podfile` Flutter.
 - `Sources/Shared/Data/Schema.swift` — réplique des 13 migrations. On n'utilise **pas** `DatabaseMigrator` de GRDB, qui tiendrait son journal dans une table `grdb_migrations` absente des bases sqflite : on reproduit le mécanisme `PRAGMA user_version`. Une base Flutter à jour (version 13) est ouverte sans aucune modification.
@@ -95,14 +101,14 @@ la contrainte du projet.
 
 Attention au rôle du script post-clone : chez Clepsydre il sert à régénérer le projet depuis `project-avec-montre.yml`, la variante qui embarque l'app Watch, que le Mac de développement ne peut pas compiler faute de SDK watchOS. **Cette raison n'existe pas ici** — pas d'app Watch, pas de second spec. Le script est malgré tout utile pour une autre raison : le `.xcodeproj` étant committé, il peut dériver de `project.yml` si quelqu'un modifie le spec sans relancer `xcodegen`. Le régénérer au clonage garantit qu'Xcode Cloud compile bien ce que décrit `project.yml`.
 
-Le workflow GitHub est réduit en conséquence : pas de job « module partagé » (il n'y a pas d'équivalent de `ClepsydreCore`) ni de job « bundle complet ». Restent la compilation et les tests iOS, plus un job de compilation macOS pour que le code partagé ne casse pas de ce côté. Les deux commandes ont été exécutées localement à l'identique et passent.
+Le workflow GitHub est réduit en conséquence : pas de job « module partagé » (il n'y a pas d'équivalent de `ClepsydreCore`) ni de job « bundle complet ». Restent la compilation et les tests iOS. Le job de compilation macOS qui l'accompagnait a été retiré avec la cible.
 
 **Deux défauts d'affichage corrigés après essai sur simulateur iPhone**, tous deux invisibles sur la cible macOS :
 
 - Un vide de la hauteur de l'encoche séparait la barre de titre du bandeau. La barre cumulait une marge haute égale à la zone sûre **et** un `ignoresSafeArea` : le fond remontait mais la hauteur restait réservée. Seul le fond déborde désormais sous la barre d'état, la vue gardant ses 56 points sous la zone sûre.
 - Un liseré sombre marquait la jonction entre la barre de titre et le bandeau : l'ombre du bandeau, projetée sur tout son pourtour, débordait vers le haut. La barre de titre est maintenant peinte par-dessus (`zIndex`), ce que fait Flutter, où la `SliverAppBar` recouvre le bandeau.
 
-Leçon de méthode : la cible macOS ne suffit pas à valider un écran. Elle n'a ni encoche ni zone sûre, et masque donc toute une catégorie de défauts. Chaque écran porté doit être vu sur simulateur iPhone avant d'être considéré comme terminé.
+Leçon de méthode, et l'une des raisons du retrait de la cible macOS : elle n'a ni encoche ni zone sûre, et masquait donc toute une catégorie de défauts. Chaque écran porté doit être vu sur simulateur iPhone avant d'être considéré comme terminé.
 
 **Tiroir de navigation porté** (`Sources/Shared/Features/Shell/MainDrawer.swift`). SwiftUI n'a pas d'équivalent du `Drawer` de Material : le panneau de 304 points, le voile et l'animation sont dessinés à la main dans `MainTabView`.
 
@@ -115,7 +121,20 @@ Le portage a demandé de mesurer la capture de référence au pixel plutôt que 
 
 Seul « Réinitialiser les messages d'aide » est fonctionnel (suppression des clés `flutter.help_*`), ainsi que « Réinitialiser la base de données », réservé aux compilations de debug comme le `kDebugMode` de Flutter. **Attention** : sur la cible macOS, cet élément supprime la base réelle, le conteneur étant partagé avec l'app Flutter. Le risque existe déjà à l'identique côté Flutter.
 
-**Outillage d'essai** : `cliclick` est installé. La fenêtre du simulateur expose l'écran de l'appareil comme un groupe d'accessibilité en 1:1, ce qui permet de convertir points appareil → écran sans deviner de facteur de zoom (`position of group 1` de la fenêtre du processus Simulator). Il faut activer la fenêtre avant de cliquer, sinon le clic est absorbé.
+**Outillage d'essai**
+
+- Le simulateur de travail est **« iPhone 16 (référence) »**, identique à l'appareil de Yannick : 393 × 852 points, la même échelle que ses captures. Les autres simulateurs sont éteints.
+- Il tourne sur une copie de la base réelle. Pour la réinjecter après une réinstallation :
+
+  ```sh
+  xcrun simctl terminate <appareil> ch.frenchguy.nannyplus
+  cp ~/Library/Containers/ch.frenchguy.nannyplus/Data/Documents/childcare.db \
+     "$(xcrun simctl get_app_container <appareil> ch.frenchguy.nannyplus data)/Documents/"
+  ```
+
+  Attention : le conteneur change d'identifiant à chaque réinstallation, il faut donc le résoudre à nouveau et non réutiliser un chemin noté plus tôt.
+- `cliclick` est installé. La fenêtre du simulateur expose l'écran de l'appareil comme un groupe d'accessibilité en 1:1, ce qui permet de convertir points appareil → écran sans deviner de facteur de zoom (`position of group 1` de la fenêtre du processus Simulator). Il faut activer la fenêtre avant de cliquer, sinon le clic est absorbé.
+- Pas de commande de défilement dans `cliclick` : un glisser (`dd:` … `m:` … `du:`) fait l'affaire.
 
 **Écran Politique de confidentialité porté** (`Sources/Shared/Features/PrivacySettings/`). Écran statique, ouvert depuis le tiroir en modale plein écran — le `fullscreenDialog: true` de Flutter. La barre de titre a été sortie dans `Sources/Shared/Features/Shell/AppBar.swift` pour être partagée entre les écrans ; elle prend un bouton de gauche paramétrable (menu ou croix de fermeture).
 
@@ -149,18 +168,56 @@ Trois écarts corrigés après essai réel sur simulateur, tous invisibles à la
 
 Aller-retour vérifié de bout en bout sur simulateur : sauvegarde vers Fichiers, modification de la base pour qu'elle diverge, restauration, puis contrôle que l'empreinte SHA-256 de la base de l'app est redevenue celle de la sauvegarde et que la modification témoin a disparu.
 
+**Dossier enfant : la coque des trois onglets** (`Sources/Shared/Features/ChildDetail/`). Barre de titre avec retour et crayon, bandeau incurvé portant le total à facturer de l'enfant, barre d'onglets Prestations / Factures / Information. Vérifié sur simulateur contre les trois captures de référence.
+
+- La barre d'onglets est dessinée à la main : libellé sélectionné en Poppins gras 14, les autres en régulier à 70 % d'opacité, trait de 2 points en couleur secondaire, fond de page. Hauteur 48 points, marges 8 sur les côtés et 12 en bas, comme `UISliverTabBarPeristantHeader`.
+- Le dossier s'empile par-dessus tout l'écran, barre d'onglets du bas comprise, via une `NavigationStack` dont la barre système est masquée — équivalent du `Navigator.push` de Flutter, avec le glissement de retour en prime. Un dossier archivé ne s'ouvre pas, `onTap` valant `null` dans ce cas côté Flutter.
+- Le total du bandeau est réel : somme des prestations non facturées de l'enfant, **hors tarifs techniques** (`priceId < 0`), filtre que `loadServices` applique aussi. Recoupé avec la liste : 1281.00 pour Maé Burri des deux côtés.
+
+**Les trois contenus sont des maquettes** (`TabMockups.swift`), à reprendre écran par écran :
+
+- *Prestations* : vide, avec le bouton flottant. `ServiceListTabView` n'est pas porté.
+- *Factures* : l'état vide des captures — « Aucune facture ouverte trouvée » et le lien vers les factures payées. Aucune facture n'est réellement lue.
+- *Information* : les sept cartes, alimentées par les champs du dossier réel puisqu'ils sont déjà en mémoire. Rien n'est modifiable, et le planning n'est pas lu — la carte affiche toujours « Aucun planning défini ».
+
+Le crayon d'édition et les boutons flottants sont en place mais sans action : `ChildForm` et la saisie de prestations restent à porter.
+
+**Menu Options porté** (`Sources/Shared/Features/Options/`). Le second onglet n'est plus une page vide : huit tuiles, géométrie et typographie recoupées avec la référence à 0,5 % près. **Aucune destination n'est portée** — les tuiles n'ouvrent rien.
+
+Deux libellés surprennent mais sont fidèles : la grille tarifaire s'appelle « Prestations », le même mot que l'onglet du dossier enfant, et « Deductions » ressort sans accent, faute de traduction dans `fr.po`. Défauts conservés — à trancher si on veut les corriger comme le titre des boîtes de confirmation.
+
+Les icônes sont des approximations SF Symbols des icônes Material ; Yannick les a validées telles quelles. La seule vraiment éloignée est celle du planning hebdomadaire.
+
+**Grille tarifaire portée** (`Sources/Shared/Features/PriceList/`, `Price.swift`, `PricesRepository.swift`). Liste et formulaire, lus et écrits dans la base réelle. **L'écran s'appelle « Tarifs »**, et la tuile du menu Options avec lui : `fr.po` traduit `Price list` par « Prestations », soit le mot que porte déjà l'onglet du dossier enfant qui liste les heures de garde. Deux écrans, un seul nom — corrigé.
+
+- Les cartes reprennent la surcharge de `CardScrollView` : rayon **1** — coins quasi droits, contrairement aux 12 points du reste de l'app — marges de 8 et 5, marge intérieure de 16.
+- Le titre de la carte est en **Poppins Regular 14**, pas en gras, bien que le Dart demande `fontWeight: FontWeight.bold`. Même mécanique que le tiroir, vérifiée à la mesure.
+- Le titre du formulaire annonce « Créer un nouveau tarif » **même quand on modifie un tarif existant** : le Dart passe `Create new price` dans les deux cas. Défaut conservé.
+- La suppression est **physique**, alors que la table porte une colonne `deleted` jamais utilisée. Aucune ligne de la base réelle ne la porte à 1.
+- `reorder` côté Flutter recharge tous les tarifs, y compris ceux marqués supprimés, alors que la liste affichée les exclut : les indices se décaleraient s'il en existait. Défaut latent, non reproduit — on réordonne à partir de la liste visible.
+
+**Réordonnancement par mode édition**, sur décision de Yannick plutôt que de reproduire la poignée permanente de Flutter. Un crayon dans la barre de titre bascule en mode édition : les poignées du système apparaissent à droite, le bouton flottant s'efface, et le crayon devient une coche pour sortir. Hors édition, les cartes occupent toute la largeur. Vérifié en base : un glisser réécrit bien les `sortOrder`.
+
+C'est le premier endroit où l'on s'écarte de la version Flutter pour faire **mieux** plutôt que pour faire **pareil**. Le constat qui l'a motivé vaut pour la suite : ce code n'a pas à être porté à l'identique quand l'identique est mauvais.
+
+**Le bandeau incurvé est désormais posé sur tous les écrans**, sur décision de Yannick, y compris le formulaire de tarif qui n'en a pas côté Flutter — celui-ci passe par `AppView` et non `UIView`. Conséquence assumée du même choix : le formulaire est en Poppins comme le reste, là où `AppView` impose SF Pro Text agrandi de 12,5 %. À revenir dessus si l'écart gêne.
+
+**Cible macOS retirée.** Elle n'existait que pour compiler et lancer sans simulateur ; ce dernier s'est révélé assez réactif pour s'en passer. Ont disparu avec elle : la cible et son schéma dans `project.yml`, le fichier d'entitlements, le job macOS de GitHub Actions, et **toutes les conditionnelles de plateforme du code** — il n'en reste aucune. Le projet ne compile plus que pour iOS.
+
+À noter : l'app Flutter compilée pour macOS, elle, reste précieuse comme source de captures de référence. C'est une autre chose que la cible native.
+
 ### Reste à faire sur ces fondations
 
 - `insertSampleData` (jeu de démonstration inséré à la première ouverture : tarifs, enfants, prestations, facture, réglages de facturation et logo) n'est pas porté. À traiter avec l'onboarding.
-- Sur l'écran liste : le formulaire enfant (création et duplication), la navigation vers la fiche enfant, et la boîte de dialogue d'accueil ne sont pas portés — les boutons correspondants sont en place mais sans action.
+- Sur l'écran liste : le formulaire enfant (création et duplication) et la boîte de dialogue d'accueil ne sont pas portés — les boutons correspondants sont en place mais sans action.
 - Les garde-fous d'archivage et de suppression sont couverts par `Tests/ChildFolderActionTests.swift`. La décision a été extraite de la vue dans `ChildFolderAction`, précisément pour pouvoir la vérifier : ce sont eux qui empêchent de supprimer un dossier portant des prestations et des factures. Le parcours complet (menu, boîte de confirmation, bandeau) n'a en revanche jamais été cliqué, bien que `cliclick` soit désormais disponible.
-- Sur macOS, la barre de défilement reste visible là où Flutter n'en montrait pas ; c'est le réglage système du Mac, sans effet sur iOS.
 
 ## À revoir une fois le portage initial terminé
 
 Points volontairement laissés de côté pendant le portage, à traiter après.
 
 - **Cibles de déploiement iOS 26.0 / macOS 26.0** — reprises des `Podfile` Flutter. C'est restrictif pour une app grand public : à confirmer, et à abaisser si la valeur actuelle vient d'une mise à jour d'Xcode plutôt que d'un choix délibéré. Une ligne à changer dans `project.yml`.
+- **Ordre de portage arrêté après discussion** : le menu Options d'abord (fait), puis « Paramètres de l'application ». Ce dernier ne contient que quatre champs, dont deux pilotent les notifications retirées. Son intérêt n'est pas de débloquer d'autres écrans — `AppPreferences` lit déjà tous les réglages et la liste des enfants les honore — mais de pouvoir enfin **faire varier** le tri et l'ordre d'affichage des noms, codés sans avoir jamais été éprouvés. Les six autres destinations sont des fonctionnalités à part entière, à porter dans l'ordre normal.
 - **Nettoyage de la base de données** — il y a du ménage à faire dans les données existantes. Yannick doit d'abord étudier ce qui est concerné ; à ne pas entreprendre avant cette analyse, et surtout pas pendant le portage, pour que les deux versions restent comparables sur des données identiques.
 
 ## Prochaine étape

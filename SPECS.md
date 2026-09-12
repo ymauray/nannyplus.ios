@@ -10,7 +10,7 @@ Le projet Flutter source est dans le dossier voisin `../nannyplus`.
 
 ## Contrainte du projet
 
-Portage 1:1 vers iOS/macOS natif (Swift/SwiftUI) d'une app Flutter existante et fonctionnelle mais mal structurée. **Aucun changement visuel ni de comportement n'est souhaité par l'utilisatrice principale de l'app**, y compris les défauts d'ergonomie actuels (listes mal fichues, options peu intuitives). L'objectif est une réplique fidèle, pas une amélioration.
+Portage vers iOS natif (Swift/SwiftUI) d'une app Flutter existante et fonctionnelle mais mal structurée. **Aucun changement visuel ni de comportement n'est souhaité par l'utilisatrice principale de l'app**, y compris les défauts d'ergonomie actuels (listes mal fichues, options peu intuitives). L'objectif est une réplique fidèle, pas une amélioration.
 
 ## Ce qu'est Nanny+
 
@@ -29,7 +29,7 @@ App de gestion pour nounous indépendantes (fiche App Store : https://apps.apple
 - **Notifications locales** : dépendance présente (`flutter_local_notifications`) mais code actuellement **désactivé/commenté** dans `main.dart` (anniversaires, factures impayées). Décision à prendre : réactiver dans la version native ou laisser de côté comme aujourd'hui.
 - **Détail révélateur de la "liste bancale"** : dans la fiche enfant, les documents attachés sont stockés soit en octets dans la base soit par simple chemin fichier (deux générations de code coexistent) ; l'écran affiche une icône verte/rouge selon que le fichier est retrouvable. **À reproduire tel quel**, pas à corriger.
 - **Sauvegarde/restauration** : mécanisme volontairement simple — "Backup" partage directement le fichier `childcare.db` ; "Restore" remplace ce fichier par un fichier choisi par l'utilisateur (`src/backup_restore/backup_restore_view.dart`).
-- **macOS** : un dossier `macos/` existe déjà dans le projet Flutter (généré par `flutter create`) mais n'est **pas publié**. Son rôle, confirmé par l'utilisateur, est purement le confort de développement (compiler/lancer nativement sur la machine de dev sans repasser par un simulateur ou un iPhone à chaque test) — **pas un produit à adapter pour un usage desktop réel**. Objectif équivalent pour la version native : une cible macOS qui compile et tourne, sans travail d'adaptation UX dédié (avec SwiftUI, le même code partagé iOS/macOS suffit).
+- **macOS** : un dossier `macos/` existe dans le projet Flutter, non publié, qui sert uniquement à compiler et lancer l'app sur la machine de développement. La version native n'a **pas** d'équivalent : la cible macOS a été essayée puis retirée. Ce build Flutter macOS reste en revanche très utile pour produire les captures de référence sans solliciter Yannick.
 
 ## Un écart entre `main` et la production, résolu
 
@@ -70,7 +70,7 @@ livré depuis une branche non fusionnée une fois.
 
 ## Stack native proposée
 
-- **UI** : SwiftUI partagé iOS/macOS, adaptations minimales côté macOS (juste ce qu'il faut pour compiler/tourner, pas d'adaptation UX puisque cette cible reste un outil de dev)
+- **UI** : SwiftUI, iOS uniquement
 - **Persistance** : SQLite directement (GRDB.swift recommandé) plutôt que SwiftData/CoreData, pour rester au plus près du schéma existant et permettre l'import direct des bases `childcare.db` existantes
 - **Architecture** : MVVM simple, un pattern unique (contrairement aux trois qui coexistent côté Flutter), découpage écran par écran calqué sur l'existant
 - **PDF** : PDFKit ou dessin direct via Core Graphics, reproduisant la mise en page actuelle
@@ -78,7 +78,7 @@ livré depuis une branche non fusionnée une fois.
 ## Plan de portage (par phases)
 
 1. Cartographie fonctionnelle fine écran par écran (champs, validations, cas limites), en s'appuyant sur des captures d'écran de la version actuelle fournies au fur et à mesure + le code Flutter déjà audité
-2. Fondations natives : projet Xcode (iOS + macOS), couche SQLite lisant le schéma existant, modèles Swift équivalents
+2. Fondations natives : projet Xcode, couche SQLite lisant le schéma existant, modèles Swift équivalents
 3. Portage écran par écran, ordre suggéré : liste des enfants → fiche enfant → grille tarifaire → prestations → facturation → relevés → planning/vacances → sauvegarde-restauration → réglages
 4. Génération PDF (factures puis plannings), comparaison visuelle directe avec les PDF Flutter actuels
 5. Migration des données réelles (vérifier qu'un `childcare.db` existant s'importe sans perte)
@@ -94,11 +94,26 @@ Trois règles tirées des premiers écrans portés, chacune née d'une erreur r�
 - **Lire le style rendu, pas le style écrit.** Le code Dart peut demander une
   graisse que Flutter n'applique pas. En cas de doute, mesurer la capture au
   pixel plutôt que se fier à la source.
-- **Valider chaque écran sur simulateur iPhone.** La cible macOS n'a ni encoche
-  ni zone sûre et masque toute une catégorie de défauts de mise en page.
-- **Aligner la taille de texte avant de comparer.** Les captures de référence
-  peuvent être prises avec un réglage système réduit :
-  `xcrun simctl ui <appareil> content_size medium`.
+- **Valider chaque écran sur simulateur iPhone**, jamais sur la seule lecture du
+  code. C'est ainsi qu'ont été trouvés le vide sous la barre de titre, le liseré
+  d'ombre, et l'absence de message à l'annulation d'une restauration.
+- **Aligner la taille de texte avant de comparer.** C'est la *seule* variable
+  qui déplace la taille des polices. Les captures de référence de Yannick sont
+  prises avec un réglage système réduit, d'environ 0,94 ; pour comparer, aligner
+  le simulateur avec `xcrun simctl ui <appareil> content_size medium`.
+  L'appareil, lui, n'entre pas en jeu : le même libellé mesure 92,0 points sur
+  iPhone 16 comme sur iPhone 17 Pro. Les mesures se font en **points**, jamais
+  en pixels, chaque capture étant divisée par l'échelle de son appareil — la
+  résolution est donc déjà neutralisée.
+- **Ce qu'on cherche, c'est la cohérence de l'app, pas l'égalité avec une
+  capture.** La mesure au pixel n'est qu'un outil de détection : elle a révélé
+  que les libellés du tiroir étaient 25 % trop gros, ce qu'aucun coup d'œil
+  n'aurait attrapé. Une fois l'écart expliqué, c'est le rendu proportionné qui
+  fait foi.
+
+**Appareil de référence** : iPhone 16, 393 × 852 points. Déduit sans rien
+supposer, en mesurant la largeur du tiroir Material, fixée à 304 points par le
+framework. Un simulateur « iPhone 16 (référence) » est créé pour cela.
 
 ## Conventions Git
 
@@ -122,7 +137,7 @@ En pratique : terminer une tâche en décrivant ce qui a changé, sans mention d
 - **Bundle identifier** : `ch.frenchguy.nannyplus`, identique à l'app Flutter, pour un remplacement final sur l'App Store.
 - **Traductions** : abandonnées. La version native est en français uniquement, toutes les chaînes en dur. Les libellés sont repris de `assets/i18n/fr.po` pour rester au mot près.
 - **Ordre des boutons des boîtes de confirmation** : on garde l'ordre natif de SwiftUI, l'annulation à gauche et la confirmation à droite. Flutter affichait l'inverse (« Oui » puis « Non »), plaçant l'action confirmante sous le pouce. Le coût assumé est transitoire : une utilisatrice habituée à l'ancienne disposition peut se tromper les premières fois.
-- **Fenêtre macOS** : dimensionnée comme un iPhone 16 (393 × 852 pt) pour que le rendu soit directement comparable à celui du téléphone.
+- **Cible macOS abandonnée** (12 septembre 2026). Elle ne servait qu'à compiler et lancer sans simulateur ; le simulateur s'étant révélé assez réactif, elle ne payait plus son coût. Son retrait a supprimé une dizaine de branches conditionnelles de plateforme dans le code — feuille de partage contre panneau d'enregistrement, mode édition de liste, barre de navigation, ouverture d'URL. **Le projet ne vise plus qu'iOS.** Le dossier `macos/` du projet Flutter reste utile comme source de captures de référence, lui.
 - **Numérotation de version** : alignée sur la production, soit 1.26.4.
 
   *Côté Flutter*, la version vient du `pubspec.yaml`. `flutter build` la recopie dans `ios/Flutter/Generated.xcconfig` sous `FLUTTER_BUILD_NAME` et `FLUTTER_BUILD_NUMBER`, et l'`Info.plist` du projet iOS y renvoie par `$(FLUTTER_BUILD_NAME)` / `$(FLUTTER_BUILD_NUMBER)`. Les `MARKETING_VERSION = 1.0.0` et `CURRENT_PROJECT_VERSION = 6` que porte encore le `project.pbxproj` sont des vestiges inutilisés. Le `+9999` du `pubspec` est un repère local : le vrai numéro de build est posé à la livraison par **Codemagic**, dont le workflow est configuré dans l'interface web et non dans le dépôt — d'où l'absence de tout fichier de CI côté Flutter, et l'écart entre le `pubspec` local (1.26.3) et la production (1.26.4, build 195).

@@ -1,4 +1,4 @@
-# Nanny+ — version native iOS/macOS
+# Nanny+ — version native iOS
 
 Portage 1:1 de l'app Flutter [Nanny+](https://apps.apple.com/fr/app/nanny/id1602676918),
 une app de gestion pour nounous indépendantes : dossiers enfants, suivi des
@@ -16,7 +16,7 @@ d'ergonomie compris, et non une amélioration.
 
 ```
 project.yml                  description du projet, source de vérité (XcodeGen)
-Sources/Shared/              tout le code, partagé iOS et macOS (SwiftUI)
+Sources/Shared/              tout le code de l'app (SwiftUI)
   Data/                      base SQLite, modèles, repositories (GRDB)
   Design/                    couleurs et polices du thème Flutter
   Features/                  un dossier par écran
@@ -39,22 +39,18 @@ open NannyPlus.xcodeproj
 Le `.xcodeproj` est malgré tout committé : Xcode Cloud a besoin de trouver le
 projet et son schéma partagé dans le dépôt.
 
-Deux cibles partagent `Sources/Shared` :
-
-- `NannyPlus-iOS` — la cible publiée ;
-- `NannyPlus-macOS` — confort de développement uniquement (compiler et lancer
-  sans simulateur), pas un produit desktop.
+Une seule cible, `NannyPlus-iOS`. La cible macOS, qui servait à lancer l'app
+sans simulateur, a été retirée.
 
 Tests :
 
 ```sh
 xcodebuild -project NannyPlus.xcodeproj -scheme NannyPlus-iOS \
-  -destination 'platform=iOS Simulator,name=iPhone 17' test
+  -destination 'platform=iOS Simulator,name=iPhone 16' test
 ```
 
 ## Base de données
 
 L'app ouvre `Documents/childcare.db`, exactement le chemin utilisé par sqflite
 côté Flutter. Avec le même bundle identifier (`ch.frenchguy.nannyplus`), elle
-reprend donc la base existante sans import ni conversion — y compris, sur macOS,
-celle du build Flutter de développement, grâce au partage de conteneur sandbox.
+reprend donc la base existante sans import ni conversion.
