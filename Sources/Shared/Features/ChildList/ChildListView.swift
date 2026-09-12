@@ -260,6 +260,10 @@ extension DateFormatter {
     }()
 }
 
+/// `UIApplication` est isolé au `MainActor` : sans l'annotation, Swift 6 signale
+/// l'appel comme une entorse à la concurrence stricte. Le seul appelant est le
+/// bouton d'appel de la tuile, déjà sur le fil principal.
+@MainActor
 enum OpenURL {
     static func call(_ phoneNumber: String) {
         guard let url = URL(string: "tel://\(phoneNumber)") else { return }
