@@ -22,6 +22,107 @@ struct ServicesRepository: Sendable {
         }
     }
 
+    /// Réplique de `getStatementsSummary` puis du regroupement fait par
+    /// `StatementListCubit.loadStatements`.
+    ///
+    /// Ne comptent que les prestations **facturées et dont la facture est
+    /// payée**. Le mois en cours est écarté : il n'est pas encore clos.
+    func statements(deductions: [Deduction]) async throws -> [YearlyStatement] {
+        let rows = try await database.writer().read { db in
+            try Row.fetchAll(db, sql: """
+                SELECT STRFTIME('%Y-%m', s.date) AS month, SUM(s.total) AS total
+                FROM services s, invoices i
+                WHERE s.invoiced = 1 AND s.invoiceId = i.id AND i.paid = 1
+                GROUP BY month
+                ORDER BY month DESC
+                """)
+        }
+
+        let currentMonth = DateFormatter.month.string(from: Date())
+        var byYear: [Int: [MonthlyStatement]] = [:]
+
+        for row in rows {
+            guard let month: String = row["month"], month != currentMonth else { continue }
+
+            let parts = month.split(separator: "-")
+            guard parts.count == 2,
+                  let year = Int(parts[0]),
+                  let monthNumber = Int(parts[1])
+            else { continue }
+
+            let amount: Double = row["total"] ?? 0
+            byYear[year, default: []].append(
+                MonthlyStatement(
+                    year: year,
+                    month: monthNumber,
+                    amount: amount,
+                    netAmount: Self.net(of: amount, deductions: deductions)
+                )
+            )
+        }
+
+        return byYear.keys.sorted(by: >).map { year in
+            YearlyStatement(
+                year: year,
+                monthlyStatements: byYear[year]!.sorted { $0.month > $1.month }
+            )
+        }
+    }
+
+    /// Réplique de `getStatementLines` pour un relevé mensuel : les prestations
+    /// facturées et payées du mois, regroupées par libellé de tarif.
+    ///
+    /// Le filtre est `priceId != -1`, et non `priceId >= 0` comme pour le total
+    /// du dossier enfant : les deux coexistent dans la version Flutter.
+    func statementLines(year: Int, month: Int) async throws -> [StatementLine] {
+        let start = String(format: "%04d-%02d-01", year, month)
+        let end = month == 12
+            ? String(format: "%04d-01-01", year + 1)
+            : String(format: "%04d-%02d-01", year, month + 1)
+
+        return try await database.writer().read { db in
+            try Row.fetchAll(db, sql: """
+                SELECT
+                  s.priceLabel,
+                  s.priceAmount,
+                  s.isFixedPrice,
+                  SUM(s.hours) + CAST(SUM(s.minutes) / 60 AS int) AS hours,
+                  SUM(s.minutes) - 60 * CAST(SUM(s.minutes) / 60 AS int) AS minutes,
+                  COUNT(1) AS count,
+                  SUM(s.total) AS total
+                FROM services s, invoices i
+                WHERE s.priceId != -1
+                  AND s.date >= ? AND s.date < ?
+                  AND s.invoiced = 1 AND s.invoiceId = i.id AND i.paid = 1
+                GROUP BY s.priceLabel
+                ORDER BY s.isFixedPrice, s.priceLabel
+                """, arguments: [start, end])
+                .map { row in
+                    StatementLine(
+                        priceLabel: row["priceLabel"] ?? "",
+                        priceAmount: row["priceAmount"] ?? 0,
+                        isFixedPrice: row["isFixedPrice"] ?? 0,
+                        hours: row["hours"] ?? 0,
+                        minutes: row["minutes"] ?? 0,
+                        count: row["count"] ?? 0,
+                        total: row["total"] ?? 0
+                    )
+                }
+        }
+    }
+
+    /// Applique les déductions **mensuelles** : un pourcentage se calcule sur le
+    /// brut du mois, un montant se retranche tel quel.
+    private static func net(of amount: Double, deductions: [Deduction]) -> Double {
+        deductions
+            .filter(\.isMonthly)
+            .reduce(amount) { running, deduction in
+                deduction.isPercent
+                    ? running - amount * deduction.value / 100
+                    : running - deduction.value
+            }
+    }
+
     /// Réplique de `getServiceInfoPerChild` (`services_repository.dart`).
     ///
     /// La suite d'opérations est conservée telle quelle, y compris ses
@@ -104,6 +205,15 @@ struct ServicesRepository: Sendable {
 }
 
 extension DateFormatter {
+    /// `yyyy-MM`, pour comparer au mois courant.
+    static let month: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM"
+
+        return formatter
+    }()
+
     /// Les dates sont stockées en `yyyy-MM-dd`, sans fuseau ni heure.
     static let databaseDate: DateFormatter = {
         let formatter = DateFormatter()

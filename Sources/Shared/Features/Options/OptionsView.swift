@@ -13,6 +13,7 @@ struct OptionsView: View {
     @State private var isShowingDeductions = false
     @State private var isShowingAppSettings = false
     @State private var isShowingInvoiceSettings = false
+    @State private var isShowingStatements = false
 
     var body: some View {
         ScrollView {
@@ -31,7 +32,7 @@ struct OptionsView: View {
                 tile("gearshape.fill", "Paramètres de la facture") {
                     isShowingInvoiceSettings = true
                 }
-                tile("doc.text.fill", "Relevés")
+                tile("doc.text.fill", "Relevés") { isShowingStatements = true }
                 tile("calendar.day.timeline.left", "Planning hebdomadaire")
                 tile("calendar", "Planning annuel")
                 tile("calendar", "Planning des congés")
@@ -45,6 +46,9 @@ struct OptionsView: View {
         }
         .fullScreenCover(isPresented: $isShowingDeductions) {
             DeductionListView { isShowingDeductions = false }
+        }
+        .fullScreenCover(isPresented: $isShowingStatements) {
+            StatementListView { isShowingStatements = false }
         }
         .fullScreenCover(isPresented: $isShowingInvoiceSettings) {
             InvoiceSettingsView { isShowingInvoiceSettings = false }

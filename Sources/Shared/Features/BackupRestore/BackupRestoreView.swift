@@ -140,14 +140,3 @@ struct BackupRestoreView: View {
 extension URL: @retroactive Identifiable {
     public var id: String { absoluteString }
 }
-
-/// `Share.shareXFiles` de `share_plus` : la feuille de partage du système.
-private struct ShareSheet: UIViewControllerRepresentable {
-    let url: URL
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [url], applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
-}

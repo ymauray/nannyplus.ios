@@ -241,6 +241,45 @@ Les quatre champs sont conservés, mais l'un change de libellé :
 - **Le nom PostScript d'une police ne vaut pas son nom de fichier.** « Mystery Quest » est livré dans `MysteryQuest-Regular.ttf` mais s'appelle `MysteryQuest`. Enregistrer par le nom PostScript faisait échouer le chargement, et l'assertion de `Poppins.register()` faisait planter l'app au démarrage — le garde-fou a bien joué son rôle. L'enregistrement se fait désormais par nom de fichier.
 - **`plutil -extract` traite le point comme un séparateur de chemin.** `flutter.line1` était donc lu comme la clé `flutter` puis la clé `line1`, et l'extraction échouait en silence. Pour recopier des préférences Flutter vers le simulateur, passer par `plistlib` en Python puis `xcrun simctl spawn <appareil> defaults write`.
 
+**Liste des relevés portée** (`Sources/Shared/Features/Statements/`). Une carte par année, le total annuel puis un rang par mois, montants **nets**. Les boutons PDF sont en place mais inertes : la génération n'est pas portée.
+
+Règles de calcul, reprises telles quelles :
+
+- Ne comptent que les prestations **facturées dont la facture est payée** (`s.invoiced = 1 AND i.paid = 1`).
+- **Le mois en cours est écarté**, n'étant pas encore clos.
+- Le net d'un mois applique les déductions de périodicité `monthly` : un pourcentage porte sur le brut du mois, un montant se retranche tel quel.
+- Le total de l'année est la **somme des nets mensuels**, et non le brut annuel diminué d'une déduction annuelle.
+
+**Tous les montants recoupés avec la référence** : 2026 à 16285.10 et ses neuf mois, 2025 à 26309.28 et les siens, au centime près.
+
+**Décompte annuel en PDF porté** (`StatementPDF.swift`, `StatementPreviewView.swift`). Généré avec `UIGraphicsPDFRenderer`, A4, marges de 50 points. Les tailles reprennent celles du Dart, déjà multipliées par l'échelle de 0,75 qu'il applique. Le corps est en **Helvetica**, police par défaut du paquet `pdf` de Flutter ; seules les deux lignes d'en-tête utilisent la police choisie dans les réglages de facture. Bleu `#2196F3` et gris de ligne `#EEEEEE`, relevés dans le paquet `pdf` et confirmés sur le PDF de référence.
+
+**Aération de la liste** : chaque rang fait 48 points de haut, la taille d'un `IconButton` de Material, plus 8 points de marge pour les mois — soit 56 points, mesurés à l'identique sur la référence. Sans cette contrainte, les rangs se réduisaient à la hauteur du texte et la liste paraissait tassée. C'est le genre de dimension qui ne se lit pas dans le code Dart : elle vient du composant, pas de la mise en page.
+
+**Recoupé au centime avec le décompte annuel de référence** : les huit mois, le total brut 18149.00, la déduction -1863.90 et le total net 16285.10.
+
+**L'aperçu s'écarte volontairement de Flutter.** Celui-ci utilise le `PdfPreview` du paquet `printing` et sa barre bleue « imprimer / partager ». On emploie ici l'aperçu de PDFKit et la feuille de partage du système, qui propose déjà Imprimer, Enregistrer dans Fichiers, Annoter, Mail et Messages — vérifié à l'écran. Rien à dessiner, et des gestes que l'utilisatrice connaît. C'est la réponse à la question « une solution élégante pour enregistrer le document ».
+
+À noter pour la suite : le calcul du net dans le PDF n'est pas celui de la liste. Le PDF applique une déduction fixe mensuelle **autant de fois qu'il y a de mois** dans le décompte, là où la liste la retranche mois par mois. Les deux se rejoignent sur un pourcentage, divergeraient sur un montant fixe. C'est le comportement de la version Flutter, reproduit tel quel.
+
+**Relevé mensuel en PDF porté.** Même coque que le décompte annuel, tableau différent : `Prestation / Prix / Quantité / Montant`, les prestations regroupées par libellé de tarif. La quantité affiche « heures.minutes » pour un tarif horaire — **sans compléter les minutes par un zéro**, si bien que douze heures et cinq minutes s'écrivent « 12.5 » ; défaut conservé — et le nombre de prestations pour un tarif fixe. Seules les déductions de périodicité mensuelle s'appliquent.
+
+Le filtre des lignes est `priceId != -1`, et non `priceId >= 0` comme pour le total du dossier enfant. Les deux coexistent dans la version Flutter et ne sont pas équivalents ; chacun est reproduit là où il se trouve.
+
+**Triple recoupement sur juin 2026** : le brut du relevé mensuel (2363.00) égale la ligne « Juin 2026 » du décompte annuel, et son net (2120.32) égale la valeur « Juin » de la liste. Trois calculs indépendants qui concordent.
+
+### Piège récurrent : lire le mauvais fichier
+
+Trois fois dans la session, une fausse piste est née d'un chemin périmé ou ambigu. Le conteneur d'application change d'identifiant à chaque réinstallation. `UserDefaults` écrit sur disque de façon différée. Et surtout, **deux fichiers de préférences coexistent** pour une app de simulateur : celui du niveau appareil (`data/Library/Preferences/`) et celui du conteneur (`data/Containers/Data/Application/<id>/Library/Preferences/`). C'est le second que lit l'app. Un `find ... | head -1` tombe sur le premier.
+
+`xcrun simctl spawn <appareil> defaults write` atteint bien le domaine de l'app, mais `defaults delete` n'a pas retiré les clés du conteneur. Pour remettre un encart d'aide, passer par « Réinitialiser les messages d'aide » du tiroir, qui est de toute façon le chemin qu'emprunte l'utilisatrice.
+
+Ce piège a fait soupçonner à tort un encart d'aide qui ne s'affichait pas sur l'aperçu PDF. Il avait simplement été masqué par Yannick sur le simulateur, et l'app le gardait masqué — ce qui valide au passage la persistance : elle survit aux relances **et aux réinstallations**, le conteneur de données n'étant pas effacé.
+
+
+
+Le relevé mensuel partage la coque du décompte annuel mais change de tableau : `Service / Prix / Quantité / Montant`, détaillé prestation par prestation, avec les heures affichées `h.mm` pour les tarifs horaires et un décompte pour les tarifs fixes. Il ne retient que les déductions de périodicité mensuelle, là où le décompte annuel les prend toutes. La requête correspondante reste à porter (`StatementViewCubit.loadStatement`).
+
 ### Reste à faire sur ces fondations
 
 - `insertSampleData` (jeu de démonstration inséré à la première ouverture : tarifs, enfants, prestations, facture, réglages de facturation et logo) n'est pas porté. À traiter avec l'onboarding.
@@ -253,6 +292,11 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
 
 - **Cibles de déploiement iOS 26.0 / macOS 26.0** — reprises des `Podfile` Flutter. C'est restrictif pour une app grand public : à confirmer, et à abaisser si la valeur actuelle vient d'une mise à jour d'Xcode plutôt que d'un choix délibéré. Une ligne à changer dans `project.yml`.
 - **Ordre de portage arrêté après discussion** : le menu Options d'abord (fait), puis « Paramètres de l'application ». Ce dernier ne contient que quatre champs, dont deux pilotent les notifications retirées. Son intérêt n'est pas de débloquer d'autres écrans — `AppPreferences` lit déjà tous les réglages et la liste des enfants les honore — mais de pouvoir enfin **faire varier** le tri et l'ordre d'affichage des noms, codés sans avoir jamais été éprouvés. Les six autres destinations sont des fonctionnalités à part entière, à porter dans l'ordre normal.
+- **Deux incohérences de requête héritées de Flutter, reproduites telles quelles.** Elles fonctionnent aujourd'hui, mais reposent sur des propriétés des données actuelles plutôt que sur une règle explicite. À trancher une fois le portage terminé, c'est-à-dire à décider si l'on unifie ou si l'on documente l'intention.
+
+  - **Filtre des prestations techniques.** Le total du dossier enfant écarte `priceId >= 0`, le relevé mensuel écarte `priceId != -1`. Les deux sélectionnent exactement les mêmes lignes dans la base réelle : les seules valeurs non positives sont 269 prestations à `priceId = -1`, toutes de total nul. **Leur origine reste à élucider** : Yannick ne se souvient pas de ce qui les crée, et aucun écran porté à ce jour n'en produit. Les deux filtres divergeraient dès qu'un `priceId` valant 0 apparaîtrait.
+  - **Calcul du net avec une déduction à montant fixe.** La liste des relevés retranche le montant **mois par mois** ; le PDF le multiplie par le nombre de mois du décompte. Les deux coïncident sur un pourcentage, ce qui est le cas actuel — la base ne contient qu'une déduction, en pourcentage. Une déduction à montant fixe les ferait diverger, et il faudrait alors savoir laquelle a raison.
+
 - **Nettoyage de la base de données** — il y a du ménage à faire dans les données existantes. Yannick doit d'abord étudier ce qui est concerné ; à ne pas entreprendre avant cette analyse, et surtout pas pendant le portage, pour que les deux versions restent comparables sur des données identiques.
 
 ## Prochaine étape
