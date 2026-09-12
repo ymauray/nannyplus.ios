@@ -214,6 +214,33 @@ L'écran s'appelle « **Déductions** ». Côté Flutter il affiche « Deduction
 
 **La clé de préférence diffère volontairement.** Flutter emploie `help_<hashCode du texte d'aide>`, et le `hashCode` des chaînes de Dart n'est pas reproductible en Swift. On utilise un identifiant explicite — `help_deductions` — stable et lisible. Conséquence : un encart déjà écarté dans l'app Flutter réapparaîtra **une fois** dans la version native. Le préfixe `flutter.` est conservé, si bien que la réinitialisation du tiroir efface les deux formes.
 
+**Paramètres de l'application portés** (`Sources/Shared/Features/AppSettings/`), **remis en forme** sur demande. L'écran d'origine aligne quatre champs nus séparés de filets, sans cartes, avec les interrupteurs violets par défaut de Material qui n'appartiennent à aucune palette de l'app. On reprend la mise en carte employée partout ailleurs et la couleur primaire.
+
+Les quatre champs sont conservés, mais l'un change de libellé :
+
+- **« Jours avant notification de facture impayée » devient « Jours avant de signaler une facture impayée ».** Ce réglage n'a rien de lié aux notifications locales retirées : il décide à partir de combien de jours le nom d'un enfant passe en rouge dans la liste. Son libellé décrivait un usage qui n'existe plus.
+- **« Message de notification » reste tel quel.** Malgré son nom, il ne concerne pas non plus les notifications locales : c'est le gabarit du **SMS de relance envoyé aux parents** depuis le menu d'une facture, où `{{date}}` et `{{total}}` sont remplacés à l'envoi (`invoice_list_tab_view.dart`). Fonctionnalité bien vivante, à porter avec l'écran des factures.
+
+**Piège de méthode** : ce champ avait d'abord été supprimé à tort, sur la foi d'un `grep` dont la sortie avait été tronquée par `head` — la seule occurrence utile était au-delà de la coupure. Ne jamais conclure à l'absence d'un usage depuis une sortie tronquée.
+
+**Les deux réglages d'affichage des noms sont enfin éprouvés**, et l'un d'eux a révélé un défaut. Ils étaient codés depuis le premier écran sans qu'on puisse les faire varier.
+
+- « Afficher le prénom avant le nom de famille » : vérifié, la liste passe de « Ellie Burri » à « Burri, Ellie ».
+- « Trier la liste des enfants par nom de famille » : **il fonctionnait, mais l'effet ne se voyait qu'après relance de l'app.** Le tri vient d'un `ORDER BY` dans la requête ; rien ne rechargeait la liste au retour des réglages. C'est pour cette raison qu'il paraissait inopérant, côté Flutter comme ici — la version Flutter ne réinitialise pas davantage l'état de la liste après un enregistrement.
+- **Correctif** : `OptionsView` prévient `MainTabView` à la fermeture des réglages, qui recharge le modèle. Les deux réglages s'appliquent désormais immédiatement, vérifié sans relancer l'app.
+
+À noter pour les prochaines vérifications : `UserDefaults` écrit sur disque de façon différée. Relire le `.plist` juste après un enregistrement peut montrer l'ancienne valeur alors que l'app a bien pris la nouvelle — c'est l'écran qui fait foi, pas le fichier.
+
+**Paramètres de la facture portés** (`Sources/Shared/Features/InvoiceSettings/`), **remis en forme** comme les paramètres de l'application : l'écran d'origine aligne ses champs sans cartes. Le contenu est identique — logo, deux lignes d'en-tête avec leur police, conditions de paiement, coordonnées bancaires, nom, adresse.
+
+- Les sept polices de facture sont reprises de `FontUtils` (même ordre, mêmes fichiers) et chacune s'affiche dans sa propre fonte dans le menu, comme côté Flutter. `InvoiceFont` conserve à la fois la famille et le chemin d'asset Flutter, les deux étant stockés en préférence : les réglages déjà enregistrés restent lisibles.
+- Le logo est lu et écrit dans `Documents/logo`, sans extension — le même emplacement que côté Flutter, donc un logo déjà choisi est repris tel quel.
+
+**Deux pièges rencontrés, à retenir.**
+
+- **Le nom PostScript d'une police ne vaut pas son nom de fichier.** « Mystery Quest » est livré dans `MysteryQuest-Regular.ttf` mais s'appelle `MysteryQuest`. Enregistrer par le nom PostScript faisait échouer le chargement, et l'assertion de `Poppins.register()` faisait planter l'app au démarrage — le garde-fou a bien joué son rôle. L'enregistrement se fait désormais par nom de fichier.
+- **`plutil -extract` traite le point comme un séparateur de chemin.** `flutter.line1` était donc lu comme la clé `flutter` puis la clé `line1`, et l'extraction échouait en silence. Pour recopier des préférences Flutter vers le simulateur, passer par `plistlib` en Python puis `xcrun simctl spawn <appareil> defaults write`.
+
 ### Reste à faire sur ces fondations
 
 - `insertSampleData` (jeu de démonstration inséré à la première ouverture : tarifs, enfants, prestations, facture, réglages de facturation et logo) n'est pas porté. À traiter avec l'onboarding.

@@ -72,7 +72,7 @@ enum Poppins {
             "Poppins-BoldItalic",
         ]
 
-        for name in names {
+        for name in names + InvoiceFont.all.map(\.fileName) {
             guard let url = Bundle.main.url(forResource: name, withExtension: "ttf") else {
                 assertionFailure("Police absente du bundle : \(name).ttf")
 
@@ -95,5 +95,54 @@ extension Color {
             blue: Double(hex & 0xFF) / 255,
             opacity: opacity
         )
+    }
+}
+
+
+/// Les sept polices proposées pour les deux lignes d'en-tête de la facture,
+/// reprises de `FontUtils` côté Flutter — même ordre, même fichier.
+///
+/// `family` est le nom affiché et stocké dans les préférences ; `asset` reprend
+/// le chemin Flutter, conservé tel quel pour que les réglages déjà enregistrés
+/// restent valides. `postScriptName` est ce dont SwiftUI a besoin.
+struct InvoiceFont: Hashable, Identifiable, Sendable {
+    let family: String
+    let asset: String
+    let postScriptName: String
+
+    var id: String { family }
+
+    /// Nom du fichier dans le bundle, sans extension. Il ne coïncide pas
+    /// toujours avec le nom PostScript : « Mystery Quest » est livré dans
+    /// `MysteryQuest-Regular.ttf` mais s'appelle `MysteryQuest`.
+    var fileName: String {
+        (asset as NSString).lastPathComponent
+            .replacingOccurrences(of: ".ttf", with: "")
+    }
+
+    func font(size: CGFloat) -> Font { .custom(postScriptName, size: size) }
+
+    static let all: [InvoiceFont] = [
+        .init(family: "Butterfly Kids", asset: "assets/fonts/ButterflyKids-Regular.ttf",
+              postScriptName: "ButterflyKids-Regular"),
+        .init(family: "Fredericka the Great", asset: "assets/fonts/FrederickatheGreat-Regular.ttf",
+              postScriptName: "FrederickatheGreat-Regular"),
+        .init(family: "Gwendolyn", asset: "assets/fonts/Gwendolyn-Bold.ttf",
+              postScriptName: "Gwendolyn-Bold"),
+        .init(family: "Mystery Quest", asset: "assets/fonts/MysteryQuest-Regular.ttf",
+              postScriptName: "MysteryQuest"),
+        .init(family: "Oswald", asset: "assets/fonts/Oswald-Regular.ttf",
+              postScriptName: "Oswald-Regular"),
+        .init(family: "Playfair Display", asset: "assets/fonts/PlayfairDisplay-Italic.ttf",
+              postScriptName: "PlayfairDisplay-Italic"),
+        .init(family: "STCaiyun", asset: "assets/fonts/STCaiyun.ttf",
+              postScriptName: "STCaiyun"),
+    ]
+
+    /// `FontUtils.defaultFontItem` : Oswald.
+    static let fallback = all[4]
+
+    static func named(_ family: String) -> InvoiceFont {
+        all.first { $0.family == family } ?? fallback
     }
 }

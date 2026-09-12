@@ -95,7 +95,7 @@ struct MainTabView: View {
             if selection == 0 {
                 ChildListView(model: model, snackbar: snackbar) { path.append($0) }
             } else {
-                OptionsView()
+                OptionsView { Task { await model.load() } }
             }
 
             BottomNavigationBar(selection: $selection)

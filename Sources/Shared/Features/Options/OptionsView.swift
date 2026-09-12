@@ -5,8 +5,14 @@ import SwiftUI
 /// Un simple menu : huit tuiles menant chacune à un écran. **Aucune destination
 /// n'est portée** — les tuiles sont en place, elles n'ouvrent rien.
 struct OptionsView: View {
+    /// Appelé à la fermeture des réglages : le tri et l'affichage des noms de
+    /// la liste des enfants en dépendent, et la liste doit être rechargée.
+    let onAppSettingsClosed: () -> Void
+
     @State private var isShowingPriceList = false
     @State private var isShowingDeductions = false
+    @State private var isShowingAppSettings = false
+    @State private var isShowingInvoiceSettings = false
 
     var body: some View {
         ScrollView {
@@ -19,8 +25,12 @@ struct OptionsView: View {
                 // `fr.po`. Accentué ici, comme le titre de l'écran.
                 tile("minus.circle", "Déductions") { isShowingDeductions = true }
 
-                tile("apps.iphone", "Paramètres de l'application")
-                tile("gearshape.fill", "Paramètres de la facture")
+                tile("apps.iphone", "Paramètres de l'application") {
+                    isShowingAppSettings = true
+                }
+                tile("gearshape.fill", "Paramètres de la facture") {
+                    isShowingInvoiceSettings = true
+                }
                 tile("doc.text.fill", "Relevés")
                 tile("calendar.day.timeline.left", "Planning hebdomadaire")
                 tile("calendar", "Planning annuel")
@@ -35,6 +45,15 @@ struct OptionsView: View {
         }
         .fullScreenCover(isPresented: $isShowingDeductions) {
             DeductionListView { isShowingDeductions = false }
+        }
+        .fullScreenCover(isPresented: $isShowingInvoiceSettings) {
+            InvoiceSettingsView { isShowingInvoiceSettings = false }
+        }
+        .fullScreenCover(isPresented: $isShowingAppSettings) {
+            AppSettingsView {
+                isShowingAppSettings = false
+                onAppSettingsClosed()
+            }
         }
     }
 
