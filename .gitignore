@@ -9,8 +9,14 @@ xcuserdata/
 # et son schéma partagé dans le dépôt pour configurer un workflow.
 *.xcodeproj
 !NannyPlus.xcodeproj
+# Le workspace embarqué dans le .xcodeproj est versionné, lui : Xcode Cloud
+# désactive la résolution automatique des paquets et exige d'y trouver
+# Package.resolved, sans quoi la compilation s'arrête avant de démarrer. Git ne
+# descend pas dans un dossier exclu, il faut donc ré-inclure le dossier lui-même
+# et pas seulement les fichiers qu'il contient — le xcuserdata/ qui s'y glisse
+# reste couvert par la règle plus haut.
 *.xcworkspace
-!*.xcworkspace/contents.xcworkspacedata
+!NannyPlus.xcodeproj/project.xcworkspace/
 
 # Build
 build/
