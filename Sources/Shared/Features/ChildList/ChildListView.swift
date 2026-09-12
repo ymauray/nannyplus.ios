@@ -9,61 +9,56 @@ import UIKit
 /// Réplique de `lib/views/child_list_view.dart`.
 struct ChildListView: View {
     let model: ChildListViewModel
+    let snackbar: SnackbarPresenter
 
     @State private var confirmation: Confirmation?
-    @State private var snackbar: SnackbarMessage?
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            ZStack(alignment: .bottomTrailing) {
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(model.children) { child in
-                            ChildListTile(
-                                child: child,
-                                model: model,
-                                onArchiveToggle: { archiveToggle(child) },
-                                onDelete: { delete(child) }
-                            )
-                        }
-
-                        // `extraWidget` : dernier élément de la liste, sous les tuiles.
-                        Button {
-                            Task { await model.toggleShowArchived() }
-                        } label: {
-                            Text(
-                                model.showArchived
-                                    ? "Masquer les dossiers archivés"
-                                    : "Afficher les dossiers archivés"
-                            )
-                            .font(Poppins.regular(14))
-                            .foregroundStyle(Theme.primary)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.vertical, Theme.smallPadding)
+        ZStack(alignment: .bottomTrailing) {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(model.children) { child in
+                        ChildListTile(
+                            child: child,
+                            model: model,
+                            onArchiveToggle: { archiveToggle(child) },
+                            onDelete: { delete(child) }
+                        )
                     }
-                    // Dégage la place du bouton flottant, comme `UIListView`.
-                    .padding(.bottom, 80)
-                }
-                .scrollIndicators(.hidden)
 
-                FloatingActionButton {
-                    // `ChildForm` n'est pas encore porté.
+                    // `extraWidget` : dernier élément de la liste, sous les tuiles.
+                    Button {
+                        Task { await model.toggleShowArchived() }
+                    } label: {
+                        Text(
+                            model.showArchived
+                                ? "Masquer les dossiers archivés"
+                                : "Afficher les dossiers archivés"
+                        )
+                        .font(Poppins.regular(14))
+                        .foregroundStyle(Theme.primary)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.vertical, Theme.smallPadding)
                 }
-                .padding(Theme.defaultPadding)
+                // Dégage la place du bouton flottant, comme `UIListView`.
+                .padding(.bottom, 80)
             }
+            .scrollIndicators(.hidden)
 
-            if let snackbar {
-                SnackbarView(message: snackbar)
-                    .transition(.move(edge: .bottom))
+            FloatingActionButton {
+                // `ChildForm` n'est pas encore porté.
             }
+            .padding(Theme.defaultPadding)
         }
         .background(Theme.background)
-        .animation(.easeOut(duration: 0.2), value: snackbar)
-        // Le titre est « Supprimer » même lorsqu'on archive : c'est le cas dans
-        // la version Flutter (`showConfirmationDialog` passe toujours
-        // `context.t('Delete')`), on le reproduit tel quel.
-        .alert("Supprimer", isPresented: .constant(confirmation != nil), presenting: confirmation) { item in
+        // Le titre suit l'action. Côté Flutter il vaut toujours « Supprimer »,
+        // même pour un archivage — défaut corrigé sur décision de Yannick.
+        .alert(
+            confirmation?.title ?? "",
+            isPresented: .constant(confirmation != nil),
+            presenting: confirmation
+        ) { item in
             Button("Oui") {
                 confirmation = nil
                 Task { await item.perform() }
@@ -79,16 +74,13 @@ struct ChildListView: View {
     private func archiveToggle(_ child: Child) {
         switch ChildFolderAction.archive(child: child, info: model.info(for: child)) {
         case let .refused(message):
-            show(message, isFailure: true)
+            snackbar.failure(message)
 
-        case let .confirm(message):
-            confirmation = Confirmation(message: message) {
+        case let .confirm(title, message):
+            confirmation = Confirmation(title: title, message: message) {
                 let wasArchived = child.isArchived
                 await model.setArchived(!wasArchived, for: child)
-                show(
-                    wasArchived ? "Désarchivé avec succès" : "Archivé avec succès",
-                    isFailure: false
-                )
+                snackbar.success(wasArchived ? "Désarchivé avec succès" : "Archivé avec succès")
             }
         }
     }
@@ -96,24 +88,13 @@ struct ChildListView: View {
     private func delete(_ child: Child) {
         switch ChildFolderAction.delete(child: child, info: model.info(for: child)) {
         case let .refused(message):
-            show(message, isFailure: true)
+            snackbar.failure(message)
 
-        case let .confirm(message):
-            confirmation = Confirmation(message: message) {
+        case let .confirm(title, message):
+            confirmation = Confirmation(title: title, message: message) {
                 await model.delete(child)
-                show("Supprimé avec succès", isFailure: false)
+                snackbar.success("Supprimé avec succès")
             }
-        }
-    }
-
-    private func show(_ text: String, isFailure: Bool) {
-        let message = SnackbarMessage(text: text, isFailure: isFailure)
-        snackbar = message
-
-        Task {
-            try? await Task.sleep(for: .seconds(4))
-
-            if snackbar == message { snackbar = nil }
         }
     }
 
@@ -121,14 +102,9 @@ struct ChildListView: View {
 
     struct Confirmation: Identifiable {
         let id = UUID()
+        let title: String
         let message: String
         let perform: () async -> Void
-    }
-
-    struct SnackbarMessage: Identifiable, Equatable {
-        let id = UUID()
-        let text: String
-        let isFailure: Bool
     }
 }
 
@@ -272,21 +248,6 @@ private struct FloatingActionButton: View {
         }
         .buttonStyle(.plain)
         .focusEffectDisabled()
-    }
-}
-
-/// Réplique de `SnackBarUtil` : bandeau vert en cas de succès, rouge en cas
-/// d'échec.
-private struct SnackbarView: View {
-    let message: ChildListView.SnackbarMessage
-
-    var body: some View {
-        Text(message.text)
-            .font(Poppins.regular(14))
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(Theme.defaultPadding)
-            .background(message.isFailure ? Color.red : Color.green)
     }
 }
 

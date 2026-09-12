@@ -27,21 +27,44 @@ struct ChildFolderActionTests {
     func archiveAllowedWhenNothingPending() {
         let outcome = ChildFolderAction.archive(child: active, info: info(pendingTotal: 0))
 
-        #expect(outcome == .confirm("Êtes-vous sûr de vouloir archiver ce dossier ?"))
+        #expect(outcome == .confirm(title: "Archiver", message: "Êtes-vous sûr de vouloir archiver ce dossier ?"))
     }
 
     @Test("Un dossier sans aucune prestation peut être archivé")
     func archiveAllowedWithoutServices() {
         let outcome = ChildFolderAction.archive(child: active, info: nil)
 
-        #expect(outcome == .confirm("Êtes-vous sûr de vouloir archiver ce dossier ?"))
+        #expect(outcome == .confirm(title: "Archiver", message: "Êtes-vous sûr de vouloir archiver ce dossier ?"))
     }
 
     @Test("Le désarchivage n'est jamais bloqué, même avec des prestations en attente")
     func unarchiveIsNeverBlocked() {
         let outcome = ChildFolderAction.archive(child: archived, info: info(pendingTotal: 1281))
 
-        #expect(outcome == .confirm("Êtes-vous sûr de vouloir désarchiver ce dossier ?"))
+        #expect(outcome == .confirm(title: "Désarchiver", message: "Êtes-vous sûr de vouloir désarchiver ce dossier ?"))
+    }
+
+    @Test("Le titre de la boîte suit l'action, il ne dit plus « Supprimer » pour un archivage")
+    func confirmationTitleMatchesTheAction() {
+        // Côté Flutter, `showConfirmationDialog` passe toujours
+        // `context.t('Delete')` comme titre. Défaut corrigé ici.
+        if case let .confirm(title, _) = ChildFolderAction.archive(child: active, info: nil) {
+            #expect(title == "Archiver")
+        } else {
+            Issue.record("l'archivage devrait demander confirmation")
+        }
+
+        if case let .confirm(title, _) = ChildFolderAction.archive(child: archived, info: nil) {
+            #expect(title == "Désarchiver")
+        } else {
+            Issue.record("le désarchivage devrait demander confirmation")
+        }
+
+        if case let .confirm(title, _) = ChildFolderAction.delete(child: active, info: nil) {
+            #expect(title == "Supprimer")
+        } else {
+            Issue.record("la suppression devrait demander confirmation")
+        }
     }
 
     // MARK: Suppression
@@ -60,6 +83,6 @@ struct ChildFolderActionTests {
     func deleteAllowedWithoutServices() {
         let outcome = ChildFolderAction.delete(child: active, info: nil)
 
-        #expect(outcome == .confirm("Êtes-vous sûr de vouloir supprimer ce dossier ?"))
+        #expect(outcome == .confirm(title: "Supprimer", message: "Êtes-vous sûr de vouloir supprimer ce dossier ?"))
     }
 }

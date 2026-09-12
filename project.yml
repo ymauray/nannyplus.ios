@@ -21,9 +21,12 @@ settings:
     DEVELOPMENT_TEAM: WFMP87LTRX
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
-    # Reprend la version de l'app Flutter, que la version native doit remplacer.
-    MARKETING_VERSION: "1.26.3"
-    CURRENT_PROJECT_VERSION: "1"
+    # Aligné sur la version en production (1.26.4, build 195), que la version
+    # native doit remplacer. Le numéro de build doit être strictement supérieur
+    # à celui déjà livré, sinon App Store Connect refuse le téléversement comme
+    # doublon : on repart donc à 196, et non à 195.
+    MARKETING_VERSION: "1.26.4"
+    CURRENT_PROJECT_VERSION: "196"
     # Info.plist entièrement généré à partir des build settings : aucun fichier
     # .plist à maintenir à la main.
     GENERATE_INFOPLIST_FILE: YES

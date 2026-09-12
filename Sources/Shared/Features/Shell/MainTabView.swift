@@ -14,6 +14,12 @@ struct MainTabView: View {
     @State private var showPendingInvoice = false
 
     @State private var isDrawerOpen = false
+    @State private var isShowingPrivacySettings = false
+    @State private var isShowingBackupRestore = false
+    /// Équivalent du `ScaffoldMessenger` de Flutter, qui vit au-dessus de la
+    /// navigation : un message déclenché avant un changement d'écran reste
+    /// visible après.
+    @State private var snackbar = SnackbarPresenter()
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -27,6 +33,8 @@ struct MainTabView: View {
 
                 MainDrawer(
                     onDismiss: { isDrawerOpen = false },
+                    onBackupRestore: { isShowingBackupRestore = true },
+                    onPrivacySettings: { isShowingPrivacySettings = true },
                     onResetHelpMessages: { AppPreferences.shared.resetHelpMessages() },
                     onResetDatabase: { Task { await model.resetDatabase() } }
                 )
@@ -37,11 +45,32 @@ struct MainTabView: View {
         }
         .animation(.easeOut(duration: 0.25), value: isDrawerOpen)
         .task { await model.load() }
+        // `fullscreenDialog: true` côté Flutter : la page couvre l'écran et
+        // arrive par le bas. `fullScreenCover` n'existe pas sur macOS, où la
+        // cible ne sert qu'au développement : une feuille y fait l'affaire.
+        #if os(iOS)
+        .fullScreenCover(isPresented: $isShowingPrivacySettings) {
+            PrivacySettingsView { isShowingPrivacySettings = false }
+        }
+        .fullScreenCover(isPresented: $isShowingBackupRestore) {
+            backupRestore
+        }
+        #else
+        .sheet(isPresented: $isShowingPrivacySettings) {
+            PrivacySettingsView { isShowingPrivacySettings = false }
+                .frame(width: 393, height: 800)
+        }
+        .sheet(isPresented: $isShowingBackupRestore) {
+            backupRestore.frame(width: 393, height: 800)
+        }
+        #endif
     }
 
     private var main: some View {
         VStack(spacing: 0) {
-            AppBar(title: "Nanny+") { isDrawerOpen = true }
+            AppBar(title: "Nanny+", leadingSystemImage: "line.3.horizontal") {
+                isDrawerOpen = true
+            }
                 // Le bandeau projette son ombre sur tout son pourtour, y compris
                 // son bord supérieur, qui jouxte la barre de titre : sans cette
                 // priorité de dessin, l'ombre y trace un liseré sombre. Côté
@@ -60,14 +89,30 @@ struct MainTabView: View {
             }
 
             if selection == 0 {
-                ChildListView(model: model)
+                ChildListView(model: model, snackbar: snackbar)
             } else {
                 Spacer()
             }
 
             BottomNavigationBar(selection: $selection)
         }
+        .snackbar(snackbar)
         .background(Theme.background)
+    }
+
+    /// Après une restauration, Flutter vide la pile de navigation et repart sur
+    /// `MainTabView`. On ferme la modale et on recharge : même résultat visible.
+    private var backupRestore: some View {
+        BackupRestoreView(
+            onClose: { isShowingBackupRestore = false },
+            onRestored: {
+                isShowingBackupRestore = false
+                Task { await model.load() }
+                // Le message est confié au parent : affiché dans la modale, il
+                // disparaîtrait avec elle et l'utilisatrice ne verrait rien.
+                snackbar.success("Base de données restaurée avec succès")
+            }
+        )
     }
 
     private var headerText: String {
@@ -80,42 +125,6 @@ struct MainTabView: View {
         let value = showPendingInvoice ? totals.pendingInvoice : totals.pendingTotal
 
         return "\(label) : \(value.twoDecimals)"
-    }
-}
-
-/// La `SliverAppBar` de Flutter : titre centré en gras, bouton de tiroir à
-/// gauche, aucune ombre.
-private struct AppBar: View {
-    let title: String
-    let onMenu: () -> Void
-
-    var body: some View {
-        ZStack {
-            Text(title)
-                .font(Poppins.bold(18))
-                .foregroundStyle(Theme.onPrimary)
-
-            HStack {
-                Button(action: onMenu) {
-                    Image(systemName: "line.3.horizontal")
-                        .font(.system(size: 20))
-                        .foregroundStyle(Theme.onPrimary)
-                }
-                .buttonStyle(.plain)
-                .focusEffectDisabled()
-
-                Spacer()
-            }
-            .padding(.horizontal, Theme.defaultPadding)
-        }
-        .frame(height: 56)
-        .frame(maxWidth: .infinity)
-        // Seul le fond déborde sous la barre d'état : la vue garde sa hauteur de
-        // 56 points et reste posée sous la zone sûre. Étendre la vue elle-même
-        // laisserait un trou de la hauteur de l'encoche sous la barre de titre.
-        .background {
-            Theme.primary.ignoresSafeArea(edges: .top)
-        }
     }
 }
 

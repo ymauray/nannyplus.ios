@@ -40,6 +40,13 @@ actor AppDatabase {
         return queue
     }
 
+    /// `DatabaseUtil.closeDatabase`. Nécessaire avant de partager ou de
+    /// remplacer le fichier : la connexion ouverte est relâchée, et SQLite
+    /// referme son journal. La base se rouvrira d'elle-même au prochain accès.
+    func close() {
+        queue = nil
+    }
+
     /// `DatabaseUtil.deleteDatabase`. Réservé à l'élément de tiroir visible en
     /// compilation de debug uniquement.
     func delete() throws {

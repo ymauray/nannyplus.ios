@@ -10,8 +10,12 @@ enum ChildFolderAction {
     enum Outcome: Equatable {
         /// Refus : message d'échec à afficher, sans rien modifier.
         case refused(String)
-        /// Accord sous réserve : message de la boîte de confirmation.
-        case confirm(String)
+        /// Accord sous réserve : titre et message de la boîte de confirmation.
+        ///
+        /// Côté Flutter, `showConfirmationDialog` passe toujours
+        /// `context.t('Delete')` comme titre, y compris pour un archivage. Ce
+        /// défaut n'est pas reproduit : le titre suit ici l'action réelle.
+        case confirm(title: String, message: String)
     }
 
     static let existingServices = "Il existe des prestations pour ce dossier"
@@ -24,11 +28,15 @@ enum ChildFolderAction {
             return .refused(existingServices)
         }
 
-        return .confirm(
-            child.isArchived
-                ? "Êtes-vous sûr de vouloir désarchiver ce dossier ?"
-                : "Êtes-vous sûr de vouloir archiver ce dossier ?"
-        )
+        return child.isArchived
+            ? .confirm(
+                title: "Désarchiver",
+                message: "Êtes-vous sûr de vouloir désarchiver ce dossier ?"
+            )
+            : .confirm(
+                title: "Archiver",
+                message: "Êtes-vous sûr de vouloir archiver ce dossier ?"
+            )
     }
 
     /// La suppression est plus stricte que l'archivage : la moindre trace de
@@ -36,6 +44,9 @@ enum ChildFolderAction {
     static func delete(child: Child, info: ServiceInfo?) -> Outcome {
         guard info == nil else { return .refused(existingServices) }
 
-        return .confirm("Êtes-vous sûr de vouloir supprimer ce dossier ?")
+        return .confirm(
+            title: "Supprimer",
+            message: "Êtes-vous sûr de vouloir supprimer ce dossier ?"
+        )
     }
 }

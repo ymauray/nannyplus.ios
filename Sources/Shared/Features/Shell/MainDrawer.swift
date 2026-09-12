@@ -6,6 +6,8 @@ import SwiftUI
 /// et l'animation d'ouverture sont dessinés à la main dans `MainTabView`.
 struct MainDrawer: View {
     let onDismiss: () -> Void
+    let onBackupRestore: () -> Void
+    let onPrivacySettings: () -> Void
     let onResetHelpMessages: () -> Void
     let onResetDatabase: () -> Void
 
@@ -17,8 +19,8 @@ struct MainDrawer: View {
                 title: "Sauvegarder / Restaurer",
                 systemImage: "icloud.and.arrow.up.fill"
             ) {
-                // `BackupRestoreView` n'est pas encore portée.
                 onDismiss()
+                onBackupRestore()
             }
 
             Divider()
@@ -27,8 +29,8 @@ struct MainDrawer: View {
                 title: "Politique de confidentialité",
                 systemImage: "exclamationmark.shield.fill"
             ) {
-                // `PrivacySettingsView` n'est pas encore portée.
                 onDismiss()
+                onPrivacySettings()
             }
 
             Divider()
