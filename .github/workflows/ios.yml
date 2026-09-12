@@ -1,0 +1,64 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  application:
+    name: Compilation et tests iOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Installer XcodeGen
+        run: brew install xcodegen
+
+      # Le projet est régénéré depuis project.yml, qui reste la source de vérité même si
+      # le .xcodeproj est committé pour Xcode Cloud.
+      - name: Générer le projet Xcode
+        run: xcodegen generate
+
+      - name: Compiler et tester
+        run: |
+          UDID=$(xcrun simctl list devices available -j \
+            | jq -r '[.devices | to_entries[] | select(.key | contains("iOS")) | .value[]] | first | .udid')
+          xcodebuild \
+            -project NannyPlus.xcodeproj \
+            -scheme NannyPlus-iOS \
+            -destination "platform=iOS Simulator,id=$UDID" \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            test
+
+  macos:
+    name: Compilation macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Installer XcodeGen
+        run: brew install xcodegen
+
+      - name: Générer le projet Xcode
+        run: xcodegen generate
+
+      # La cible macOS ne sert qu'au confort de développement et n'est pas publiée : on
+      # vérifie seulement qu'elle compile, pour que le code partagé ne casse pas de ce côté.
+      # Sans signature, le bac à sable ne s'applique pas — l'app produite ici ne verrait
+      # donc pas la base de l'app Flutter, mais ce job ne la lance pas.
+      - name: Compiler
+        run: |
+          xcodebuild \
+            -project NannyPlus.xcodeproj \
+            -scheme NannyPlus-macOS \
+            -destination "platform=macOS" \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build

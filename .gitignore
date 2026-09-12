@@ -1,0 +1,29 @@
+# Xcode — fichiers utilisateur
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# Projet Xcode — généré par XcodeGen depuis project.yml, qui reste la source de
+# vérité. Il est malgré tout committé : Xcode Cloud a besoin de trouver le projet
+# et son schéma partagé dans le dépôt pour configurer un workflow.
+*.xcodeproj
+!NannyPlus.xcodeproj
+*.xcworkspace
+!*.xcworkspace/contents.xcworkspacedata
+
+# Build
+build/
+DerivedData/
+.build/
+.swiftpm/
+
+# Résultats de tests
+TestResults/
+*.xcresult
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes

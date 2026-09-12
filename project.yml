@@ -1,0 +1,108 @@
+name: NannyPlus
+options:
+  bundleIdPrefix: ch.frenchguy
+  deploymentTarget:
+    iOS: "26.0"
+    macOS: "26.0"
+  # Le français est la langue principale : sans ça, les menus système fournis par
+  # UIKit et AppKit (couper, copier, coller, sélectionner…) apparaissent en
+  # anglais même sur un appareil configuré en français. L'app étant francophone
+  # uniquement, c'est la seule langue déclarée.
+  developmentLanguage: fr
+  createIntermediateGroups: true
+
+packages:
+  GRDB:
+    url: https://github.com/groue/GRDB.swift
+    from: "7.0.0"
+
+settings:
+  base:
+    DEVELOPMENT_TEAM: WFMP87LTRX
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    # Reprend la version de l'app Flutter, que la version native doit remplacer.
+    MARKETING_VERSION: "1.26.3"
+    CURRENT_PROJECT_VERSION: "1"
+    # Info.plist entièrement généré à partir des build settings : aucun fichier
+    # .plist à maintenir à la main.
+    GENERATE_INFOPLIST_FILE: YES
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    INFOPLIST_KEY_CFBundleDisplayName: Nanny+
+    # L'app n'utilise aucun chiffrement au-delà de ce qu'offre le système. Le
+    # déclarer ici évite d'avoir à répondre à la question à chaque livraison sur
+    # TestFlight.
+    INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+
+targets:
+  NannyPlus-iOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/Shared
+      - path: Resources
+    dependencies:
+      - package: GRDB
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ch.frenchguy.nannyplus
+        PRODUCT_NAME: NannyPlus
+        TARGETED_DEVICE_FAMILY: "1,2"  # iPhone et iPad
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+
+  # Cible de confort de développement : compiler et lancer sans simulateur. Pas
+  # un produit desktop, et pas destinée à être publiée.
+  NannyPlus-macOS:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/Shared
+      - path: Resources
+    dependencies:
+      - package: GRDB
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ch.frenchguy.nannyplus
+        PRODUCT_NAME: NannyPlus
+        ENABLE_HARDENED_RUNTIME: YES
+        # Le bac à sable est indispensable : sans lui l'app lit ~/Documents au
+        # lieu de son conteneur, et ne voit donc pas la base de l'app Flutter.
+        CODE_SIGN_ENTITLEMENTS: Sources/Supporting/NannyPlus-macOS.entitlements
+
+  NannyPlusTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: NannyPlus-iOS
+      - package: GRDB
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ch.frenchguy.nannyplus.tests
+        # XcodeGen déduit l'hôte de test du nom de la cible ; il faut le corriger
+        # ici, le produit s'appelant NannyPlus et la cible NannyPlus-iOS.
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/NannyPlus.app/NannyPlus
+        BUNDLE_LOADER: $(TEST_HOST)
+
+schemes:
+  NannyPlus-iOS:
+    build:
+      targets:
+        NannyPlus-iOS: all
+    test:
+      targets: [NannyPlusTests]
+      gatherCoverageData: true
+  NannyPlus-macOS:
+    build:
+      targets:
+        NannyPlus-macOS: all

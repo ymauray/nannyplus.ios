@@ -1,0 +1,819 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00BD0A3F25BE7AC29A0D8042 /* MainDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6B9CC10BF3DF696E938655 /* MainDrawer.swift */; };
+		068AE792736686A813C55A6B /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 337523B1FFA6CF8E7367297A /* GRDB */; };
+		0EE7FE66454DE6B15959CFA8 /* ChildFolderAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360A922C5D5D61FADB87172 /* ChildFolderAction.swift */; };
+		129CC96B1B2D24FCA782B3D2 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C5A73BE113719713812763 /* Poppins-Italic.ttf */; };
+		1F7E84A469A1F341C026EE6B /* SchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */; };
+		2BF7BA270260A876AC0A030D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E19F732BAE4343A18FC9A2 /* Theme.swift */; };
+		30617D0E2732F81D440CC296 /* Poppins-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A4E59059039919B4003F3F80 /* Poppins-OFL.txt */; };
+		3D024EDF968787687658E657 /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 62503E5CF4A87C9F67F0C303 /* Poppins-BoldItalic.ttf */; };
+		43623F8F2588870CC69B3881 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6DCAC9A581823E8925B6BCC7 /* GRDB */; };
+		45D4051609D9D29343C52ACB /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B720196ADB90F27A7D484C /* AppDatabase.swift */; };
+		47CF7B617C0B63C6C2AFB621 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06367E739B61AF51F7C4FF04 /* Poppins-Bold.ttf */; };
+		4E39B812D04B13209D73BEE5 /* ChildListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5C6C6F4D9335B165A5D69F /* ChildListView.swift */; };
+		50EB08DD9FDEA71C7212E606 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69AEC803DAD11C0C9469E35D /* MainTabView.swift */; };
+		52D58989BE894D9A128BCF94 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0AE9F69D4053C285DF097217 /* Poppins-Medium.ttf */; };
+		5A5BD06FC3F80B17389A5111 /* ChildListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5C6C6F4D9335B165A5D69F /* ChildListView.swift */; };
+		5B06F4B86931717E270861C2 /* CurvedHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81413E81B9F887A907E51D56 /* CurvedHeader.swift */; };
+		5F3257D379780E19BEBA47A0 /* CurvedHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81413E81B9F887A907E51D56 /* CurvedHeader.swift */; };
+		61AE8820EA613DEF70A96B45 /* Child.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3421B826AF13DFA9BC2E56 /* Child.swift */; };
+		654368449C79DF2402ACF468 /* ChildrenRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A894B27BD58F5B3EB37EFFBE /* ChildrenRepository.swift */; };
+		680CCDD7177654E86E7D7187 /* InvoicesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */; };
+		6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */; };
+		73DCA622251773759FAC6369 /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */; };
+		742B46C301A4710CE60AA4A5 /* NannyPlusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0191AFB20905E332D3AC811 /* NannyPlusApp.swift */; };
+		7FB274102193737589F09ACA /* ChildFolderAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360A922C5D5D61FADB87172 /* ChildFolderAction.swift */; };
+		896A03C55E8CDF15EF45B5C0 /* Poppins-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = A4E59059039919B4003F3F80 /* Poppins-OFL.txt */; };
+		89CDD7821194EF87A994CAF2 /* MainDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6B9CC10BF3DF696E938655 /* MainDrawer.swift */; };
+		935A9F95E41CAEC81CCAE0E2 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B720196ADB90F27A7D484C /* AppDatabase.swift */; };
+		96B89E1DCD29087880CA4C82 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06367E739B61AF51F7C4FF04 /* Poppins-Bold.ttf */; };
+		9D4A984E5E71EC8F5B38C7F5 /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */; };
+		9EC2913241D4587828194AF3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5ED22141B66A7790C55941 /* Assets.xcassets */; };
+		B2A9EC078F7132B28F2C4BDE /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5156BE26DDF3E7CBB1E0E352 /* Poppins-Regular.ttf */; };
+		B4826C7BECFAEE232BEF70AA /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69AEC803DAD11C0C9469E35D /* MainTabView.swift */; };
+		B55B1EE08FBB25B3FDDF0701 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C5A73BE113719713812763 /* Poppins-Italic.ttf */; };
+		B75ABB0A17335BE73CBD7EEB /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = F67FD4CFD483B351F339944D /* GRDB */; };
+		B7A02F808FEECF316311A643 /* ServiceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FD14D0A98E5D2ED43F4E6DF /* ServiceInfo.swift */; };
+		BE8AC0F8D476E3142F69982F /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0AE9F69D4053C285DF097217 /* Poppins-Medium.ttf */; };
+		C288F9A8F9B5FFE7613023F2 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5156BE26DDF3E7CBB1E0E352 /* Poppins-Regular.ttf */; };
+		C7AAE3C9B9EA45FB842EE7A3 /* ServiceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FD14D0A98E5D2ED43F4E6DF /* ServiceInfo.swift */; };
+		CEAB64C8AB288E85E8C7A94C /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B447FAD7E04AF1A72D7CA2BE /* Schema.swift */; };
+		D112D21C7C560E0B29E346D9 /* ServicesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB5838E5480F2A3714E41 /* ServicesRepository.swift */; };
+		D1DDC1B6E6CAB22B079FDEE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5ED22141B66A7790C55941 /* Assets.xcassets */; };
+		D6007532598F65209C686869 /* ChildrenRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A894B27BD58F5B3EB37EFFBE /* ChildrenRepository.swift */; };
+		DC95D166781828F46E07C416 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B447FAD7E04AF1A72D7CA2BE /* Schema.swift */; };
+		E0AF22627B8A26C0DD4BE078 /* ChildListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9E332D2893229808313E83 /* ChildListViewModel.swift */; };
+		E6DF519EDAC2B1898FB3FAB1 /* ServicesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB5838E5480F2A3714E41 /* ServicesRepository.swift */; };
+		EA1898BBA8A8522439921428 /* Child.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3421B826AF13DFA9BC2E56 /* Child.swift */; };
+		ED50AB7F153FE9AA382193DA /* NannyPlusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0191AFB20905E332D3AC811 /* NannyPlusApp.swift */; };
+		F27C5611121028985BD848C7 /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 62503E5CF4A87C9F67F0C303 /* Poppins-BoldItalic.ttf */; };
+		F9E6FBB2342E2E913BE5421E /* InvoicesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */; };
+		FCBD99A4EDF383674E1F06E8 /* ChildListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9E332D2893229808313E83 /* ChildListViewModel.swift */; };
+		FCC5BC5D32A274EBDB02B6DB /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E19F732BAE4343A18FC9A2 /* Theme.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		050790168B985030B7C92558 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FEAC84A55922A03CF168256 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83101E0DF5C2CF9A1CD6EC15;
+			remoteInfo = "NannyPlus-iOS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0043156DDCD758130CE8C06C /* NannyPlus-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "NannyPlus-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		06367E739B61AF51F7C4FF04 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Bold.ttf"; sourceTree = "<group>"; };
+		0AE9F69D4053C285DF097217 /* Poppins-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Medium.ttf"; sourceTree = "<group>"; };
+		0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaTests.swift; sourceTree = "<group>"; };
+		0FD14D0A98E5D2ED43F4E6DF /* ServiceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceInfo.swift; sourceTree = "<group>"; };
+		2F5C6C6F4D9335B165A5D69F /* ChildListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildListView.swift; sourceTree = "<group>"; };
+		301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildFolderActionTests.swift; sourceTree = "<group>"; };
+		314EB5838E5480F2A3714E41 /* ServicesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesRepository.swift; sourceTree = "<group>"; };
+		3360A922C5D5D61FADB87172 /* ChildFolderAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildFolderAction.swift; sourceTree = "<group>"; };
+		47E19F732BAE4343A18FC9A2 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		5156BE26DDF3E7CBB1E0E352 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Regular.ttf"; sourceTree = "<group>"; };
+		62503E5CF4A87C9F67F0C303 /* Poppins-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-BoldItalic.ttf"; sourceTree = "<group>"; };
+		69AEC803DAD11C0C9469E35D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesRepository.swift; sourceTree = "<group>"; };
+		81413E81B9F887A907E51D56 /* CurvedHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvedHeader.swift; sourceTree = "<group>"; };
+		81C5A73BE113719713812763 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Italic.ttf"; sourceTree = "<group>"; };
+		9F9E332D2893229808313E83 /* ChildListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildListViewModel.swift; sourceTree = "<group>"; };
+		A050463165E85DC968AB9506 /* NannyPlusTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NannyPlusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4E59059039919B4003F3F80 /* Poppins-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Poppins-OFL.txt"; sourceTree = "<group>"; };
+		A894B27BD58F5B3EB37EFFBE /* ChildrenRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildrenRepository.swift; sourceTree = "<group>"; };
+		B447FAD7E04AF1A72D7CA2BE /* Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
+		CF6B9CC10BF3DF696E938655 /* MainDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainDrawer.swift; sourceTree = "<group>"; };
+		D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferences.swift; sourceTree = "<group>"; };
+		DA3421B826AF13DFA9BC2E56 /* Child.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Child.swift; sourceTree = "<group>"; };
+		E4B720196ADB90F27A7D484C /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabase.swift; sourceTree = "<group>"; };
+		E76E1861F664950DA86BB6B7 /* NannyPlus-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NannyPlus-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF5ED22141B66A7790C55941 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F0191AFB20905E332D3AC811 /* NannyPlusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NannyPlusApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		152893D9BF85AD88BE601326 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				068AE792736686A813C55A6B /* GRDB in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3A31C4530078D46F856AEAA3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43623F8F2588870CC69B3881 /* GRDB in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6432CCC6C94CD9F105D44E7B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B75ABB0A17335BE73CBD7EEB /* GRDB in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		364094782DC3D77348A118DC /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				7101192018D0F6B82A1EB77D /* Shared */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		3B38E1BBD2FF85E288D3B882 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DA3421B826AF13DFA9BC2E56 /* Child.swift */,
+				0FD14D0A98E5D2ED43F4E6DF /* ServiceInfo.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		454D7769D2038E14215373F5 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				C0A44A17096A590D2F2831D6 /* ChildList */,
+				C6946203AD78BDDD96509CE0 /* Shell */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		7101192018D0F6B82A1EB77D /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				EA35A2B17095F26DF6B6B018 /* App */,
+				7C9BEA7ED041AED2C22FFE82 /* Data */,
+				FB9BEF0FEB83FDF96E119918 /* Design */,
+				454D7769D2038E14215373F5 /* Features */,
+				E5ECB338A97E12DA64ADC34C /* Preferences */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		7B0752653AA36D31E8623D5D /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				06367E739B61AF51F7C4FF04 /* Poppins-Bold.ttf */,
+				62503E5CF4A87C9F67F0C303 /* Poppins-BoldItalic.ttf */,
+				81C5A73BE113719713812763 /* Poppins-Italic.ttf */,
+				0AE9F69D4053C285DF097217 /* Poppins-Medium.ttf */,
+				A4E59059039919B4003F3F80 /* Poppins-OFL.txt */,
+				5156BE26DDF3E7CBB1E0E352 /* Poppins-Regular.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		7C9BEA7ED041AED2C22FFE82 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				E4B720196ADB90F27A7D484C /* AppDatabase.swift */,
+				B447FAD7E04AF1A72D7CA2BE /* Schema.swift */,
+				3B38E1BBD2FF85E288D3B882 /* Models */,
+				85E19690F0818AEE8F4AD5A7 /* Repositories */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		85E19690F0818AEE8F4AD5A7 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				A894B27BD58F5B3EB37EFFBE /* ChildrenRepository.swift */,
+				7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */,
+				314EB5838E5480F2A3714E41 /* ServicesRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		8A0DA9A2C62333DBC57DC251 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */,
+				0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		8F39A5BC12BCBA4570263EDC = {
+			isa = PBXGroup;
+			children = (
+				C6780106EC9A39F22DB9C523 /* Resources */,
+				364094782DC3D77348A118DC /* Sources */,
+				8A0DA9A2C62333DBC57DC251 /* Tests */,
+				E826AA60EB97E2369499CDBC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C0A44A17096A590D2F2831D6 /* ChildList */ = {
+			isa = PBXGroup;
+			children = (
+				3360A922C5D5D61FADB87172 /* ChildFolderAction.swift */,
+				2F5C6C6F4D9335B165A5D69F /* ChildListView.swift */,
+				9F9E332D2893229808313E83 /* ChildListViewModel.swift */,
+			);
+			path = ChildList;
+			sourceTree = "<group>";
+		};
+		C6780106EC9A39F22DB9C523 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EF5ED22141B66A7790C55941 /* Assets.xcassets */,
+				7B0752653AA36D31E8623D5D /* Fonts */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C6946203AD78BDDD96509CE0 /* Shell */ = {
+			isa = PBXGroup;
+			children = (
+				81413E81B9F887A907E51D56 /* CurvedHeader.swift */,
+				CF6B9CC10BF3DF696E938655 /* MainDrawer.swift */,
+				69AEC803DAD11C0C9469E35D /* MainTabView.swift */,
+			);
+			path = Shell;
+			sourceTree = "<group>";
+		};
+		E5ECB338A97E12DA64ADC34C /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */,
+			);
+			path = Preferences;
+			sourceTree = "<group>";
+		};
+		E826AA60EB97E2369499CDBC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0043156DDCD758130CE8C06C /* NannyPlus-iOS.app */,
+				E76E1861F664950DA86BB6B7 /* NannyPlus-macOS.app */,
+				A050463165E85DC968AB9506 /* NannyPlusTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EA35A2B17095F26DF6B6B018 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F0191AFB20905E332D3AC811 /* NannyPlusApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		FB9BEF0FEB83FDF96E119918 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				47E19F732BAE4343A18FC9A2 /* Theme.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E3EC56AA13E27B6D6CE7603 /* NannyPlusTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C05C2E05DF95546811A65138 /* Build configuration list for PBXNativeTarget "NannyPlusTests" */;
+			buildPhases = (
+				B4EB3C89A2E010F146BF4A09 /* Sources */,
+				3A31C4530078D46F856AEAA3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96F8A5FD33E69B31FE204CD3 /* PBXTargetDependency */,
+			);
+			name = NannyPlusTests;
+			packageProductDependencies = (
+				6DCAC9A581823E8925B6BCC7 /* GRDB */,
+			);
+			productName = NannyPlusTests;
+			productReference = A050463165E85DC968AB9506 /* NannyPlusTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		83101E0DF5C2CF9A1CD6EC15 /* NannyPlus-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91ABB699401050E3146F11B1 /* Build configuration list for PBXNativeTarget "NannyPlus-iOS" */;
+			buildPhases = (
+				97328C39DA39E3569EC39950 /* Sources */,
+				97CC3D9546BEDA8EC80F2EA0 /* Resources */,
+				152893D9BF85AD88BE601326 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "NannyPlus-iOS";
+			packageProductDependencies = (
+				337523B1FFA6CF8E7367297A /* GRDB */,
+			);
+			productName = "NannyPlus-iOS";
+			productReference = 0043156DDCD758130CE8C06C /* NannyPlus-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		924A125A7E0802F0B603B588 /* NannyPlus-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 98726EC90A71EDD798DEC1BD /* Build configuration list for PBXNativeTarget "NannyPlus-macOS" */;
+			buildPhases = (
+				CCCF7697942C6DCC79F31A07 /* Sources */,
+				C31EFBEE689DEE8999F27B9D /* Resources */,
+				6432CCC6C94CD9F105D44E7B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "NannyPlus-macOS";
+			packageProductDependencies = (
+				F67FD4CFD483B351F339944D /* GRDB */,
+			);
+			productName = "NannyPlus-macOS";
+			productReference = E76E1861F664950DA86BB6B7 /* NannyPlus-macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2FEAC84A55922A03CF168256 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					0E3EC56AA13E27B6D6CE7603 = {
+						DevelopmentTeam = WFMP87LTRX;
+					};
+					83101E0DF5C2CF9A1CD6EC15 = {
+						DevelopmentTeam = WFMP87LTRX;
+					};
+					924A125A7E0802F0B603B588 = {
+						DevelopmentTeam = WFMP87LTRX;
+					};
+				};
+			};
+			buildConfigurationList = C1F0FB70506E9E129CD6EB7D /* Build configuration list for PBXProject "NannyPlus" */;
+			developmentRegion = fr;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				fr,
+			);
+			mainGroup = 8F39A5BC12BCBA4570263EDC;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6FCFD849AD68A3EBD525E195 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E826AA60EB97E2369499CDBC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				83101E0DF5C2CF9A1CD6EC15 /* NannyPlus-iOS */,
+				924A125A7E0802F0B603B588 /* NannyPlus-macOS */,
+				0E3EC56AA13E27B6D6CE7603 /* NannyPlusTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		97CC3D9546BEDA8EC80F2EA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9EC2913241D4587828194AF3 /* Assets.xcassets in Resources */,
+				47CF7B617C0B63C6C2AFB621 /* Poppins-Bold.ttf in Resources */,
+				F27C5611121028985BD848C7 /* Poppins-BoldItalic.ttf in Resources */,
+				129CC96B1B2D24FCA782B3D2 /* Poppins-Italic.ttf in Resources */,
+				52D58989BE894D9A128BCF94 /* Poppins-Medium.ttf in Resources */,
+				30617D0E2732F81D440CC296 /* Poppins-OFL.txt in Resources */,
+				B2A9EC078F7132B28F2C4BDE /* Poppins-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C31EFBEE689DEE8999F27B9D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1DDC1B6E6CAB22B079FDEE0 /* Assets.xcassets in Resources */,
+				96B89E1DCD29087880CA4C82 /* Poppins-Bold.ttf in Resources */,
+				3D024EDF968787687658E657 /* Poppins-BoldItalic.ttf in Resources */,
+				B55B1EE08FBB25B3FDDF0701 /* Poppins-Italic.ttf in Resources */,
+				BE8AC0F8D476E3142F69982F /* Poppins-Medium.ttf in Resources */,
+				896A03C55E8CDF15EF45B5C0 /* Poppins-OFL.txt in Resources */,
+				C288F9A8F9B5FFE7613023F2 /* Poppins-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		97328C39DA39E3569EC39950 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45D4051609D9D29343C52ACB /* AppDatabase.swift in Sources */,
+				9D4A984E5E71EC8F5B38C7F5 /* AppPreferences.swift in Sources */,
+				61AE8820EA613DEF70A96B45 /* Child.swift in Sources */,
+				7FB274102193737589F09ACA /* ChildFolderAction.swift in Sources */,
+				4E39B812D04B13209D73BEE5 /* ChildListView.swift in Sources */,
+				FCBD99A4EDF383674E1F06E8 /* ChildListViewModel.swift in Sources */,
+				654368449C79DF2402ACF468 /* ChildrenRepository.swift in Sources */,
+				5B06F4B86931717E270861C2 /* CurvedHeader.swift in Sources */,
+				680CCDD7177654E86E7D7187 /* InvoicesRepository.swift in Sources */,
+				89CDD7821194EF87A994CAF2 /* MainDrawer.swift in Sources */,
+				B4826C7BECFAEE232BEF70AA /* MainTabView.swift in Sources */,
+				ED50AB7F153FE9AA382193DA /* NannyPlusApp.swift in Sources */,
+				CEAB64C8AB288E85E8C7A94C /* Schema.swift in Sources */,
+				B7A02F808FEECF316311A643 /* ServiceInfo.swift in Sources */,
+				E6DF519EDAC2B1898FB3FAB1 /* ServicesRepository.swift in Sources */,
+				FCC5BC5D32A274EBDB02B6DB /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4EB3C89A2E010F146BF4A09 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */,
+				1F7E84A469A1F341C026EE6B /* SchemaTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCCF7697942C6DCC79F31A07 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				935A9F95E41CAEC81CCAE0E2 /* AppDatabase.swift in Sources */,
+				73DCA622251773759FAC6369 /* AppPreferences.swift in Sources */,
+				EA1898BBA8A8522439921428 /* Child.swift in Sources */,
+				0EE7FE66454DE6B15959CFA8 /* ChildFolderAction.swift in Sources */,
+				5A5BD06FC3F80B17389A5111 /* ChildListView.swift in Sources */,
+				E0AF22627B8A26C0DD4BE078 /* ChildListViewModel.swift in Sources */,
+				D6007532598F65209C686869 /* ChildrenRepository.swift in Sources */,
+				5F3257D379780E19BEBA47A0 /* CurvedHeader.swift in Sources */,
+				F9E6FBB2342E2E913BE5421E /* InvoicesRepository.swift in Sources */,
+				00BD0A3F25BE7AC29A0D8042 /* MainDrawer.swift in Sources */,
+				50EB08DD9FDEA71C7212E606 /* MainTabView.swift in Sources */,
+				742B46C301A4710CE60AA4A5 /* NannyPlusApp.swift in Sources */,
+				DC95D166781828F46E07C416 /* Schema.swift in Sources */,
+				C7AAE3C9B9EA45FB842EE7A3 /* ServiceInfo.swift in Sources */,
+				D112D21C7C560E0B29E346D9 /* ServicesRepository.swift in Sources */,
+				2BF7BA270260A876AC0A030D /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		96F8A5FD33E69B31FE204CD3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83101E0DF5C2CF9A1CD6EC15 /* NannyPlus-iOS */;
+			targetProxy = 050790168B985030B7C92558 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		080613F55C551AD80650E2C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Supporting/NannyPlus-macOS.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus;
+				PRODUCT_NAME = NannyPlus;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		10EC97FAF3F1CDB7112EF5C6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = (
+					UIInterfaceOrientationPortrait,
+					UIInterfaceOrientationPortraitUpsideDown,
+					UIInterfaceOrientationLandscapeLeft,
+					UIInterfaceOrientationLandscapeRight,
+				);
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = (
+					UIInterfaceOrientationPortrait,
+					UIInterfaceOrientationLandscapeLeft,
+					UIInterfaceOrientationLandscapeRight,
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus;
+				PRODUCT_NAME = NannyPlus;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		142BD06515FDA919CB8DB8C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = WFMP87LTRX;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Nanny+";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.26.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		6013133C2266ADBB0E754980 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Supporting/NannyPlus-macOS.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus;
+				PRODUCT_NAME = NannyPlus;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		6067B4017AD4E951EBAC3BD3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = (
+					UIInterfaceOrientationPortrait,
+					UIInterfaceOrientationPortraitUpsideDown,
+					UIInterfaceOrientationLandscapeLeft,
+					UIInterfaceOrientationLandscapeRight,
+				);
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = (
+					UIInterfaceOrientationPortrait,
+					UIInterfaceOrientationLandscapeLeft,
+					UIInterfaceOrientationLandscapeRight,
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus;
+				PRODUCT_NAME = NannyPlus;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA3E9A5D602F548B787B8458 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NannyPlus.app/NannyPlus";
+			};
+			name = Release;
+		};
+		D51F4E80D602BCD0C8F6043D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = WFMP87LTRX;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Nanny+";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.26.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		E58F20B28CFC84602A40DFFA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NannyPlus.app/NannyPlus";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		91ABB699401050E3146F11B1 /* Build configuration list for PBXNativeTarget "NannyPlus-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6067B4017AD4E951EBAC3BD3 /* Debug */,
+				10EC97FAF3F1CDB7112EF5C6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		98726EC90A71EDD798DEC1BD /* Build configuration list for PBXNativeTarget "NannyPlus-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6013133C2266ADBB0E754980 /* Debug */,
+				080613F55C551AD80650E2C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C05C2E05DF95546811A65138 /* Build configuration list for PBXNativeTarget "NannyPlusTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E58F20B28CFC84602A40DFFA /* Debug */,
+				AA3E9A5D602F548B787B8458 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C1F0FB70506E9E129CD6EB7D /* Build configuration list for PBXProject "NannyPlus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D51F4E80D602BCD0C8F6043D /* Debug */,
+				142BD06515FDA919CB8DB8C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6FCFD849AD68A3EBD525E195 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		337523B1FFA6CF8E7367297A /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FCFD849AD68A3EBD525E195 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		6DCAC9A581823E8925B6BCC7 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FCFD849AD68A3EBD525E195 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		F67FD4CFD483B351F339944D /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FCFD849AD68A3EBD525E195 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 2FEAC84A55922A03CF168256 /* Project object */;
+}
