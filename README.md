@@ -1,7 +1,31 @@
 # Nanny+ — version native iOS/macOS
 
-Portage 1:1 de l'app Flutter `../nannyplus`. Voir `HANDOFF.md` pour le contexte,
-les décisions prises et l'état d'avancement.
+Portage 1:1 de l'app Flutter [Nanny+](https://apps.apple.com/fr/app/nanny/id1602676918),
+une app de gestion pour nounous indépendantes : dossiers enfants, suivi des
+prestations, facturation PDF, relevés, planning. Aucune donnée ne quitte
+l'appareil.
+
+L'objectif est une réplique fidèle de l'app Flutter existante, défauts
+d'ergonomie compris, et non une amélioration.
+
+- [`SPECS.md`](SPECS.md) — ce que l'on construit, les décisions prises et la méthode de travail
+- [`AVANCEMENT.md`](AVANCEMENT.md) — où en est le portage, écran par écran
+- [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) — la politique de confidentialité, texte de référence
+
+## Structure
+
+```
+project.yml                  description du projet, source de vérité (XcodeGen)
+Sources/Shared/              tout le code, partagé iOS et macOS (SwiftUI)
+  Data/                      base SQLite, modèles, repositories (GRDB)
+  Design/                    couleurs et polices du thème Flutter
+  Features/                  un dossier par écran
+  Preferences/               équivalent de PrefsUtil
+Sources/Supporting/          entitlements
+Resources/                   polices Poppins, icône d'app, images
+Tests/                       tests unitaires
+ci_scripts/                  Xcode Cloud
+```
 
 ## Construire
 
@@ -12,8 +36,14 @@ xcodegen generate
 open NannyPlus.xcodeproj
 ```
 
-Le `.xcodeproj` est malgré tout committé, comme sur Clepsydre : Xcode Cloud a
-besoin de trouver le projet et son schéma partagé dans le dépôt.
+Le `.xcodeproj` est malgré tout committé : Xcode Cloud a besoin de trouver le
+projet et son schéma partagé dans le dépôt.
+
+Deux cibles partagent `Sources/Shared` :
+
+- `NannyPlus-iOS` — la cible publiée ;
+- `NannyPlus-macOS` — confort de développement uniquement (compiler et lancer
+  sans simulateur), pas un produit desktop.
 
 Tests :
 
@@ -21,12 +51,6 @@ Tests :
 xcodebuild -project NannyPlus.xcodeproj -scheme NannyPlus-iOS \
   -destination 'platform=iOS Simulator,name=iPhone 17' test
 ```
-
-Deux cibles partagent `Sources/Shared` :
-
-- `NannyPlus-iOS` — la cible publiée ;
-- `NannyPlus-macOS` — confort de développement uniquement (compiler et lancer
-  sans simulateur), pas un produit desktop.
 
 ## Base de données
 

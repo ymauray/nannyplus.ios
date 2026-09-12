@@ -1,73 +1,67 @@
-# Nanny+ → portage natif iOS/macOS — Document de passation
+# Nanny+ natif — Avancement
 
-Contexte : ce document résume ce qui a été établi dans une session Cowork précédente, pour reprendre le travail avec Claude Code (en ligne de commande) sans rien perdre. Le projet Flutter source se trouve dans le dossier voisin `../nannyplus`. Ce dossier (`nannyplus-ios`) est destiné à accueillir le nouveau projet natif.
+Où en est le portage. Ce que l'on construit et pourquoi est dans
+[SPECS.md](SPECS.md).
 
-## Contrainte du projet
+## Notes de mise à jour
 
-Portage 1:1 vers iOS/macOS natif (Swift/SwiftUI) d'une app Flutter existante et fonctionnelle mais mal structurée. **Aucun changement visuel ni de comportement n'est souhaité par l'utilisatrice principale de l'app**, y compris les défauts d'ergonomie actuels (listes mal fichues, options peu intuitives). L'objectif est une réplique fidèle, pas une amélioration.
+Ce qui change pour l'utilisatrice en passant de la version Flutter à la version
+native. Cette liste s'étoffe au fil du portage et servira de base aux notes de
+version de l'App Store. Tout ce qui n'y figure pas est réputé identique — c'est
+la contrainte du projet.
 
-## Ce qu'est Nanny+
+### Dans cette version
 
-App de gestion pour nounous indépendantes (fiche App Store : https://apps.apple.com/fr/app/nanny/id1602676918, éditeur Yannick Mauray). Gratuite, aucune donnée envoyée à un serveur (100% local), iPhone/iPad/Apple Vision actuellement. Fonctionnalités : dossiers enfants (allergies, contacts, photo), suivi des heures/prestations, facturation PDF, relevés mensuels/annuels avec déductions, planning hebdo/annuel avec couleurs, congés, crédits d'heures, documents attachés, sauvegarde/restauration.
+1. **L'application est entièrement récrite en natif iOS.** C'est le changement
+   majeur, et il doit rester invisible : mêmes écrans, mêmes gestes, mêmes
+   défauts d'ergonomie qu'avant. Les données existantes sont reprises telles
+   quelles, sans import ni sauvegarde préalable — l'app native ouvre le même
+   fichier que l'ancienne.
 
-## Architecture Flutter actuelle (auditée)
+2. **Plus aucune donnée ne quitte l'appareil.** Firebase Analytics envoyait un
+   événement à chaque lancement ; il est retiré. L'app ne contacte désormais
+   aucun serveur, ce qui la met enfin en accord avec ce qu'annonce sa fiche App
+   Store.
 
-- **Stockage** : SQLite unique (`childcare.db`) via `sqflite`. Schéma versionné avec 13 migrations (`lib/utils/database_util.dart`). Tables : `children`, `prices`, `services`, `invoices`, `documents`, `deductions`, `periods`, `schedule_colors`, `vacation_period`, `plannings`. **Aucun backend** — la base peut être relue telle quelle côté Swift (ex. GRDB.swift), permettant un import direct des données existantes des utilisatrices.
-- **État/logique** : mélange de trois systèmes en parallèle — `flutter_bloc`/Cubit, `provider`, et `flutter_riverpod` (avec codegen), plus un dossier `provider/legacy` (migration Provider→Riverpod inachevée). Signe du "mal codé" évoqué par l'utilisateur ; la logique métier est dispersée et doit être retracée avec soin plutôt que copiée mécaniquement.
-- **Modèles** : mélange de classes manuelles (`Child`, `Invoice` — `toMap`/`fromMap`/`copyWith` écrits à la main) et de classes générées par `freezed` (`Period`, `Planning`, `Deduction`, `VacationPeriod`, `ScheduleColor`).
-- **PDF** : `pdf` + `printing` pour factures et plannings (à reproduire pixel pour pixel).
-- **i18n** : `gettext_i18n`, FR/EN + `fr_CH`, fichiers dans `assets/i18n/`.
-- **Personnalisation facture** : logo, 2 lignes de texte avec police au choix, conditions de paiement, coordonnées bancaires, adresse — stockées via `shared_preferences` (wrapper `PrefsUtil`).
-- **Polices** : le projet embarque déjà les polices système Apple (SF Pro, SF Pro Display/Text) — l'identité visuelle vise déjà un rendu proche d'iOS.
-- **Firebase Analytics** : un événement `app_started` envoyé au lancement — à noter, contredit la mention "aucune donnée collectée" de la fiche App Store. Décision à prendre (garder/retirer/adapter).
-- **Notifications locales** : dépendance présente (`flutter_local_notifications`) mais code actuellement **désactivé/commenté** dans `main.dart` (anniversaires, factures impayées). Décision à prendre : réactiver dans la version native ou laisser de côté comme aujourd'hui.
-- **Détail révélateur de la "liste bancale"** : dans la fiche enfant, les documents attachés sont stockés soit en octets dans la base soit par simple chemin fichier (deux générations de code coexistent) ; l'écran affiche une icône verte/rouge selon que le fichier est retrouvable. **À reproduire tel quel**, pas à corriger.
-- **Sauvegarde/restauration** : mécanisme volontairement simple — "Backup" partage directement le fichier `childcare.db` ; "Restore" remplace ce fichier par un fichier choisi par l'utilisateur (`src/backup_restore/backup_restore_view.dart`).
-- **macOS** : un dossier `macos/` existe déjà dans le projet Flutter (généré par `flutter create`) mais n'est **pas publié**. Son rôle, confirmé par l'utilisateur, est purement le confort de développement (compiler/lancer nativement sur la machine de dev sans repasser par un simulateur ou un iPhone à chaque test) — **pas un produit à adapter pour un usage desktop réel**. Objectif équivalent pour la version native : une cible macOS qui compile et tourne, sans travail d'adaptation UX dédié (avec SwiftUI, le même code partagé iOS/macOS suffit).
+3. **Politique de confidentialité récrite.** La section sur Google Analytics
+   disparaît, devenue sans objet. Le reste est corrigé : trois fautes de
+   français, une introduction qui contredisait le corps du texte, et plusieurs
+   tournures calquées de l'anglais. Les titres de section s'affichent enfin en
+   gras, comme le code Flutter le demandait sans y parvenir. Texte de référence
+   dans [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md).
 
-## Inventaire des écrans/fonctionnalités confirmés dans le code
+4. **Notifications locales retirées.** Anniversaires et factures impayées : le
+   code était déjà commenté côté Flutter et ne fonctionnait pas. Rien ne change
+   en pratique, mais la dépendance disparaît.
 
-- Liste des enfants/dossiers (tri prénom/nom configurable, archivage, création par clonage)
-- Fiche enfant (photo, naissance, allergies, adresse, jusqu'à 3 téléphones avec libellés personnalisés, texte libre, crédits d'heures, documents attachés)
-- Grille tarifaire (prices) réordonnable
-- Saisie de prestations (tarif fixe ou horaire, calcul du total, marquage "facturé")
-- Facturation (numérotation auto, génération PDF, partage/impression, marquage payé, personnalisation)
-- Relevés mensuels et annuels avec déductions configurables (montant fixe ou %, périodicité)
-- Planning hebdomadaire par créneaux avec couleurs par enfant + export PDF
-- Planning annuel + export PDF
-- Congés/vacances planifiés
-- Sauvegarde/restauration
-- Réglages (app, facture, tarifs, déductions)
+5. **Les boîtes de confirmation ont été remises d'aplomb.** Leur titre disait
+   « Supprimer » quelle que soit l'action, y compris pour archiver ou
+   désarchiver un dossier ; il suit désormais ce qu'on s'apprête à faire. Et les
+   boutons adoptent l'ordre habituel sur iOS — « Non » à gauche, « Oui » à
+   droite — au lieu de l'ordre inverse. **Ce second point demande une petite
+   accoutumance** : le geste appris sur l'ancienne version confirme désormais là
+   où il annulait.
 
-## Stack native proposée
+6. **L'application n'est plus disponible qu'en français.** Les traductions
+   anglaises sont abandonnées. **C'est la seule régression visible de cette
+   liste** : une utilisatrice dont l'appareil est en anglais voyait jusqu'ici
+   l'app en anglais, elle la verra désormais en français.
 
-- **UI** : SwiftUI partagé iOS/macOS, adaptations minimales côté macOS (juste ce qu'il faut pour compiler/tourner, pas d'adaptation UX puisque cette cible reste un outil de dev)
-- **Persistance** : SQLite directement (GRDB.swift recommandé) plutôt que SwiftData/CoreData, pour rester au plus près du schéma existant et permettre l'import direct des bases `childcare.db` existantes
-- **Architecture** : MVVM simple, un pattern unique (contrairement aux trois qui coexistent côté Flutter), découpage écran par écran calqué sur l'existant
-- **PDF** : PDFKit ou dessin direct via Core Graphics, reproduisant la mise en page actuelle
+### À décider, après le portage
 
-## Plan de portage (par phases)
-
-1. Cartographie fonctionnelle fine écran par écran (champs, validations, cas limites), en s'appuyant sur des captures d'écran de la version actuelle fournies au fur et à mesure + le code Flutter déjà audité
-2. Fondations natives : projet Xcode (iOS + macOS), couche SQLite lisant le schéma existant, modèles Swift équivalents
-3. Portage écran par écran, ordre suggéré : liste des enfants → fiche enfant → grille tarifaire → prestations → facturation → relevés → planning/vacances → sauvegarde-restauration → réglages
-4. Génération PDF (factures puis plannings), comparaison visuelle directe avec les PDF Flutter actuels
-5. Migration des données réelles (vérifier qu'un `childcare.db` existant s'importe sans perte)
-6. Tests d'usage croisés (utilisation en parallèle des deux versions sur les mêmes données)
-
-## Méthode de travail convenue
-
-Approche écran par écran : l'utilisateur fournit une capture d'écran de la version Flutter actuelle pour l'écran en cours, on la croise avec le fichier Dart correspondant (déjà localisé dans `../nannyplus/lib/...`) pour capter à la fois l'apparence exacte et la logique exacte, puis on écrit l'équivalent SwiftUI.
-
-## Décisions prises (12 septembre 2026)
-
-- **Firebase Analytics** : retiré. Pas de télémétrie dans la version native, ce qui aligne l'app sur la mention « aucune donnée collectée » de la fiche App Store.
-- **Notifications locales** : retirées pour le moment. Elles ne fonctionnaient pas côté Flutter et étaient déjà commentées ; on ne les porte pas.
-- **Scaffold** : xcodegen, `project.yml` à la racine. `NannyPlus.xcodeproj` est généré et non versionné — après toute modification de `project.yml`, relancer `xcodegen generate`.
-- **Premier écran** : la liste des enfants, comme dans la version actuelle.
-- **Bundle identifier** : `ch.frenchguy.nannyplus`, identique à l'app Flutter, pour un remplacement final sur l'App Store.
-- **Traductions** : abandonnées. La version native est en français uniquement, toutes les chaînes en dur. Les libellés sont repris de `assets/i18n/fr.po` pour rester au mot près.
-- **Fenêtre macOS** : dimensionnée comme un iPhone 16 (393 × 852 pt) pour que le rendu soit directement comparable à celui du téléphone.
+- **Version minimale d'iOS.** La cible est aujourd'hui iOS 26, reprise des
+  réglages Flutter. Si c'est un effet de bord d'une mise à jour d'Xcode plutôt
+  qu'un choix, l'abaisser rendrait l'app à nouveau installable sur des appareils
+  plus anciens — une amélioration à annoncer, pas une divergence.
+- **Politique de confidentialité publiée ailleurs.** Celle de la fiche App Store
+  et du site mentionne toujours Google Analytics et diverge donc de celle de
+  l'app.
+- **Bascule de CI, de Codemagic vers Xcode Cloud.** Sans incidence pour
+  l'utilisatrice, mais le compteur de builds repart de zéro alors que la
+  production en est à 195. À régler avant la première livraison TestFlight,
+  détail dans [SPECS.md](SPECS.md).
+- **Nettoyage de la base de données.** Sous réserve de l'analyse préalable
+  de Yannick. Selon ce qui est supprimé, l'effet peut être visible.
 
 ## État d'avancement
 
@@ -84,7 +78,7 @@ Approche écran par écran : l'utilisateur fournit une capture d'écran de la ve
 - `Sources/Shared/Design/Theme.swift` — couleurs de `constants.dart` et fontes du thème. **La police de l'app est Poppins**, pas SF Pro : le thème Flutter est bâti sur `GoogleFonts.poppins()`. Les fichiers sont repris de `assets/google_fonts/` et enregistrés à l'exécution.
 - `Sources/Shared/Features/Shell/` — barre de titre, bandeau incurvé et barre d'onglets. Le bandeau reproduit le `Radius.elliptical(width / 2, height / 2)` de Flutter : les deux coins partagent la même ellipse, le bas du bandeau en est la moitié inférieure. La barre d'onglets est dessinée à la main, `TabView` plaçant ses onglets en haut de la fenêtre sur macOS.
 - `Sources/Shared/Data/Repositories/ServicesRepository.swift` — `serviceInfoPerChild`, avec ses particularités conservées : le total en attente ne filtre pas les dossiers archivés alors que la dernière saisie les exclut, et un enfant qui a des factures impayées mais aucune prestation reste absent du résultat.
-- Les garde-fous du menu contextuel sont reproduits : un dossier ayant des prestations en attente ne peut pas être archivé, un dossier ayant la moindre prestation ne peut pas être supprimé. Le titre de la boîte de confirmation est « Supprimer » y compris pour un archivage — c'est le comportement de la version Flutter, conservé tel quel.
+- Les garde-fous du menu contextuel sont reproduits : un dossier ayant des prestations en attente ne peut pas être archivé, un dossier ayant la moindre prestation ne peut pas être supprimé. En revanche le titre de la boîte de confirmation, « Supprimer » y compris pour un archivage côté Flutter, **a été corrigé** : il suit désormais l'action (« Archiver », « Désarchiver », « Supprimer »). `ChildFolderAction` porte le titre avec le message, et un test le vérifie.
 
 **Configuration du projet Xcode** — alignée sur les conventions du projet Clepsydre (`/Volumes/EVO_PRO_1T/Development/Clepsydre`), pris comme référence maison.
 
@@ -117,18 +111,49 @@ Le portage a demandé de mesurer la capture de référence au pixel plutôt que 
 - **Le `fontWeight: FontWeight.bold` du Dart ne s'applique pas.** Les libellés du tiroir se mesurent en graisse 500 (Medium), pas 700. `google_fonts` résout une famille par graisse : forcer w700 sur une famille qui ne contient que la w500 retombe sur cette dernière. Sur l'écran liste en revanche, le gras fonctionne, parce que le style vient de `titleMedium` que `GoogleFonts.poppins` a résolu en gras à la construction du thème. **Leçon : sur cette app, lire le style rendu, pas le style écrit.**
 - **Styles réels du tiroir** : titres en `bodyLarge` de la typographie Material 2014, soit 14 points en graisse 500 ; ligne de version en `bodyMedium`, 14 points en graisse 400. Vérifié sur trois chaînes de longueurs différentes, à 0,3 % près.
 - **La capture de référence a été prise avec une taille de texte système réduite** (environ 0,93). Les polices suivent désormais le réglage système, comme Flutter : `Font.custom(_:size:)` et non `fixedSize:`. Pour comparer une capture à la référence, aligner le simulateur avec `xcrun simctl ui <appareil> content_size medium`.
-- À la taille de texte par défaut, « Réinitialiser les messages d'aide » passe sur deux lignes : 226 points de texte pour 216 disponibles dans un tiroir de largeur fixe. La version Flutter fait de même dans les mêmes conditions — déduction géométrique, la police étant maintenant identique, non vérifiée sur l'app Flutter elle-même.
+- À la taille de texte par défaut, « Réinitialiser les messages d'aide » passe sur deux lignes : 226 points de texte pour 216 disponibles dans un tiroir de largeur fixe. **Vérifié sur l'app Flutter elle-même** (build macOS Release) : elle fait exactement pareil.
 
 Seul « Réinitialiser les messages d'aide » est fonctionnel (suppression des clés `flutter.help_*`), ainsi que « Réinitialiser la base de données », réservé aux compilations de debug comme le `kDebugMode` de Flutter. **Attention** : sur la cible macOS, cet élément supprime la base réelle, le conteneur étant partagé avec l'app Flutter. Le risque existe déjà à l'identique côté Flutter.
 
 **Outillage d'essai** : `cliclick` est installé. La fenêtre du simulateur expose l'écran de l'appareil comme un groupe d'accessibilité en 1:1, ce qui permet de convertir points appareil → écran sans deviner de facteur de zoom (`position of group 1` de la fenêtre du processus Simulator). Il faut activer la fenêtre avant de cliquer, sinon le clic est absorbé.
 
+**Écran Politique de confidentialité porté** (`Sources/Shared/Features/PrivacySettings/`). Écran statique, ouvert depuis le tiroir en modale plein écran — le `fullscreenDialog: true` de Flutter. La barre de titre a été sortie dans `Sources/Shared/Features/Shell/AppBar.swift` pour être partagée entre les écrans ; elle prend un bouton de gauche paramétrable (menu ou croix de fermeture).
+
+La leçon du tiroir s'est confirmée : les titres de section portent `fontWeight: FontWeight.bold` dans le Dart et **ne sont pas en gras** à l'écran. Mesuré sur trois titres : Poppins Regular 14, soit `bodyMedium`, exactement comme les paragraphes. Seul l'espacement distingue un titre d'un paragraphe (16 points au-dessus, 8 en dessous).
+
+Contrôle de mise en page contre la référence : l'écart entre le bas du bandeau incurvé et la première ligne de texte est de 49 points côté Flutter et 48 côté natif, et le bas du bandeau tombe à 107 points du haut du contenu dans les deux cas.
+
+**C'est le seul écran dont le texte s'écarte volontairement de la version Flutter**, sur décision de Yannick.
+
+- La section « Google Analytics » est retirée : la version native n'embarque aucune télémétrie, et ce paragraphe décrivait donc quelque chose que l'app ne fait plus. Son retrait rendait par ailleurs l'introduction franchement fausse, puisqu'elle annonçait que l'app « collecte, utilise, partage » des informations personnelles quand le corps du texte dit l'inverse.
+- Trois fautes corrigées : « aucune **données** », « et **celles** des enfants » (il s'agit de la vie privée, singulier), « s'assurer qu'ils **soient** informés » (l'indicatif s'impose après *s'assurer que*).
+- Anglicismes récrits (« à l'occasion », « maintenir la conformité avec », « préavis adéquat », « communiquer avec nous en utilisant ce qui suit »), guillemets droits remplacés par des guillemets français à espace insécable, apostrophes typographiques partout, et « sur le téléphone » devenu « sur votre appareil », l'app tournant aussi sur iPad.
+- Date portée au 12 septembre 2026.
+- **Les titres de section sont mis en gras.** Le Dart le demandait déjà (`fontWeight: FontWeight.bold`) sans que Flutter l'applique. C'est donc moins une divergence qu'un défaut corrigé : l'écran rend enfin ce que son code décrivait.
+
+Le texte de référence est dans [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md), à la racine. **Les deux doivent rester synchronisés** — un contrôle automatique serait à écrire si l'écart devient un risque.
+
+**Reste à faire** : la politique publiée ailleurs (fiche App Store, site) diverge désormais de celle de l'app. C'est le genre de document où ça se remarque.
+
+**Nouvelle capacité d'outillage** : l'app Flutter est compilée pour macOS (`../nannyplus/build/macos/Build/Products/Release/nannyplus.app`) et peut être lancée et pilotée à la souris pour produire les captures de référence, sans dépendre de Yannick. Utiliser la build **Release** : en Debug, son tiroir contient l'entrée qui efface la base réelle.
+
+**Écran Sauvegarder / Restaurer porté** (`Sources/Shared/Features/BackupRestore/`). Le mécanisme reste volontairement fruste : « Sauvegarder » partage le fichier `childcare.db` lui-même, « Restaurer » le remplace par un fichier choisi, sans aucun contrôle de format.
+
+Le `ListTile` a révélé la règle qui manquait au tiroir : `list_tile.dart` ligne 1735 de Flutter choisit `bodyLarge` quand la tuile est dans un `Drawer` et `titleMedium` sinon. D'où des libellés en Poppins Medium 14 dans le tiroir et en **Poppins gras 16** ici, mesurés à 1 % près sur la référence. Ce n'était donc pas un caprice de `google_fonts` mais un comportement documenté de Material.
+
+Trois écarts corrigés après essai réel sur simulateur, tous invisibles à la lecture du code :
+
+- `fileImporter` de SwiftUI **n'appelle pas son gestionnaire à l'annulation**, là où `FilePicker` de Flutter renvoie `null` et déclenche le message d'erreur. L'annulation est désormais détectée à la fermeture sans résultat, ce qui restitue le défaut d'origine : annuler affiche « Erreur lors de la restauration ».
+- Le message de succès de la restauration s'affichait dans la modale, qui se referme aussitôt — l'utilisatrice ne voyait rien. Le `ScaffoldMessenger` de Flutter vit au-dessus de la navigation et survit au changement d'écran. Le bandeau a donc été remonté dans `MainTabView`, qui le porte pour toute l'app ; `SnackbarPresenter` est partagé.
+- Le message de sauvegarde s'affiche **sans attendre le résultat du partage**, comme côté Flutter : annuler la feuille affiche quand même « sauvegardée avec succès ». Défaut conservé.
+
+Aller-retour vérifié de bout en bout sur simulateur : sauvegarde vers Fichiers, modification de la base pour qu'elle diverge, restauration, puis contrôle que l'empreinte SHA-256 de la base de l'app est redevenue celle de la sauvegarde et que la modification témoin a disparu.
+
 ### Reste à faire sur ces fondations
 
 - `insertSampleData` (jeu de démonstration inséré à la première ouverture : tarifs, enfants, prestations, facture, réglages de facturation et logo) n'est pas porté. À traiter avec l'onboarding.
 - Sur l'écran liste : le formulaire enfant (création et duplication), la navigation vers la fiche enfant, et la boîte de dialogue d'accueil ne sont pas portés — les boutons correspondants sont en place mais sans action.
-- Dans le tiroir : « Sauvegarder / Restaurer » et « Politique de confidentialité » ouvrent des écrans non portés ; les entrées ferment simplement le tiroir.
-- Les garde-fous d'archivage et de suppression sont couverts par `Tests/ChildFolderActionTests.swift`. La décision a été extraite de la vue dans `ChildFolderAction`, précisément pour pouvoir la vérifier : ce sont eux qui empêchent de supprimer un dossier portant des prestations et des factures. Le parcours complet (menu, boîte de confirmation, bandeau) n'a en revanche jamais été cliqué — il n'y a pas d'outil de clic sur simulateur installé sur la machine.
+- Les garde-fous d'archivage et de suppression sont couverts par `Tests/ChildFolderActionTests.swift`. La décision a été extraite de la vue dans `ChildFolderAction`, précisément pour pouvoir la vérifier : ce sont eux qui empêchent de supprimer un dossier portant des prestations et des factures. Le parcours complet (menu, boîte de confirmation, bandeau) n'a en revanche jamais été cliqué, bien que `cliclick` soit désormais disponible.
 - Sur macOS, la barre de défilement reste visible là où Flutter n'en montrait pas ; c'est le réglage système du Mac, sans effet sur iOS.
 
 ## À revoir une fois le portage initial terminé
