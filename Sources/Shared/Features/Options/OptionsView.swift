@@ -6,6 +6,7 @@ import SwiftUI
 /// n'est portée** — les tuiles sont en place, elles n'ouvrent rien.
 struct OptionsView: View {
     @State private var isShowingPriceList = false
+    @State private var isShowingDeductions = false
 
     var body: some View {
         ScrollView {
@@ -14,9 +15,9 @@ struct OptionsView: View {
                 // porter le même nom que l'onglet du dossier enfant.
                 tile("creditcard", "Tarifs") { isShowingPriceList = true }
 
-                // « Deductions » n'est pas traduit dans `fr.po` : le message
-                // d'origine ressort tel quel, sans accent. Défaut conservé.
-                tile("minus.circle", "Deductions")
+                // « Deductions » côté Flutter, faute de traduction dans
+                // `fr.po`. Accentué ici, comme le titre de l'écran.
+                tile("minus.circle", "Déductions") { isShowingDeductions = true }
 
                 tile("apps.iphone", "Paramètres de l'application")
                 tile("gearshape.fill", "Paramètres de la facture")
@@ -31,6 +32,9 @@ struct OptionsView: View {
         .background(Theme.background)
         .fullScreenCover(isPresented: $isShowingPriceList) {
             PriceListView { isShowingPriceList = false }
+        }
+        .fullScreenCover(isPresented: $isShowingDeductions) {
+            DeductionListView { isShowingDeductions = false }
         }
     }
 

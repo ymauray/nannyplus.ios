@@ -44,6 +44,15 @@ final class AppPreferences: @unchecked Sendable {
         }
     }
 
+    /// Un encart d'aide reste visible tant qu'aucune clé ne le masque.
+    func isHelpVisible(_ identifier: String) -> Bool {
+        defaults.object(forKey: Self.key("help_\(identifier)")) == nil
+    }
+
+    func hideHelp(_ identifier: String) {
+        defaults.set(false, forKey: Self.key("help_\(identifier)"))
+    }
+
     /// Réplique du troisième élément du tiroir : supprime toutes les clés
     /// `help_*`, ce qui fait réapparaître les cartes d'aide.
     func resetHelpMessages() {

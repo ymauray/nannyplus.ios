@@ -206,6 +206,14 @@ C'est le premier endroit où l'on s'écarte de la version Flutter pour faire **m
 
 À noter : l'app Flutter compilée pour macOS, elle, reste précieuse comme source de captures de référence. C'est une autre chose que la cible native.
 
+**Déductions portées** (`Sources/Shared/Features/Deductions/`, `Deduction.swift`, `DeductionsRepository.swift`). Liste, création, modification, suppression, réordonnancement par mode édition — même dispositif que les tarifs. Les valeurs `amount`/`percent` et `monthly`/`yearly` sont les chaînes stockées en base, conservées telles quelles ; seuls les libellés affichés sont traduits.
+
+L'écran s'appelle « **Déductions** ». Côté Flutter il affiche « Deductions » sans accent, `fr.po` ne traduisant pas ce message et renvoyant l'original anglais. Corrigé, dans le menu comme dans le titre, comme le renommage en « Tarifs ».
+
+**Encarts d'aide portés** (`Sources/Shared/Features/Shell/HelpCard.swift`). Encadré jaune que l'utilisatrice écarte d'une croix, et qui ne revient plus. La boucle complète a été vérifiée : écarter écrit la clé, l'encart reste masqué après relance, et « Réinitialiser les messages d'aide » du tiroir le fait revenir. Cela valide au passage cette entrée du tiroir, codée bien avant qu'un encart n'existe pour l'éprouver.
+
+**La clé de préférence diffère volontairement.** Flutter emploie `help_<hashCode du texte d'aide>`, et le `hashCode` des chaînes de Dart n'est pas reproductible en Swift. On utilise un identifiant explicite — `help_deductions` — stable et lisible. Conséquence : un encart déjà écarté dans l'app Flutter réapparaîtra **une fois** dans la version native. Le préfixe `flutter.` est conservé, si bien que la réinitialisation du tiroir efface les deux formes.
+
 ### Reste à faire sur ces fondations
 
 - `insertSampleData` (jeu de démonstration inséré à la première ouverture : tarifs, enfants, prestations, facture, réglages de facturation et logo) n'est pas porté. À traiter avec l'onboarding.

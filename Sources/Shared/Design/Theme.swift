@@ -27,6 +27,11 @@ enum Theme {
     /// `canvasColor` du thème, fond du tiroir : `Colors.grey[50]`.
     static let drawerBackground = Color(hex: 0xFAFAFA)
 
+    /// `Colors.yellow.shade600` et `shade800` : fond et bordure des encarts
+    /// d'aide.
+    static let helpBackground = Color(hex: 0xFDD835)
+    static let helpBorder = Color(hex: 0xF9A825)
+
     /// `Colors.black54`, couleur du voile derrière le tiroir.
     static let scrim = Color(white: 0, opacity: 0.54)
 
