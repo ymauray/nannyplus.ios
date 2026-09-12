@@ -53,6 +53,11 @@ la contrainte du projet.
    liste** : une utilisatrice dont l'appareil est en anglais voyait jusqu'ici
    l'app en anglais, elle la verra désormais en français.
 
+8. **Le numéro de version saute de 1.26.4 à 2.0.0.** La réécriture ouvre son
+   propre train de version, plutôt que de prolonger celui de l'app Flutter.
+   Sans conséquence sur les données ni sur la mise à jour depuis l'App Store,
+   qui reste une mise à jour ordinaire de la même application.
+
 ### À décider, après le portage
 
 - **Version minimale d'iOS.** La cible est aujourd'hui iOS 26, reprise des
@@ -324,6 +329,24 @@ Le relevé mensuel partage la coque du décompte annuel mais change de tableau :
 - `insertSampleData` (jeu de démonstration inséré à la première ouverture : tarifs, enfants, prestations, facture, réglages de facturation et logo) n'est pas porté. À traiter avec l'onboarding.
 - Sur l'écran liste : le formulaire enfant (création et duplication) et la boîte de dialogue d'accueil ne sont pas portés — les boutons correspondants sont en place mais sans action.
 - Les garde-fous d'archivage et de suppression sont couverts par `Tests/ChildFolderActionTests.swift`. La décision a été extraite de la vue dans `ChildFolderAction`, précisément pour pouvoir la vérifier : ce sont eux qui empêchent de supprimer un dossier portant des prestations et des factures. Le parcours complet (menu, boîte de confirmation, bandeau) n'a en revanche jamais été cliqué, bien que `cliclick` soit désormais disponible.
+
+## Livraison : GitHub et Xcode Cloud
+
+**Dépôt distant créé** : [ymauray/nannyplus.ios](https://github.com/ymauray/nannyplus.ios), public, sous GPL-3.0 comme le dépôt Flutter dont le portage dérive. Aucune donnée réelle n'est jamais entrée dans l'historique — ni base SQLite, ni PDF de relevé, ni plist de préférences, vérifié avant publication. Le tag `day_1` marque la fin de la première journée de portage.
+
+**Trois obstacles rencontrés avant le premier build vert**, tous consignés ici parce qu'ils se reposeront :
+
+1. **`Package.resolved` n'était pas versionné.** La règle `*.xcworkspace` du `.gitignore` écartait le dossier `project.xcworkspace` tout entier. Xcode Cloud compile avec la résolution automatique des paquets **désactivée** et s'arrête net sans ce fichier. La ré-inclusion visait jusque-là un fichier *à l'intérieur* du dossier exclu, ce que Git ignore : il ne descend pas dans un dossier écarté, il faut ré-inclure le dossier lui-même. GRDB est épinglé en 7.11.1. Vérifié au passage : `xcodegen generate` ne détruit pas ce fichier.
+
+   À retenir : **GitHub Actions ne pouvait pas détecter ce problème**, compilant avec la résolution automatique activée. Les deux pipelines ne valident pas la même chose.
+
+2. **Deux avertissements de concurrence stricte** sur `OpenURL`, appelant `UIApplication.shared.open` depuis un contexte `nonisolated`. Résolus par `@MainActor` sur l'enum — le seul appelant, le bouton d'appel de la tuile enfant, est déjà sur le fil principal. Ils existaient aussi en local, mais passaient inaperçus : les compilations ne filtraient que `error:`. **Filtrer aussi `warning:`.**
+
+3. **Le train de version.** L'archive partait en `1.26.4 (196)`, soit le train de l'app Flutter en production. Le portage étant une réécriture, il ouvre le sien : `2.0.0`. Un build déposé dans l'ancien train aurait cohabité sur TestFlight avec la 1.26.4 (195) sous un libellé quasi identique, et y aurait enfermé le portage pour la suite.
+
+**Le numéro de build vient d'Xcode Cloud, pas de `project.yml`.** Xcode Cloud tient un compteur (`$CI_BUILD_NUMBER`) mais ne l'écrit pas dans l'app : `ci_scripts/ci_post_clone.sh` le reporte dans `project.yml` avant `xcodegen generate`. Sans cela, chaque exécution reprendrait le même numéro et App Store Connect la rejetterait comme doublon — un numéro de build ne sert jamais deux fois sur un même train. L'injection a lieu **avant** la génération du projet, `CFBundleVersion` venant d'un build setting via `GENERATE_INFOPLIST_FILE` ; la faire plus tard obligerait à régénérer après la résolution des paquets. Le `"1"` inscrit dans `project.yml` n'est plus qu'une valeur de repli pour les compilations locales.
+
+Première archive signée et livrée : **2.0.0 (3)**, les deux premiers numéros ayant été consommés par les essais de configuration.
 
 ## À revoir une fois le portage initial terminé
 
