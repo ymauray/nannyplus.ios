@@ -1,10 +1,14 @@
 name: iOS CI
 
+# Toutes les branches, pas seulement main : le travail se fait sur des branches
+# poussées régulièrement, et c'est là que le filet doit se tendre. Une exécution
+# déclenchée par un push satisfait aussi la vérification exigée par la protection
+# de main, GitHub rattachant les résultats au commit de tête et non à
+# l'événement qui les a produits — d'où l'absence de déclencheur pull_request,
+# qui ne ferait que doubler chaque exécution.
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [ '**' ]
 
 jobs:
   application:
