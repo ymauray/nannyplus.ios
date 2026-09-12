@@ -20,12 +20,16 @@ settings:
     DEVELOPMENT_TEAM: WFMP87LTRX
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
-    # Aligné sur la version en production (1.26.4, build 195), que la version
-    # native doit remplacer. Le numéro de build doit être strictement supérieur
-    # à celui déjà livré, sinon App Store Connect refuse le téléversement comme
-    # doublon : on repart donc à 196, et non à 195.
-    MARKETING_VERSION: "1.26.4"
-    CURRENT_PROJECT_VERSION: "196"
+    # Le portage est une réécriture : il ouvre son propre train de version, au
+    # lieu de prolonger le 1.26.4 de l'app Flutter en production. Un build
+    # déposé dans ce train-là aurait cohabité sur TestFlight avec la 1.26.4
+    # (195) sous un libellé quasi identique, et aurait figé le portage dans ce
+    # train pour toute la suite.
+    MARKETING_VERSION: "2.0.0"
+    # Valeur de repli seulement : sur Xcode Cloud, ci_post_clone.sh écrase ce
+    # numéro par $CI_BUILD_NUMBER, un build ne pouvant jamais être téléversé deux
+    # fois avec le même numéro.
+    CURRENT_PROJECT_VERSION: "1"
     # Info.plist entièrement généré à partir des build settings : aucun fichier
     # .plist à maintenir à la main.
     GENERATE_INFOPLIST_FILE: YES
