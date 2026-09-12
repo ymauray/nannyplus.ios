@@ -3,9 +3,8 @@ options:
   bundleIdPrefix: ch.frenchguy
   deploymentTarget:
     iOS: "26.0"
-    macOS: "26.0"
   # Le français est la langue principale : sans ça, les menus système fournis par
-  # UIKit et AppKit (couper, copier, coller, sélectionner…) apparaissent en
+  # UIKit (couper, copier, coller, sélectionner…) apparaissent en
   # anglais même sur un appareil configuré en français. L'app étant francophone
   # uniquement, c'est la seule langue déclarée.
   developmentLanguage: fr
@@ -62,25 +61,6 @@ targets:
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
 
-  # Cible de confort de développement : compiler et lancer sans simulateur. Pas
-  # un produit desktop, et pas destinée à être publiée.
-  NannyPlus-macOS:
-    type: application
-    platform: macOS
-    sources:
-      - path: Sources/Shared
-      - path: Resources
-    dependencies:
-      - package: GRDB
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: ch.frenchguy.nannyplus
-        PRODUCT_NAME: NannyPlus
-        ENABLE_HARDENED_RUNTIME: YES
-        # Le bac à sable est indispensable : sans lui l'app lit ~/Documents au
-        # lieu de son conteneur, et ne voit donc pas la base de l'app Flutter.
-        CODE_SIGN_ENTITLEMENTS: Sources/Supporting/NannyPlus-macOS.entitlements
-
   NannyPlusTests:
     type: bundle.unit-test
     platform: iOS
@@ -105,7 +85,3 @@ schemes:
     test:
       targets: [NannyPlusTests]
       gatherCoverageData: true
-  NannyPlus-macOS:
-    build:
-      targets:
-        NannyPlus-macOS: all

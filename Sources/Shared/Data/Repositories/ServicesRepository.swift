@@ -8,6 +8,20 @@ struct ServicesRepository: Sendable {
         self.database = database
     }
 
+    /// Total affiché dans le bandeau du dossier d'un enfant : somme des
+    /// prestations non facturées, hors tarifs techniques.
+    ///
+    /// Côté Flutter, `loadServices` écarte les prestations dont le `priceId` est
+    /// négatif avant d'additionner — on reproduit ce filtre.
+    func pendingTotal(childId: Int64) async throws -> Double {
+        try await database.writer().read { db in
+            try Double.fetchOne(db, sql: """
+                SELECT COALESCE(SUM(total), 0) FROM services
+                WHERE childId = ? AND invoiced = 0 AND priceId >= 0
+                """, arguments: [childId]) ?? 0
+        }
+    }
+
     /// Réplique de `getServiceInfoPerChild` (`services_repository.dart`).
     ///
     /// La suite d'opérations est conservée telle quelle, y compris ses

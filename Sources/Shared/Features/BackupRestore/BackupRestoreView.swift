@@ -1,10 +1,5 @@
 import SwiftUI
-
-#if os(iOS)
 import UIKit
-#else
-import AppKit
-#endif
 
 /// Réplique de `lib/src/backup_restore/backup_restore_view.dart`.
 ///
@@ -64,11 +59,9 @@ struct BackupRestoreView: View {
                 }
             }
         }
-        #if os(iOS)
         .sheet(item: $fileToShare) { url in
             ShareSheet(url: url)
         }
-        #endif
     }
 
     /// `ListTile` hors tiroir : le titre prend `titleMedium`, que le thème a
@@ -110,28 +103,10 @@ struct BackupRestoreView: View {
         Task {
             await AppDatabase.shared.close()
 
-            #if os(iOS)
             fileToShare = AppDatabase.databaseURL
-            #else
-            // Pas de feuille de partage sur macOS : cette cible n'est qu'un
-            // outil de développement, un panneau d'enregistrement suffit.
-            saveCopyOnMac()
-            #endif
-
             snackbar.success("Base de données sauvegardée avec succès")
         }
     }
-
-    #if os(macOS)
-    private func saveCopyOnMac() {
-        let panel = NSSavePanel()
-        panel.nameFieldStringValue = "childcare.db"
-        guard panel.runModal() == .OK, let destination = panel.url else { return }
-
-        try? FileManager.default.removeItem(at: destination)
-        try? FileManager.default.copyItem(at: AppDatabase.databaseURL, to: destination)
-    }
-    #endif
 
     /// Remplace `childcare.db` par le fichier choisi.
     ///
@@ -166,7 +141,6 @@ extension URL: @retroactive Identifiable {
     public var id: String { absoluteString }
 }
 
-#if os(iOS)
 /// `Share.shareXFiles` de `share_plus` : la feuille de partage du système.
 private struct ShareSheet: UIViewControllerRepresentable {
     let url: URL
@@ -177,4 +151,3 @@ private struct ShareSheet: UIViewControllerRepresentable {
 
     func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
-#endif

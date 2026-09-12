@@ -1,15 +1,11 @@
 import SwiftUI
-
-#if os(macOS)
-import AppKit
-#else
 import UIKit
-#endif
 
 /// Réplique de `lib/views/child_list_view.dart`.
 struct ChildListView: View {
     let model: ChildListViewModel
     let snackbar: SnackbarPresenter
+    let onOpenChild: (Child) -> Void
 
     @State private var confirmation: Confirmation?
 
@@ -21,6 +17,7 @@ struct ChildListView: View {
                         ChildListTile(
                             child: child,
                             model: model,
+                            onOpen: { onOpenChild(child) },
                             onArchiveToggle: { archiveToggle(child) },
                             onDelete: { delete(child) }
                         )
@@ -112,6 +109,7 @@ struct ChildListView: View {
 private struct ChildListTile: View {
     let child: Child
     let model: ChildListViewModel
+    let onOpen: () -> Void
     let onArchiveToggle: () -> Void
     let onDelete: () -> Void
 
@@ -156,6 +154,13 @@ private struct ChildListTile: View {
         .shadow(color: .black.opacity(0.3), radius: 2.5, y: 2)
         .padding(Theme.smallPadding)
         .contentShape(.rect)
+        // Un dossier archivé ne s'ouvre pas : côté Flutter, `onTap` vaut `null`
+        // dans ce cas.
+        .onTapGesture {
+            guard !child.isArchived else { return }
+
+            onOpen()
+        }
     }
 
     // MARK: Éléments
@@ -233,24 +238,6 @@ private struct ChildListTile: View {
     }
 }
 
-/// Réplique du `FloatingActionButton` de `UIListView`.
-private struct FloatingActionButton: View {
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Image(systemName: "plus")
-                .font(.system(size: 24, weight: .regular))
-                .foregroundStyle(Theme.onSecondary)
-                .frame(width: 56, height: 56)
-                .background(Theme.secondary, in: .circle)
-                .shadow(color: .black.opacity(0.3), radius: 4, y: 3)
-        }
-        .buttonStyle(.plain)
-        .focusEffectDisabled()
-    }
-}
-
 // MARK: -
 
 extension DateFormatter {
@@ -277,10 +264,6 @@ enum OpenURL {
     static func call(_ phoneNumber: String) {
         guard let url = URL(string: "tel://\(phoneNumber)") else { return }
 
-        #if os(iOS)
         UIApplication.shared.open(url)
-        #else
-        NSWorkspace.shared.open(url)
-        #endif
     }
 }

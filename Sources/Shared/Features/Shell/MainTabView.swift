@@ -20,8 +20,23 @@ struct MainTabView: View {
     /// navigation : un message déclenché avant un changement d'écran reste
     /// visible après.
     @State private var snackbar = SnackbarPresenter()
+    @State private var path: [Child] = []
 
     var body: some View {
+        // Le dossier d'un enfant est empilé par-dessus tout l'écran, barre
+        // d'onglets comprise, comme le `Navigator.push` de Flutter. La barre de
+        // navigation du système est masquée : l'app dessine la sienne.
+        NavigationStack(path: $path) {
+            root
+                .hidingSystemNavigationBar()
+                .navigationDestination(for: Child.self) { child in
+                    ChildDetailView(child: child) { path.removeLast() }
+                        .hidingSystemNavigationBar()
+                }
+        }
+    }
+
+    private var root: some View {
         ZStack(alignment: .leading) {
             main
 
@@ -46,24 +61,13 @@ struct MainTabView: View {
         .animation(.easeOut(duration: 0.25), value: isDrawerOpen)
         .task { await model.load() }
         // `fullscreenDialog: true` côté Flutter : la page couvre l'écran et
-        // arrive par le bas. `fullScreenCover` n'existe pas sur macOS, où la
-        // cible ne sert qu'au développement : une feuille y fait l'affaire.
-        #if os(iOS)
+        // arrive par le bas.
         .fullScreenCover(isPresented: $isShowingPrivacySettings) {
             PrivacySettingsView { isShowingPrivacySettings = false }
         }
         .fullScreenCover(isPresented: $isShowingBackupRestore) {
             backupRestore
         }
-        #else
-        .sheet(isPresented: $isShowingPrivacySettings) {
-            PrivacySettingsView { isShowingPrivacySettings = false }
-                .frame(width: 393, height: 800)
-        }
-        .sheet(isPresented: $isShowingBackupRestore) {
-            backupRestore.frame(width: 393, height: 800)
-        }
-        #endif
     }
 
     private var main: some View {
@@ -89,9 +93,9 @@ struct MainTabView: View {
             }
 
             if selection == 0 {
-                ChildListView(model: model, snackbar: snackbar)
+                ChildListView(model: model, snackbar: snackbar) { path.append($0) }
             } else {
-                Spacer()
+                OptionsView()
             }
 
             BottomNavigationBar(selection: $selection)
@@ -173,5 +177,14 @@ extension Double {
     /// milliers, quelle que soit la locale.
     var twoDecimals: String {
         String(format: "%.2f", self)
+    }
+}
+
+
+extension View {
+    /// L'app dessine sa propre barre de titre ; celle du système est masquée.
+    func hidingSystemNavigationBar() -> some View {
+        navigationBarBackButtonHidden()
+            .toolbar(.hidden, for: .navigationBar)
     }
 }
