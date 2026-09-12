@@ -69,6 +69,30 @@ la contrainte du projet.
 - **Nettoyage de la base de données.** Sous réserve de l'analyse préalable
   de Yannick. Selon ce qui est supprimé, l'effet peut être visible.
 
+## Où on en est
+
+| Écran | État |
+|---|---|
+| Liste des enfants | **fait**, sauf création et duplication |
+| Tiroir — Sauvegarder / Restaurer | **fait**, aller-retour vérifié |
+| Tiroir — Politique de confidentialité | **fait** |
+| Tiroir — Réinitialiser les messages d'aide | **fait** |
+| Tiroir — Réinitialiser la base (debug) | **fait** |
+| Dossier enfant | coque et trois onglets **en maquette** ; aucun contenu porté |
+| Options — menu | **fait** |
+| Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
+| Options — Déductions | **fait**, idem |
+| Options — Paramètres de l'application | **fait** |
+| Options — Paramètres de la facture | **fait** |
+| Options — Relevés | **fait** : liste, décompte annuel et relevé mensuel en PDF |
+| Options — Planning hebdomadaire | à porter (PDF) |
+| Options — Planning annuel | à porter (PDF) |
+| Options — Planning des congés | à porter |
+| Formulaire enfant | à porter |
+| Saisie des prestations | à porter |
+| Facturation | à porter, y compris le PDF et la relance par SMS |
+| Jeu de données de démonstration | à porter avec l'onboarding |
+
 ## État d'avancement
 
 **Phase 2 (fondations) faite.** Le projet compile, et l'app lit la base réelle (24 enfants, 1787 prestations, 266 factures) sans conversion. *Le projet a d'abord porté une cible macOS, retirée depuis ; les paragraphes ci-dessous qui la mentionnent relatent ce qui s'est passé à l'époque.*
@@ -135,6 +159,21 @@ Seul « Réinitialiser les messages d'aide » est fonctionnel (suppression des c
   Attention : le conteneur change d'identifiant à chaque réinstallation, il faut donc le résoudre à nouveau et non réutiliser un chemin noté plus tôt.
 - `cliclick` est installé. La fenêtre du simulateur expose l'écran de l'appareil comme un groupe d'accessibilité en 1:1, ce qui permet de convertir points appareil → écran sans deviner de facteur de zoom (`position of group 1` de la fenêtre du processus Simulator). Il faut activer la fenêtre avant de cliquer, sinon le clic est absorbé.
 - Pas de commande de défilement dans `cliclick` : un glisser (`dd:` … `m:` … `du:`) fait l'affaire.
+- Script de clic, à recréer dans un dossier temporaire au besoin. Il prend des coordonnées en **points de l'appareil**, celles qu'on lit sur une capture divisée par son échelle :
+
+  ```sh
+  #!/bin/sh
+  set -e
+  osascript -e 'tell application "Simulator" to activate' >/dev/null
+  sleep 1
+  ORIGIN=$(osascript -e 'tell application "System Events" to tell process "Simulator" \
+    to tell window 1 to get position of group 1')
+  OX=$(echo "$ORIGIN" | cut -d, -f1 | tr -d ' ')
+  OY=$(echo "$ORIGIN" | cut -d, -f2 | tr -d ' ')
+  cliclick "c:$((OX + $1)),$((OY + $2))"
+  ```
+
+  Viser le **centre visuel** d'un contrôle ne suffit pas toujours : la zone sensible d'un interrupteur SwiftUI commence quelques points plus bas que son dessin. En cas de clic sans effet, balayer quelques hauteurs avant de conclure à un défaut.
 
 **Écran Politique de confidentialité porté** (`Sources/Shared/Features/PrivacySettings/`). Écran statique, ouvert depuis le tiroir en modale plein écran — le `fullscreenDialog: true` de Flutter. La barre de titre a été sortie dans `Sources/Shared/Features/Shell/AppBar.swift` pour être partagée entre les écrans ; elle prend un bouton de gauche paramétrable (menu ou croix de fermeture).
 
@@ -154,7 +193,7 @@ Le texte de référence est dans [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md), à la
 
 **Reste à faire** : la politique publiée ailleurs (fiche App Store, site) diverge désormais de celle de l'app. C'est le genre de document où ça se remarque.
 
-**Nouvelle capacité d'outillage** : l'app Flutter est compilée pour macOS (`../nannyplus/build/macos/Build/Products/Release/nannyplus.app`) et peut être lancée et pilotée à la souris pour produire les captures de référence, sans dépendre de Yannick. Utiliser la build **Release** : en Debug, son tiroir contient l'entrée qui efface la base réelle.
+**Recours en dernier ressort** : l'app Flutter est compilée pour macOS (`../nannyplus/build/macos/Build/Products/Release/nannyplus.app`) et peut être lancée et pilotée à la souris. À n'employer que si Yannick ne peut pas fournir la capture, la règle étant que les références viennent de son téléphone — voir la méthode de travail dans [SPECS.md](SPECS.md). Sa fenêtre a une autre largeur et ignore le réglage de taille de texte, il faut donc recalculer l'échelle. Et utiliser la build **Release** : en Debug, son tiroir contient l'entrée qui efface la base réelle.
 
 **Écran Sauvegarder / Restaurer porté** (`Sources/Shared/Features/BackupRestore/`). Le mécanisme reste volontairement fruste : « Sauvegarder » partage le fichier `childcare.db` lui-même, « Restaurer » le remplace par un fichier choisi, sans aucun contrôle de format.
 
@@ -301,4 +340,10 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
 
 ## Prochaine étape
 
-Écran suivant dans l'ordre convenu : la fiche enfant. Capture d'écran de la version Flutter à fournir.
+Rien n'est arrêté. Trois directions se valent :
+
+- **Les trois plannings** du menu Options, qui achèveraient ce menu. Deux sont des PDF, et le générateur de relevés donne déjà le canevas.
+- **Le contenu du dossier enfant**, dont seule la coque existe : saisie des prestations, liste des factures, édition des informations. C'est le cœur de l'usage quotidien.
+- **La facturation**, le morceau le plus exposé avec les PDF de relevés, puisque la facture part chez les parents. Elle englobe la relance par SMS, dont le gabarit est déjà porté dans les paramètres.
+
+Demander à Yannick une capture de l'écran visé avant de commencer, selon la méthode convenue.

@@ -88,6 +88,15 @@ livré depuis une branche non fusionnée une fois.
 
 Approche écran par écran : l'utilisateur fournit une capture d'écran de la version Flutter actuelle pour l'écran en cours, on la croise avec le fichier Dart correspondant (déjà localisé dans `../nannyplus/lib/...`) pour capter à la fois l'apparence exacte et la logique exacte, puis on écrit l'équivalent SwiftUI.
 
+**Les captures de référence viennent toujours du téléphone de Yannick.** C'est
+la règle, pour que la référence ne change jamais d'appareil : iPhone 16, 393 ×
+852 points, à taille de texte système réduite — exactement ce que reproduit le
+simulateur « iPhone 16 (référence) ». Ne pas produire soi-même les captures
+depuis la build macOS de l'app Flutter, sauf impossibilité : sa fenêtre a une
+autre largeur et ignore le réglage de taille de texte, ce qui oblige à changer
+d'échelle à chaque mesure et fausse les comparaisons. Demander la capture, et
+attendre.
+
 Trois règles tirées des premiers écrans portés, chacune née d'une erreur réelle
 — le détail des cas est dans [AVANCEMENT.md](AVANCEMENT.md).
 
