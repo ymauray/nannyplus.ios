@@ -4,8 +4,8 @@ import SwiftUI
 ///
 /// Une carte par journée, la plus récente en haut : la date, une corbeille qui
 /// supprime la journée entière, le détail de chaque prestation, puis le total
-/// du jour. Toucher la carte ouvre la saisie — **`ServiceForm` n'est pas encore
-/// porté**, la carte et le bouton flottant restent donc sans action.
+/// du jour. Le bouton flottant ouvre la saisie sur aujourd'hui, toucher une
+/// carte l'ouvre sur sa journée et sur l'onglet des prestations déjà ajoutées.
 struct ServiceListTabView: View {
     let child: Child
     /// Le total du bandeau se recalcule après une suppression.
@@ -13,6 +13,7 @@ struct ServiceListTabView: View {
 
     @State private var days: [ServiceDay] = []
     @State private var dayToDelete: ServiceDay?
+    @State private var form: FormRequest?
     @State private var snackbar = SnackbarPresenter()
 
     private let repository = ServicesRepository()
@@ -29,12 +30,25 @@ struct ServiceListTabView: View {
             .scrollIndicators(.hidden)
 
             FloatingActionButton {
-                // `ServiceForm` n'est pas encore porté.
+                form = FormRequest(date: nil, tab: 0)
             }
             .padding(Theme.defaultPadding)
         }
         .snackbar(snackbar)
         .task { await load() }
+        .fullScreenCover(item: $form) { request in
+            ServiceFormView(
+                child: child,
+                initialDate: request.date,
+                initialTab: request.tab
+            ) {
+                form = nil
+                Task {
+                    await load()
+                    onChange()
+                }
+            }
+        }
         .alert(
             "Supprimer",
             isPresented: .constant(dayToDelete != nil),
@@ -90,7 +104,7 @@ struct ServiceListTabView: View {
         .padding(.vertical, Theme.smallPadding)
         .contentShape(.rect)
         .onTapGesture {
-            // `ServiceForm` n'est pas encore porté.
+            form = FormRequest(date: day.date, tab: 1)
         }
     }
 
@@ -145,6 +159,12 @@ struct ServiceListTabView: View {
         }
         .padding(.horizontal, 12)
         .padding(.top, Theme.smallPadding)
+    }
+
+    struct FormRequest: Identifiable {
+        let id = UUID()
+        let date: String?
+        let tab: Int
     }
 
     // MARK: Données

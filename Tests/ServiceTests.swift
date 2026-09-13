@@ -46,6 +46,23 @@ struct ServiceTests {
         #expect(!meal.isHourly)
     }
 
+    @Test("Le libellé du formulaire reprend le tarif et, s'il est horaire, la durée")
+    func formDetail() {
+        #expect(hourly(2, 30).formDetail == "Tarif horaire de 8.00 x 2h30")
+
+        let meal = Service(
+            childId: 1,
+            date: "2026-09-07",
+            priceId: 3,
+            priceLabel: "Petit repas",
+            priceAmount: 5,
+            isFixedPrice: 1,
+            total: 5
+        )
+
+        #expect(meal.formDetail == "Tarif fixe de 5.00")
+    }
+
     @Test("Le total d'une journée additionne ses prestations")
     func dayTotal() {
         let day = ServiceDay(
