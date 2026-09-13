@@ -33,3 +33,6 @@ TestResults/
 ._*
 .Spotlight-V100
 .Trashes
+
+# Configuration locale des agents
+.claude/

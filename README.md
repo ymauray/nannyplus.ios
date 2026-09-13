@@ -8,6 +8,7 @@ l'appareil.
 L'objectif est une réplique fidèle de l'app Flutter existante, défauts
 d'ergonomie compris, et non une amélioration.
 
+- [`AGENTS.md`](AGENTS.md) — les consignes de travail, à lire en premier
 - [`SPECS.md`](SPECS.md) — ce que l'on construit, les décisions prises et la méthode de travail
 - [`AVANCEMENT.md`](AVANCEMENT.md) — où en est le portage, écran par écran
 - [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) — la politique de confidentialité, texte de référence
