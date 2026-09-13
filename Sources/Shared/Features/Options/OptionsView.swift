@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Réplique de `lib/views/options/options_view.dart`.
 ///
-/// Un simple menu : huit tuiles menant chacune à un écran. **Aucune destination
-/// n'est portée** — les tuiles sont en place, elles n'ouvrent rien.
+/// Un simple menu : huit tuiles menant chacune à un écran. Les deux plannings
+/// restants — annuel et congés — n'ouvrent encore rien.
 struct OptionsView: View {
     /// Appelé à la fermeture des réglages : le tri et l'affichage des noms de
     /// la liste des enfants en dépendent, et la liste doit être rechargée.
@@ -14,6 +14,7 @@ struct OptionsView: View {
     @State private var isShowingAppSettings = false
     @State private var isShowingInvoiceSettings = false
     @State private var isShowingStatements = false
+    @State private var isShowingWeeklySchedule = false
 
     var body: some View {
         ScrollView {
@@ -33,7 +34,9 @@ struct OptionsView: View {
                     isShowingInvoiceSettings = true
                 }
                 tile("doc.text.fill", "Relevés") { isShowingStatements = true }
-                tile("calendar.day.timeline.left", "Planning hebdomadaire")
+                tile("calendar.day.timeline.left", "Planning hebdomadaire") {
+                    isShowingWeeklySchedule = true
+                }
                 tile("calendar", "Planning annuel")
                 tile("calendar", "Planning des congés")
             }
@@ -46,6 +49,9 @@ struct OptionsView: View {
         }
         .fullScreenCover(isPresented: $isShowingDeductions) {
             DeductionListView { isShowingDeductions = false }
+        }
+        .fullScreenCover(isPresented: $isShowingWeeklySchedule) {
+            WeeklyScheduleView { isShowingWeeklySchedule = false }
         }
         .fullScreenCover(isPresented: $isShowingStatements) {
             StatementListView { isShowingStatements = false }

@@ -29,6 +29,19 @@ struct ChildrenRepository: Sendable {
         }
     }
 
+    /// Les initiales de **tous** les dossiers, archivés compris : le planning
+    /// hebdomadaire y puise les libellés de ses colonnes.
+    func readChildrenNGrams() async throws -> [Int64: String] {
+        let children = try await database.writer().read { db in
+            try Child.fetchAll(db, sql: "SELECT * FROM children")
+        }
+
+        return children.reduce(into: [Int64: String]()) { names, child in
+            guard let id = child.id else { return }
+            names[id] = child.nGram
+        }
+    }
+
     func read(id: Int64) async throws -> Child? {
         try await database.writer().read { db in
             try Child.fetchOne(db, key: id)
