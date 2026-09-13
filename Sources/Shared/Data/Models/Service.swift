@@ -37,6 +37,15 @@ extension Service {
         return "\(hours)h\(minutes) x \((priceAmount ?? 0).twoDecimals)"
     }
 
+    /// Le libellé du formulaire de saisie : « Tarif fixe de 5.00 », ou
+    /// « Tarif horaire de 8.00 x 2h30 ».
+    var formDetail: String {
+        let amount = (priceAmount ?? 0).twoDecimals
+
+        guard isHourly else { return "Tarif fixe de \(amount)" }
+
+        return "Tarif horaire de \(amount) x \(hours ?? 0)h\(String(format: "%02d", minutes ?? 0))"
+    }
 }
 
 extension Service: Codable, FetchableRecord, MutablePersistableRecord {

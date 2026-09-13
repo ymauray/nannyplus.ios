@@ -74,7 +74,11 @@ struct VacationPlanningView: View {
         .background(Theme.background)
         .task { await load() }
         .sheet(item: $dateEdit) { edit in
-            DatePickerSheet(edit: edit) { selected in
+            // De l'an dernier à dix ans d'ici, comme `firstDate` et `lastDate`.
+            DatePickerSheet(
+                date: Self.date(from: edit.value),
+                yearsAhead: 10
+            ) { selected in
                 Task { await apply(edit, date: selected) }
             }
         }
@@ -279,55 +283,5 @@ struct VacationPlanningView: View {
 
     static func shortDate(_ date: Date) -> String {
         shortFormatter.string(from: date)
-    }
-}
-
-/// Équivalent du `showDatePicker` de Material : un calendrier, et la date
-/// retenue seulement si on valide.
-private struct DatePickerSheet: View {
-    let edit: VacationPlanningView.DateEdit
-    let onSelect: (Date) -> Void
-
-    @State private var date: Date
-    @Environment(\.dismiss) private var dismiss
-
-    init(edit: VacationPlanningView.DateEdit, onSelect: @escaping (Date) -> Void) {
-        self.edit = edit
-        self.onSelect = onSelect
-        _date = State(initialValue: VacationPlanningView.date(from: edit.value))
-    }
-
-    /// De l'an dernier à dix ans d'ici, comme `firstDate` et `lastDate`.
-    private var range: ClosedRange<Date> {
-        let calendar = Calendar.current
-        let thisYear = calendar.component(.year, from: Date())
-        let first = calendar.date(from: DateComponents(year: thisYear - 1, month: 1, day: 1))
-        let last = calendar.date(from: DateComponents(year: thisYear + 10, month: 1, day: 1))
-
-        return (first ?? Date()) ... (last ?? Date())
-    }
-
-    var body: some View {
-        NavigationStack {
-            DatePicker("", selection: $date, in: range, displayedComponents: .date)
-                .datePickerStyle(.graphical)
-                .tint(Theme.primary)
-                .padding(Theme.defaultPadding)
-                .frame(maxHeight: .infinity, alignment: .top)
-                .background(Theme.background)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Annuler") { dismiss() }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("OK") {
-                            onSelect(date)
-                            dismiss()
-                        }
-                    }
-                }
-        }
-        .presentationDetents([.height(520), .large])
-        .presentationBackground(Theme.background)
     }
 }

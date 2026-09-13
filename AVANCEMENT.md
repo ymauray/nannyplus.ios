@@ -83,7 +83,7 @@ la contrainte du projet.
 | Tiroir — Politique de confidentialité | **fait** |
 | Tiroir — Réinitialiser les messages d'aide | **fait** |
 | Tiroir — Réinitialiser la base (debug) | **fait** |
-| Dossier enfant — onglet Prestations | **fait**, sauf la saisie (`ServiceForm`) |
+| Dossier enfant — onglet Prestations | **fait**, saisie comprise |
 | Dossier enfant — onglets Factures et Information | **en maquette** |
 | Options — menu | **fait** |
 | Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
@@ -378,18 +378,6 @@ Les proportions sont celles du Dart, et elles **ne s'accordent pas entre les deu
 
 **La barre d'onglets de la coque était trop haute de 12 points**, et tout l'écran avec elle. Le `maxExtent` du sliver vaut `tabBar.preferredSize.height`, soit 48 **marge du bas comprise** : la barre est donc comprimée à 36 points, et non posée sur 48 puis complétée par 12. Corrigé. Après quoi le trait d'onglet tombe à 209,0 contre 209,1 sur la référence, et le haut de la première carte à 231,0 contre 230,8.
 
-**`ServiceForm` n'est pas porté** : le bouton flottant et la carte sont en place mais sans action, faute de capture de l'écran de saisie.
-
-### Poppins compose plus serré qu'en Flutter
-
-Une dérive subsiste, et elle dépasse cet écran. Les positions d'encre concordent au dixième de point sur la première carte, puis chaque carte se raccourcit : les trois dates de référence tombent à 245,7, 380,2 et 543,3, les nôtres à 245,3, 376,3 et 534,3 — soit −0,4, −3,9 puis −9,0 points.
-
-La cause est typographique. **Les fichiers Poppins déclarent une hauteur de ligne de 1,5 cadratin** (`hhea` comme `typo`, `USE_TYPO_METRICS` armé), soit 21,00 points à 14 et 24,00 à 16. Flutter s'y tient ; UIKit compose sur environ 1,41 cadratin, et perd donc à peu près 1,2 point par ligne. L'écart est invisible sur une ligne isolée et s'additionne dès qu'on empile des cartes.
-
-**C'est un fait global, pas un défaut de cet écran** : il vaut pour chaque texte de l'app, y compris les écrans déjà validés — leurs contrôles portaient sur des positions d'encre, qui ne le révèlent pas. À trancher : imposer partout la boîte de ligne de Flutter, ou l'accepter. Rien n'est fait pour l'instant.
-
-**`ServiceForm` n'est pas porté** : le bouton flottant et la carte sont en place mais sans action, faute de capture de l'écran de saisie.
-
 ### Poppins compose plus serré qu'en Flutter
 
 Une dérive subsiste, et elle dépasse cet écran. Les positions d'encre concordent au dixième de point sur la première carte, puis chaque carte se raccourcit : les trois dates de référence tombent à 245,7, 380,2 et 543,3, les nôtres à 245,3, 376,3 et 534,3 — soit −0,4, −3,9 puis −9,0 points.
@@ -398,7 +386,7 @@ La cause est typographique. **Les fichiers Poppins déclarent une hauteur de lig
 
 L'écran de saisie l'illustre plus nettement encore, ses cartes étant courtes et nombreuses : deux lignes chacune, donc 2,4 points perdus par carte, et **11,8 points d'écart dès la quatrième**. Les hauteurs d'encre, elles, concordent — 10,2 contre 10,4 points pour un titre — ce qui confirme que la taille des polices est juste et que seul le pas des lignes diffère.
 
-**C'est un fait global, pas un défaut de cet écran** : il vaut pour chaque texte de l'app, y compris les écrans déjà validés — leurs contrôles portaient sur des positions d'encre, qui ne le révèlent pas. À trancher : imposer partout la boîte de ligne de Flutter, ou l'accepter. Rien n'est fait pour l'instant.
+**C'est un fait global, pas un défaut de cet écran** : il vaut pour chaque texte de l'app, y compris les écrans déjà validés — leurs contrôles portaient sur des positions d'encre, qui ne le révèlent pas. Rien n'est fait pour l'instant : le point est porté aux choses à revoir une fois le portage terminé.
 
 **Saisie des prestations portée** (`ServiceFormView.swift`, `TimeInputDialog.swift`). Une modale plein écran à deux onglets pour une même journée : la grille tarifaire, où un « + » ajoute le tarif au jour actif, et les prestations déjà ajoutées à ce jour, avec leur compte dans le libellé de l'onglet. Le calendrier de la barre de titre change de jour — du 1er janvier de l'an dernier au 1er janvier de l'an prochain, fourchette plus courte que celle du planning des congés.
 
@@ -462,6 +450,7 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
   - **Filtre des prestations techniques.** Le total du dossier enfant écarte `priceId >= 0`, le relevé mensuel écarte `priceId != -1`. Les deux sélectionnent exactement les mêmes lignes dans la base réelle : les seules valeurs non positives sont 269 prestations à `priceId = -1`, toutes de total nul. **Leur origine reste à élucider** : Yannick ne se souvient pas de ce qui les crée, et aucun écran porté à ce jour n'en produit. Les deux filtres divergeraient dès qu'un `priceId` valant 0 apparaîtrait.
   - **Calcul du net avec une déduction à montant fixe.** La liste des relevés retranche le montant **mois par mois** ; le PDF le multiplie par le nombre de mois du décompte. Les deux coïncident sur un pourcentage, ce qui est le cas actuel — la base ne contient qu'une déduction, en pourcentage. Une déduction à montant fixe les ferait diverger, et il faudrait alors savoir laquelle a raison.
 
+- **La hauteur de ligne de Poppins.** Les fichiers de police déclarent 1,5 cadratin, Flutter s'y tient, UIKit compose sur environ 1,41 : chaque ligne de texte perd à peu près 1,2 point, et l'écart s'additionne dès qu'on empile des cartes — 11,8 points à la quatrième carte de la saisie de prestations. Les tailles de police, elles, sont justes : les hauteurs d'encre concordent. Le corriger suppose d'imposer la boîte de ligne à chaque texte, donc de reprendre tous les écrans déjà validés ; c'est un chantier à part, à mener d'un coup plutôt qu'écran par écran. Le détail est dans « Poppins compose plus serré qu'en Flutter » ci-dessus.
 - **La saisie des congés est à revoir.** Le bouton « + » ne demande rien : il crée une journée à la dernière date connue, qu'il faut ensuite corriger au crayon, et qui peut atterrir dans une autre année que celle affichée. Reproduit à l'identique pour l'instant, sur décision de Yannick, mais l'écran mérite un vrai formulaire — choisir la ou les dates avant de créer, plutôt qu'après.
 - **Nettoyage de la base de données** — il y a du ménage à faire dans les données existantes. Yannick doit d'abord étudier ce qui est concerné ; à ne pas entreprendre avant cette analyse, et surtout pas pendant le portage, pour que les deux versions restent comparables sur des données identiques.
 

@@ -51,19 +51,67 @@ struct ServicesRepository: Sendable {
             )
         }
 
+        let sorted = try await sortedByPrice(services)
+
+        return Dictionary(grouping: sorted, by: \.date)
+            .map { ServiceDay(date: $0.key, services: $0.value) }
+            .sorted { $0.date > $1.date }
+    }
+
+    /// Les prestations non facturées d'un enfant pour une journée, dans l'ordre
+    /// de la grille tarifaire — `getServicesForChildAndDate`.
+    func services(childId: Int64, date: String) async throws -> [Service] {
+        let services = try await database.writer().read { db in
+            try Service.fetchAll(
+                db,
+                sql: """
+                    SELECT * FROM services
+                    WHERE childId = ? AND date = ? AND invoiced = 0
+                    """,
+                arguments: [childId, date]
+            )
+        }
+
+        return try await sortedByPrice(services)
+    }
+
+    @discardableResult
+    func create(_ service: Service) async throws -> Service {
+        try await database.writer().write { db in
+            var inserted = service
+            try inserted.insert(db)
+
+            return inserted
+        }
+    }
+
+    func update(_ service: Service) async throws {
+        try await database.writer().write { db in
+            try service.update(db)
+        }
+    }
+
+    func delete(_ service: Service) async throws {
+        guard let id = service.id else { return }
+
+        try await database.writer().write { db in
+            _ = try Service.deleteOne(db, key: id)
+        }
+    }
+
+    /// Écarte les tarifs techniques puis classe selon l'ordre de la grille
+    /// tarifaire. Côté Flutter, une prestation dont le tarif a été supprimé
+    /// ferait lever une exception ; on la classe en fin de liste.
+    private func sortedByPrice(_ services: [Service]) async throws -> [Service] {
         let order = try await PricesRepository().priceList()
             .reduce(into: [Int64: Int]()) { order, price in
                 guard let id = price.id else { return }
                 order[id] = price.sortOrder
             }
 
-        let sorted = services
+        return services
             .filter { $0.priceId >= 0 }
             .sorted { (order[$0.priceId] ?? .max) < (order[$1.priceId] ?? .max) }
-
-        return Dictionary(grouping: sorted, by: \.date)
-            .map { ServiceDay(date: $0.key, services: $0.value) }
-            .sorted { $0.date > $1.date }
     }
 
     /// Supprime toute une journée, facturée ou non — la requête Flutter ne
