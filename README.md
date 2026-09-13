@@ -49,6 +49,28 @@ xcodebuild -project NannyPlus.xcodeproj -scheme NannyPlus-iOS \
   -destination 'platform=iOS Simulator,name=iPhone 16' test
 ```
 
+## Livraison
+
+Dépôt : [ymauray/nannyplus.ios](https://github.com/ymauray/nannyplus.ios).
+
+`main` est **protégée**, sans exception pour l'administrateur : le travail passe
+par une branche puis une *pull request*, fusionnée en squash ou en rebase.
+La fusion exige le check `Compilation et tests iOS` au vert et une branche à
+jour avec `main`.
+
+Deux pipelines, qui ne valident pas la même chose :
+
+- **GitHub Actions** (`.github/workflows/ios.yml`) se déclenche sur toutes les
+  branches : régénération par XcodeGen, compilation, tests.
+- **Xcode Cloud** (`ci_scripts/ci_post_clone.sh`) surveille `main` : il ajoute
+  la résolution figée des paquets, la signature et la livraison TestFlight.
+  **Toute fusion sur `main` livre donc une build.**
+
+Le numéro de build vient d'Xcode Cloud, pas de `project.yml` : le script de
+post-clone y reporte `$CI_BUILD_NUMBER` avant de régénérer le projet. Le
+détail, et les trois pièges rencontrés à la mise en place, sont dans la section
+« Livraison » d'[`AVANCEMENT.md`](AVANCEMENT.md).
+
 ## Base de données
 
 L'app ouvre `Documents/childcare.db`, exactement le chemin utilisé par sqflite
