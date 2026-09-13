@@ -2,18 +2,22 @@ import SwiftUI
 import PDFKit
 import UIKit
 
-/// Équivalent de l'écran `StatementView` de Flutter, qui s'appuie sur le
-/// `PdfPreview` du paquet `printing` et sa barre bleue « imprimer / partager ».
+/// L'aperçu d'un document, partagé par tous les écrans qui en produisent un :
+/// relevés et planning hebdomadaire. Côté Flutter, chacun de ces écrans pose un
+/// `PdfPreview` du paquet `printing`, avec sa barre bleue « imprimer /
+/// partager ».
 ///
 /// **Écart assumé** : on utilise ici l'aperçu de PDFKit et la feuille de partage
 /// du système, qui propose déjà Imprimer, Enregistrer dans Fichiers, Mail et
 /// Messages. Pas de barre à dessiner, et l'utilisatrice retrouve les gestes
 /// qu'elle connaît partout ailleurs sur iOS.
-struct StatementPreviewView: View {
+struct PdfPreviewView: View {
     let title: String
     let subtitle: String
     let fileName: String
     let document: Data
+    /// Encart d'aide propre à l'écran appelant, quand il y en a un.
+    var help: (identifier: String, text: String)?
     let onClose: () -> Void
 
     @State private var fileToShare: URL?
@@ -37,10 +41,9 @@ struct StatementPreviewView: View {
 
             CurvedHeader { Text(subtitle) }
 
-            HelpCard(
-                identifier: "pdf_statements",
-                text: "Rappel : ces relevés n'ont aucune valeur officielles. Vérifier la réglementation en vigueur pour savoir si vous pouvez les utiliser en tant que fiche de salaire ou justificatifs pour les impôts."
-            )
+            if let help {
+                HelpCard(identifier: help.identifier, text: help.text)
+            }
 
             PDFPreview(document: document)
         }

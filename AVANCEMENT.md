@@ -90,7 +90,7 @@ la contrainte du projet.
 | Options — Paramètres de l'application | **fait** |
 | Options — Paramètres de la facture | **fait** |
 | Options — Relevés | **fait** : liste, décompte annuel et relevé mensuel en PDF |
-| Options — Planning hebdomadaire | à porter (PDF) |
+| Options — Planning hebdomadaire | **fait** : PDF recoupé au pixel avec la référence |
 | Options — Planning annuel | à porter (PDF) |
 | Options — Planning des congés | à porter |
 | Formulaire enfant | à porter |
@@ -312,6 +312,23 @@ Le filtre des lignes est `priceId != -1`, et non `priceId >= 0` comme pour le to
 
 **Triple recoupement sur juin 2026** : le brut du relevé mensuel (2363.00) égale la ligne « Juin 2026 » du décompte annuel, et son net (2120.32) égale la valeur « Juin » de la liste. Trois calculs indépendants qui concordent.
 
+**Planning hebdomadaire porté** (`Sources/Shared/Features/WeeklySchedule/`, `Schedule.swift`, `ScheduleRepository.swift`). Une page A4 **paysage** : cinq jours en colonnes, une sous-colonne par enfant repérée par ses initiales, douze rangs d'une heure de 07:00 à 18:00 découpés en quarts d'heure. Un quart est peint de la couleur de l'enfant dès qu'un créneau le couvre — début inclus, fin exclue.
+
+La référence n'était pas une capture d'écran mais le PDF produit par la version Flutter, ce qui a permis d'aller plus loin qu'à l'accoutumée : **le flux de contenu du document a été décompressé et lu opérateur par opérateur**, donnant la géométrie exacte plutôt que déduite. Tout en découle.
+
+- Marge de 16 points, titre en Helvetica 12, un `SizedBox` de 38 points, deux demi-rangs d'en-tête de 19 points, puis douze rangs de 38.
+- **Les hauteurs de texte viennent des métriques AFM d'Helvetica**, pas d'UIKit : le paquet `pdf` compose une ligne à 0,931 + 0,225 cadratin et pose la base à l'ascendante. Le texte est donc dessiné par Core Text à une ligne de base explicite, seule façon de retrouver les mêmes ordonnées.
+- **Le crénage est désactivé** (`.kern: 0`). Core Text l'applique d'office, le paquet `pdf` enchaîne les chasses sans lui : sans ce zéro, « Vendredi » et « AC » se resserrent d'un tiers de point. C'est la seule correction qu'a demandée la comparaison.
+- Les données sont lues sans filtre : `readPeriods` prend toutes les lignes de `periods`, `planningId` compris, exactement comme côté Flutter. Les enfants retenus sont ceux qui ont au moins un créneau, **ordonnés par la liste des dossiers** — donc soumis aux réglages de tri et d'affichage des noms, et privés des archivés.
+
+**Un défaut reproduit à dessein** : les cellules sont peintes après les filets verticaux qui les précèdent, et les recouvrent de moitié. Tous les traits verticaux font donc un demi-point, sauf le dernier — seul à n'être suivi d'aucune cellule — qui en fait un. Même chose pour les filets horizontaux, pleins dans la colonne des heures et deux fois plus fins dans la grille. C'est le fruit de l'ordre de dessin de Flutter, et l'ordre a été repris tel quel.
+
+**Contrôle au pixel** : les deux PDF rendus à 2400 points de large ne diffèrent que sur **130 pixels de 4 070 400**, soit 0,003 %, tous dans les initiales « AC » d'une seule colonne — un reste de pavage de glyphe. Les 1200 cellules, les 95 filets et toutes les autres chaînes se superposent exactement. Les couleurs, relevées dans `schedule_colors`, sont identiques au bit près, et le décompte des cases peintes recoupe la base enfant par enfant : 91 pour Elaïa, 96 pour Maé, 64 pour Willow, 38 pour Amély, 28 pour Zoé.
+
+L'écran d'aperçu était déjà écrit : `StatementPreviewView` devient **`PdfPreviewView`** (`Sources/Shared/Features/Shell/`), partagé entre les relevés et le planning, avec un encart d'aide devenu facultatif — le planning n'en a pas, côté Flutter comme ici. Le fichier partagé s'appelle `planning_hebdomadaire.pdf`, là où Flutter propose `schedule.pdf` ; c'est la même francisation que pour les relevés.
+
+`Tests/WeeklyScheduleTests.swift` couvre la règle de couverture d'un quart d'heure, le filtrage par jour, le repli en violet d'un enfant sans couleur, et le format de la page.
+
 ### Piège récurrent : lire le mauvais fichier
 
 Trois fois dans la session, une fausse piste est née d'un chemin périmé ou ambigu. Le conteneur d'application change d'identifiant à chaque réinstallation. `UserDefaults` écrit sur disque de façon différée. Et surtout, **deux fichiers de préférences coexistent** pour une app de simulateur : celui du niveau appareil (`data/Library/Preferences/`) et celui du conteneur (`data/Containers/Data/Application/<id>/Library/Preferences/`). C'est le second que lit l'app. Un `find ... | head -1` tombe sur le premier.
@@ -365,7 +382,7 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
 
 Rien n'est arrêté. Trois directions se valent :
 
-- **Les trois plannings** du menu Options, qui achèveraient ce menu. Deux sont des PDF, et le générateur de relevés donne déjà le canevas.
+- **Les deux plannings restants** du menu Options, qui l'achèveraient : l'annuel, un PDF de plus, et les congés.
 - **Le contenu du dossier enfant**, dont seule la coque existe : saisie des prestations, liste des factures, édition des informations. C'est le cœur de l'usage quotidien.
 - **La facturation**, le morceau le plus exposé avec les PDF de relevés, puisque la facture part chez les parents. Elle englobe la relance par SMS, dont le gabarit est déjà porté dans les paramètres.
 
