@@ -144,6 +144,14 @@ En pratique : terminer une tâche en décrivant ce qui a changé, sans mention d
 
 La protection exige un check `Compilation et tests iOS` au vert, une branche à jour avec `main`, un historique linéaire — donc **squash ou rebase, jamais de commit de fusion** —, et interdit force-push et suppression de `main`.
 
+**On fusionne en rebase**, pour garder distincts les commits fonctionnels d'une
+même branche. Le coût est assumé : GitHub rejoue les commits côté serveur, leurs
+empreintes changent, et les signatures GPG d'origine ne valent plus rien. Ils
+apparaissent donc « unverified » sur `main`, GitHub ne re-signant que les
+commits dont il est lui-même l'auteur — ceux d'un squash. La signature reste
+vérifiable sur la branche tant qu'elle existe. *(Décidé le 13 septembre 2026,
+après que l'écart avec les commits d'avant la protection a été remarqué.)*
+
 Le workflow GitHub se déclenche sur **toutes** les branches, sans déclencheur `pull_request` : une exécution lancée par un push satisfait déjà le check exigé, GitHub rattachant les résultats au commit de tête et non à l'événement. Le mode strict referme le seul angle mort de ce choix, la branche devant contenir tout `main` avant fusion.
 
 **Une fusion sur `main` déclenche une livraison TestFlight**, Xcode Cloud surveillant cette branche. Ce n'est donc pas un geste anodin.
