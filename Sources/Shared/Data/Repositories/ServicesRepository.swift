@@ -27,6 +27,56 @@ struct ServicesRepository: Sendable {
     ///
     /// Ne comptent que les prestations **facturées et dont la facture est
     /// payée**. Le mois en cours est écarté : il n'est pas encore clos.
+    /// Les prestations **non facturées** d'un enfant, groupées par journée, les
+    /// journées les plus récentes d'abord.
+    ///
+    /// Réplique de `ServiceListCubit.loadServices` : les tarifs techniques
+    /// (`priceId < 0`) sont écartés, puis les prestations sont classées selon
+    /// l'ordre de la grille tarifaire — ce qui détermine leur ordre à
+    /// l'intérieur d'une journée.
+    ///
+    /// Côté Flutter, une prestation dont le tarif a été supprimé ferait échouer
+    /// le tri et vider l'onglet ; on la classe ici en fin de liste. Aucune
+    /// n'existe dans la base réelle.
+    func serviceDays(childId: Int64) async throws -> [ServiceDay] {
+        let services = try await database.writer().read { db in
+            try Service.fetchAll(
+                db,
+                sql: """
+                    SELECT * FROM services
+                    WHERE childId = ? AND invoiced = 0
+                    ORDER BY date DESC
+                    """,
+                arguments: [childId]
+            )
+        }
+
+        let order = try await PricesRepository().priceList()
+            .reduce(into: [Int64: Int]()) { order, price in
+                guard let id = price.id else { return }
+                order[id] = price.sortOrder
+            }
+
+        let sorted = services
+            .filter { $0.priceId >= 0 }
+            .sorted { (order[$0.priceId] ?? .max) < (order[$1.priceId] ?? .max) }
+
+        return Dictionary(grouping: sorted, by: \.date)
+            .map { ServiceDay(date: $0.key, services: $0.value) }
+            .sorted { $0.date > $1.date }
+    }
+
+    /// Supprime toute une journée, facturée ou non — la requête Flutter ne
+    /// filtre pas sur `invoiced`.
+    func deleteDay(childId: Int64, date: String) async throws {
+        try await database.writer().write { db in
+            try db.execute(
+                sql: "DELETE FROM services WHERE childId = ? AND date = ?",
+                arguments: [childId, date]
+            )
+        }
+    }
+
     func statements(deductions: [Deduction]) async throws -> [YearlyStatement] {
         let rows = try await database.writer().read { db in
             try Row.fetchAll(db, sql: """
