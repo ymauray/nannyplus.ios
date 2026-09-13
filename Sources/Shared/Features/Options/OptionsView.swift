@@ -2,8 +2,7 @@ import SwiftUI
 
 /// Réplique de `lib/views/options/options_view.dart`.
 ///
-/// Un simple menu : huit tuiles menant chacune à un écran. Seul le planning
-/// des congés n'ouvre encore rien.
+/// Un simple menu : huit tuiles menant chacune à un écran, toutes portées.
 struct OptionsView: View {
     /// Appelé à la fermeture des réglages : le tri et l'affichage des noms de
     /// la liste des enfants en dépendent, et la liste doit être rechargée.
@@ -16,6 +15,7 @@ struct OptionsView: View {
     @State private var isShowingStatements = false
     @State private var isShowingWeeklySchedule = false
     @State private var isShowingYearlySchedule = false
+    @State private var isShowingVacationPlanning = false
 
     var body: some View {
         ScrollView {
@@ -41,7 +41,9 @@ struct OptionsView: View {
                 tile("calendar", "Planning annuel") {
                     isShowingYearlySchedule = true
                 }
-                tile("calendar", "Planning des congés")
+                tile("calendar", "Planning des congés") {
+                    isShowingVacationPlanning = true
+                }
             }
             .padding(.vertical, Theme.smallPadding)
         }
@@ -58,6 +60,9 @@ struct OptionsView: View {
         }
         .fullScreenCover(isPresented: $isShowingYearlySchedule) {
             YearlyScheduleView { isShowingYearlySchedule = false }
+        }
+        .fullScreenCover(isPresented: $isShowingVacationPlanning) {
+            VacationPlanningView { isShowingVacationPlanning = false }
         }
         .fullScreenCover(isPresented: $isShowingStatements) {
             StatementListView { isShowingStatements = false }
