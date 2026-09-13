@@ -5,8 +5,9 @@ Ce que l'on construit, et pourquoi. L'état d'implémentation est dans
 
 Le projet Flutter source est dans le dossier voisin `../nannyplus`.
 
-> **Référence de portage : `main`**, qui reflète désormais la production
-> (1.26.4, build 195) depuis la fusion de la PR #8.
+> **Référence de portage : la branche `main` du dépôt Flutter voisin**, qui
+> reflète la production (1.26.4, build 195) depuis la fusion de sa PR #8. À ne
+> pas confondre avec le `main` du présent dépôt.
 
 ## Contrainte du projet
 
@@ -137,6 +138,18 @@ Consignes de Yannick, à appliquer sans exception.
 
 En pratique : terminer une tâche en décrivant ce qui a changé, sans mention de commit ni de push. N'aborder Git que sur demande, ou pour signaler un fait qui concerne directement Yannick — un conflit, un fichier indûment versionné.
 
+### Branches et fusion (depuis le 12 septembre 2026)
+
+`main` est **protégée** sur GitHub, Yannick compris : plus aucun push direct. Le travail se fait sur une branche, poussée régulièrement, puis fusionnée par *pull request*. Il n'y a normalement **jamais plusieurs branches en parallèle**.
+
+La protection exige un check `Compilation et tests iOS` au vert, une branche à jour avec `main`, un historique linéaire — donc **squash ou rebase, jamais de commit de fusion** —, et interdit force-push et suppression de `main`.
+
+Le workflow GitHub se déclenche sur **toutes** les branches, sans déclencheur `pull_request` : une exécution lancée par un push satisfait déjà le check exigé, GitHub rattachant les résultats au commit de tête et non à l'événement. Le mode strict referme le seul angle mort de ce choix, la branche devant contenir tout `main` avant fusion.
+
+**Une fusion sur `main` déclenche une livraison TestFlight**, Xcode Cloud surveillant cette branche. Ce n'est donc pas un geste anodin.
+
+Les commits restent soumis aux six règles ci-dessus : jamais sans invitation, et la suppression d'une branche fusionnée en squash réclame `git branch -D`, le squash ayant récrit les commits. Vérifier `git diff main <branche>` avant de forcer.
+
 ## Décisions prises (12 septembre 2026)
 
 - **Firebase Analytics** : retiré. Pas de télémétrie dans la version native, ce qui aligne l'app sur la mention « aucune donnée collectée » de la fiche App Store.
@@ -147,7 +160,11 @@ En pratique : terminer une tâche en décrivant ce qui a changé, sans mention d
 - **Traductions** : abandonnées. La version native est en français uniquement, toutes les chaînes en dur. Les libellés sont repris de `assets/i18n/fr.po` pour rester au mot près.
 - **Ordre des boutons des boîtes de confirmation** : on garde l'ordre natif de SwiftUI, l'annulation à gauche et la confirmation à droite. Flutter affichait l'inverse (« Oui » puis « Non »), plaçant l'action confirmante sous le pouce. Le coût assumé est transitoire : une utilisatrice habituée à l'ancienne disposition peut se tromper les premières fois.
 - **Cible macOS abandonnée** (12 septembre 2026). Elle ne servait qu'à compiler et lancer sans simulateur ; le simulateur s'étant révélé assez réactif, elle ne payait plus son coût. Son retrait a supprimé une dizaine de branches conditionnelles de plateforme dans le code — feuille de partage contre panneau d'enregistrement, mode édition de liste, barre de navigation, ouverture d'URL. **Le projet ne vise plus qu'iOS.** Le dossier `macos/` du projet Flutter reste utile comme source de captures de référence, lui.
-- **Numérotation de version** : alignée sur la production, soit 1.26.4.
+- **Numérotation de version** : **2.0.0**, train propre au portage. *(Révisé le 12 septembre 2026 : le plan initial, décrit plus bas, alignait la native sur le 1.26.4 de la production avec un build 196. Abandonné au moment de la première archive — voir « Livraison » dans [AVANCEMENT.md](AVANCEMENT.md).)*
+
+  Le numéro de build ne vient plus de `project.yml` mais d'Xcode Cloud : `ci_scripts/ci_post_clone.sh` y reporte `$CI_BUILD_NUMBER` avant `xcodegen generate`. Xcode Cloud tient ce compteur mais ne l'écrit pas dans l'app ; sans cette étape, chaque exécution reprendrait le même numéro et App Store Connect la rejetterait comme doublon. Le `CURRENT_PROJECT_VERSION: "1"` de `project.yml` n'est plus qu'une valeur de repli pour les compilations locales. Première livraison : **2.0.0 (3)**.
+
+  Ce qui suit décrit le raisonnement d'origine, conservé pour la généalogie de la décision et parce que la mécanique Flutter y est documentée.
 
   *Côté Flutter*, la version vient du `pubspec.yaml`. `flutter build` la recopie dans `ios/Flutter/Generated.xcconfig` sous `FLUTTER_BUILD_NAME` et `FLUTTER_BUILD_NUMBER`, et l'`Info.plist` du projet iOS y renvoie par `$(FLUTTER_BUILD_NAME)` / `$(FLUTTER_BUILD_NUMBER)`. Les `MARKETING_VERSION = 1.0.0` et `CURRENT_PROJECT_VERSION = 6` que porte encore le `project.pbxproj` sont des vestiges inutilisés. Le `+9999` du `pubspec` est un repère local : le vrai numéro de build est posé à la livraison par **Codemagic**, dont le workflow est configuré dans l'interface web et non dans le dépôt — d'où l'absence de tout fichier de CI côté Flutter, et l'écart entre le `pubspec` local (1.26.3) et la production (1.26.4, build 195).
 
