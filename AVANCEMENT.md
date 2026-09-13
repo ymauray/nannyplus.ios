@@ -83,7 +83,8 @@ la contrainte du projet.
 | Tiroir — Politique de confidentialité | **fait** |
 | Tiroir — Réinitialiser les messages d'aide | **fait** |
 | Tiroir — Réinitialiser la base (debug) | **fait** |
-| Dossier enfant | coque et trois onglets **en maquette** ; aucun contenu porté |
+| Dossier enfant — onglet Prestations | **fait**, sauf la saisie (`ServiceForm`) |
+| Dossier enfant — onglets Factures et Information | **en maquette** |
 | Options — menu | **fait** |
 | Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
 | Options — Déductions | **fait**, idem |
@@ -362,6 +363,57 @@ Les règles de saisie sont sorties de la vue dans `VacationPeriodEdit`, comme `C
 Le `showDatePicker` de Material devient une feuille portant un `DatePicker` graphique, avec Annuler et OK — le calendrier du système, et la date retenue seulement si on valide, comme la boîte de dialogue Material. Bornes identiques : du 1er janvier de l'an dernier au 1er janvier dans dix ans.
 
 **Les quatre gestes éprouvés sur simulateur**, base réelle à l'appui : le crayon déplace le début du 1er au 5 janvier et la fin suit ; « + » crée la journée là où il est dit ci-dessus ; l'interrupteur ouvre puis referme la période ; la croix supprime la ligne. Chaque effet a été recoupé dans la base, et l'état de départ restitué.
+
+**Onglet Prestations porté** (`Sources/Shared/Features/ChildDetail/ServiceListTabView.swift`, `Service.swift`). Une carte par journée, la plus récente en haut : la date, une corbeille qui supprime la journée entière après confirmation, le détail de chaque prestation, puis le total du jour. Recoupé avec la référence sur le dossier de Rafa Dicembrino — mêmes dates, mêmes libellés, mêmes durées, 24.00, 41.00 et 28.00 pour 93.00 au bandeau.
+
+L'ordre demande deux passes, comme côté Flutter : les prestations non facturées sont lues par date décroissante, puis **triées selon l'ordre de la grille tarifaire**, ce qui détermine leur rang à l'intérieur d'une journée ; le regroupement par date rétablit ensuite l'ordre chronologique inverse entre les cartes. Les tarifs techniques (`priceId < 0`) sont écartés.
+
+**Un plantage latent évité.** `loadServices` classe les prestations par `prices.firstWhere(...)` : une prestation dont le tarif a été supprimé — et la suppression est physique — ferait lever une exception et viderait l'onglet sur « Erreur lors du chargement des prestations ». On classe ces lignes en fin de liste. Aucune n'existe dans la base réelle aujourd'hui.
+
+**`FlexRow` remplace ce que `layoutPriority` ne sait pas faire** (`Sources/Shared/Features/Shell/FlexRow.swift`). SwiftUI n'a pas de flex : `layoutPriority` change l'ordre d'attribution de l'espace, pas les proportions, et la première tentative donnait des cartes démesurées avec la colonne des montants hors champ. `FlexRow` est un `Layout` qui distribue la largeur au prorata de poids, les vues de poids nul gardant leur largeur naturelle — les `SizedBox` intercalés de Flutter. Il sert aux colonnes du détail et au filet court au-dessus du total.
+
+Les proportions sont celles du Dart, et elles **ne s'accordent pas entre les deux formes** : 2/2/1 pour un tarif horaire, 5/1 pour un tarif fixe, la colonne du détail disparaissant avec lui. Seul le bord droit reste aligné. Défaut conservé.
+
+**Deux pièges de SwiftUI relevés au passage** : un `Divider` placé dans un `HStack` devient un séparateur *vertical* et étire toute la carte — d'où `MaterialDivider`, un filet explicite de 1 point en noir à 12 %, centré dans une boîte de 2 comme le `Divider(height: 2)` de Material.
+
+**La barre d'onglets de la coque était trop haute de 12 points**, et tout l'écran avec elle. Le `maxExtent` du sliver vaut `tabBar.preferredSize.height`, soit 48 **marge du bas comprise** : la barre est donc comprimée à 36 points, et non posée sur 48 puis complétée par 12. Corrigé. Après quoi le trait d'onglet tombe à 209,0 contre 209,1 sur la référence, et le haut de la première carte à 231,0 contre 230,8.
+
+**`ServiceForm` n'est pas porté** : le bouton flottant et la carte sont en place mais sans action, faute de capture de l'écran de saisie.
+
+### Poppins compose plus serré qu'en Flutter
+
+Une dérive subsiste, et elle dépasse cet écran. Les positions d'encre concordent au dixième de point sur la première carte, puis chaque carte se raccourcit : les trois dates de référence tombent à 245,7, 380,2 et 543,3, les nôtres à 245,3, 376,3 et 534,3 — soit −0,4, −3,9 puis −9,0 points.
+
+La cause est typographique. **Les fichiers Poppins déclarent une hauteur de ligne de 1,5 cadratin** (`hhea` comme `typo`, `USE_TYPO_METRICS` armé), soit 21,00 points à 14 et 24,00 à 16. Flutter s'y tient ; UIKit compose sur environ 1,41 cadratin, et perd donc à peu près 1,2 point par ligne. L'écart est invisible sur une ligne isolée et s'additionne dès qu'on empile des cartes.
+
+**C'est un fait global, pas un défaut de cet écran** : il vaut pour chaque texte de l'app, y compris les écrans déjà validés — leurs contrôles portaient sur des positions d'encre, qui ne le révèlent pas. À trancher : imposer partout la boîte de ligne de Flutter, ou l'accepter. Rien n'est fait pour l'instant.
+
+**`ServiceForm` n'est pas porté** : le bouton flottant et la carte sont en place mais sans action, faute de capture de l'écran de saisie.
+
+### Poppins compose plus serré qu'en Flutter
+
+Une dérive subsiste, et elle dépasse cet écran. Les positions d'encre concordent au dixième de point sur la première carte, puis chaque carte se raccourcit : les trois dates de référence tombent à 245,7, 380,2 et 543,3, les nôtres à 245,3, 376,3 et 534,3 — soit −0,4, −3,9 puis −9,0 points.
+
+La cause est typographique. **Les fichiers Poppins déclarent une hauteur de ligne de 1,5 cadratin** (`hhea` comme `typo`, `USE_TYPO_METRICS` armé), soit 21,00 points à 14 et 24,00 à 16. Flutter s'y tient ; UIKit compose sur environ 1,41 cadratin, et perd donc à peu près 1,2 point par ligne. L'écart est invisible sur une ligne isolée et s'additionne dès qu'on empile des cartes.
+
+L'écran de saisie l'illustre plus nettement encore, ses cartes étant courtes et nombreuses : deux lignes chacune, donc 2,4 points perdus par carte, et **11,8 points d'écart dès la quatrième**. Les hauteurs d'encre, elles, concordent — 10,2 contre 10,4 points pour un titre — ce qui confirme que la taille des polices est juste et que seul le pas des lignes diffère.
+
+**C'est un fait global, pas un défaut de cet écran** : il vaut pour chaque texte de l'app, y compris les écrans déjà validés — leurs contrôles portaient sur des positions d'encre, qui ne le révèlent pas. À trancher : imposer partout la boîte de ligne de Flutter, ou l'accepter. Rien n'est fait pour l'instant.
+
+**Saisie des prestations portée** (`ServiceFormView.swift`, `TimeInputDialog.swift`). Une modale plein écran à deux onglets pour une même journée : la grille tarifaire, où un « + » ajoute le tarif au jour actif, et les prestations déjà ajoutées à ce jour, avec leur compte dans le libellé de l'onglet. Le calendrier de la barre de titre change de jour — du 1er janvier de l'an dernier au 1er janvier de l'an prochain, fourchette plus courte que celle du planning des congés.
+
+Le bouton flottant ouvre la saisie sur aujourd'hui et sur l'onglet des tarifs ; toucher une carte de journée l'ouvre sur cette journée et sur l'onglet des prestations ajoutées, et le titre passe alors de « Ajouter une prestation » à « Modifier une prestation ».
+
+- **Un tarif fixe s'ajoute sans rien demander** ; un tarif horaire ouvre `TimeInputDialog`, deux menus déroulants — heures de 0 à 12, minutes par quarts — et un bouton « Enregistrer ». La boîte est blanche, à angles droits, posée sur un voile : c'est un `Dialog` de Material, pas une feuille venue du bas.
+- **Aucun champ n'est obligatoire** : valider sans rien choisir renvoie 0h00, que l'appelant traite comme une saisie annulée et signale par « Saisie annulée ». Défaut conservé.
+- Seule une prestation horaire se modifie, un tarif fixe n'ayant pas de durée. La suppression demande confirmation, contrairement à celle du planning des congés.
+- **L'ajout ramène sur l'onglet des tarifs**, la suppression sur celui des prestations ajoutées : c'est l'onglet que `loadRecentServices` reçoit en argument dans chaque cas.
+
+**Du code mort non porté** : le cubit calcule une liste `services` de prestations récentes, groupées par tarif, que la vue ne lit jamais. Avec elle disparaît `getRecentServices`.
+
+**Les six gestes éprouvés sur simulateur**, base réelle à l'appui et état de départ restitué : ajout d'un tarif fixe (« Petit repas » à 5.00), ajout d'un tarif horaire (2h30 × 8.00 = 20.00 en base), bascule vers l'onglet « Ajoutées (2) », ouverture du crayon qui retrouve bien 2 et 30, confirmation de suppression, et rechargement de la liste des journées à la fermeture.
+
+**Une icône sans équivalent** : `Icons.edit_calendar` — un calendrier frappé d'un crayon — n'a pas de symbole SF correspondant. On affiche un simple `calendar`. C'est l'approximation la plus faible du lot, avec celle du planning hebdomadaire.
 
 ### Piège récurrent : lire le mauvais fichier
 

@@ -1,22 +1,8 @@
 import SwiftUI
 
-// Maquettes des trois onglets du dossier enfant. Elles reproduisent ce que
-// montrent les captures de référence pour un dossier vide, afin de juger la
-// coque, mais aucune n'est portée : ni la saisie de prestations, ni la liste
-// des factures, ni l'édition des informations.
-
-/// Maquette de `ServiceListTabView`.
-struct ServicesTabMockup: View {
-    var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            Color.clear
-
-            FloatingActionButton {}
-                .padding(Theme.defaultPadding)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
+// Maquettes des onglets du dossier enfant qui restent à porter : la liste des
+// factures et l'édition des informations. Elles reproduisent ce que montrent
+// les captures de référence, afin de juger la coque, sans rien lire ni écrire.
 
 /// Maquette de `InvoiceListTabView`.
 struct InvoicesTabMockup: View {

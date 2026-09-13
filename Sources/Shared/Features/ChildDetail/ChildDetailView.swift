@@ -2,9 +2,8 @@ import SwiftUI
 
 /// Réplique de `lib/src/tab_view/tab_view.dart` — le dossier d'un enfant.
 ///
-/// **La coque est portée, les trois contenus sont des maquettes.** Ils seront
-/// repris écran par écran : `ServiceListTabView`, `InvoiceListTabView` et
-/// `ChildInfoTabView` côté Flutter.
+/// L'onglet Prestations est porté. Les deux autres restent des maquettes, à
+/// reprendre depuis `InvoiceListTabView` et `ChildInfoTabView`.
 struct ChildDetailView: View {
     let child: Child
     let onBack: () -> Void
@@ -52,7 +51,10 @@ struct ChildDetailView: View {
     @ViewBuilder
     private var content: some View {
         switch selectedTab {
-        case 0: ServicesTabMockup()
+        case 0:
+            ServiceListTabView(child: child) {
+                Task { await loadPendingTotal() }
+            }
         case 1: InvoicesTabMockup()
         default: InformationTabMockup(child: child)
         }
@@ -99,7 +101,10 @@ private struct TabBar: View {
                 .focusEffectDisabled()
             }
         }
-        .frame(height: 48)
+        // Le `maxExtent` du sliver vaut `tabBar.preferredSize.height`, soit 48,
+        // **marge du bas comprise** : la barre elle-même est donc comprimée à
+        // 36 points, et non posée sur 48 puis complétée par 12.
+        .frame(height: 48 - Theme.headerSpacing)
         .padding(.horizontal, Theme.smallPadding)
         .padding(.bottom, Theme.headerSpacing)
         .background(Theme.background)
