@@ -91,7 +91,7 @@ la contrainte du projet.
 | Options — Paramètres de la facture | **fait** |
 | Options — Relevés | **fait** : liste, décompte annuel et relevé mensuel en PDF |
 | Options — Planning hebdomadaire | **fait** : PDF recoupé au pixel avec la référence |
-| Options — Planning annuel | à porter (PDF) |
+| Options — Planning annuel | **fait** : PDF recoupé au pixel, sélecteur d'année compris |
 | Options — Planning des congés | à porter |
 | Formulaire enfant | à porter |
 | Saisie des prestations | à porter |
@@ -329,6 +329,24 @@ L'écran d'aperçu était déjà écrit : `StatementPreviewView` devient **`PdfP
 
 `Tests/WeeklyScheduleTests.swift` couvre la règle de couverture d'un quart d'heure, le filtrage par jour, le repli en violet d'un enfant sans couleur, et le format de la page.
 
+**Planning annuel porté** (`Sources/Shared/Features/YearlySchedule/`, `VacationPeriod.swift`, `VacationPeriodRepository.swift`). Une page A4 paysage de plus : douze colonnes de mois, chacune avec son en-tête gris, une ligne d'initiales, puis un rang par jour portant le quantième, la lettre du jour et une case par enfant coupée en deux — matin en haut, après-midi en bas. Les congés grisent la case entière, le week-end la laisse vide.
+
+Même méthode que l'hebdomadaire : flux de contenu du PDF de référence décompressé et lu opérateur par opérateur. La géométrie en découle — rang de 15 points, quantième dans un carré de 15, lettre du jour dans les trois quarts, colonne de mois à 67,49 points, en-tête de 26,71 points de haut (le texte plus deux fois 8 de marge).
+
+**Trois défauts reproduits, tous invisibles à la lecture rapide du Dart** :
+
+- **Un créneau est classé sur sa seule heure de début.** Une garde de 8:00 à 17:45 ne marque que le matin, et laisse l'après-midi blanc.
+- **Les congés sont filtrés sur leur date de début seule** (`start LIKE '2026%'`). Une période à cheval sur le Nouvel An n'appartient qu'à l'année où elle commence : celle du 21 décembre au 1er janvier grise bien la fin décembre, mais rien en janvier de l'année suivante.
+- **Les initiales trop larges se coupent lettre par lettre.** « WG » déborde d'une colonne de 8,25 points à cinq enfants et passe sur deux lignes — et une chaîne coupée remplit la largeur, si bien que le centrage n'a plus de prise et que les deux lettres s'alignent à gauche.
+
+**Contrôle au pixel** : les deux PDF rendus à 2400 points de large diffèrent sur **56 pixels sur 4 070 400**, soit 0,001 %, tous sur la dernière lettre de « Juillet » et de « Novembre » — un pixel de pavage de glyphe. Les douze en-têtes se posent aux mêmes abscisses au centième, et l'intégralité de la grille, jours, gris de week-end, gris de congés et demi-cases de couleur, se superpose exactement.
+
+**Le bandeau incurvé porte le sélecteur d'année** : une flèche de chaque côté, et l'année elle-même qui ramène à l'année en cours quand on la touche — les trois contrôles de la version Flutter, avec la même conséquence, le document se recomposant à chaque changement. Vérifié sur simulateur : 2026 et 2025 affichent chacun leurs congés et leurs jours de semaine.
+
+**`PdfText` factorise la composition** (`Sources/Shared/Design/PdfText.swift`) : métriques AFM, crénage neutralisé, coupure lettre par lettre, dessin sur une ligne de base explicite. Les deux générateurs s'appuient dessus, et le contrôle au pixel de l'hebdomadaire a été rejoué après la bascule — au pixel près le même résultat qu'avant. `PdfPreviewView` accepte désormais un contenu de bandeau quelconque, un simple libellé pour les relevés et l'hebdomadaire, le sélecteur d'année pour l'annuel.
+
+`Tests/YearlyScheduleTests.swift` couvre l'appartenance à une période de congés, le classement matin/après-midi, la coupure des initiales et le format de la page.
+
 ### Piège récurrent : lire le mauvais fichier
 
 Trois fois dans la session, une fausse piste est née d'un chemin périmé ou ambigu. Le conteneur d'application change d'identifiant à chaque réinstallation. `UserDefaults` écrit sur disque de façon différée. Et surtout, **deux fichiers de préférences coexistent** pour une app de simulateur : celui du niveau appareil (`data/Library/Preferences/`) et celui du conteneur (`data/Containers/Data/Application/<id>/Library/Preferences/`). C'est le second que lit l'app. Un `find ... | head -1` tombe sur le premier.
@@ -380,9 +398,7 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
 
 ## Prochaine étape
 
-Rien n'est arrêté. Trois directions se valent :
-
-- **Les deux plannings restants** du menu Options, qui l'achèveraient : l'annuel, un PDF de plus, et les congés.
+- **Le planning des congés**, qui achèverait le menu Options. C'est le seul des trois qui ne soit pas un PDF : un écran de saisie des périodes, dont le planning annuel consomme déjà les données.
 - **Le contenu du dossier enfant**, dont seule la coque existe : saisie des prestations, liste des factures, édition des informations. C'est le cœur de l'usage quotidien.
 - **La facturation**, le morceau le plus exposé avec les PDF de relevés, puisque la facture part chez les parents. Elle englobe la relance par SMS, dont le gabarit est déjà porté dans les paramètres.
 

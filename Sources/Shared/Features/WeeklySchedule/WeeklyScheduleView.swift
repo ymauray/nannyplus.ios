@@ -15,11 +15,12 @@ struct WeeklyScheduleView: View {
     var body: some View {
         PdfPreviewView(
             title: "Planning hebdomadaire",
-            subtitle: "",
             fileName: "planning_hebdomadaire.pdf",
             document: WeeklySchedulePDF.document(for: schedule),
             onClose: onClose
-        )
+        ) {
+            Text("")
+        }
         .snackbar(snackbar)
         .task {
             do {

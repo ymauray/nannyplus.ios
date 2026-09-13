@@ -11,14 +11,16 @@ import UIKit
 /// du système, qui propose déjà Imprimer, Enregistrer dans Fichiers, Mail et
 /// Messages. Pas de barre à dessiner, et l'utilisatrice retrouve les gestes
 /// qu'elle connaît partout ailleurs sur iOS.
-struct PdfPreviewView: View {
+struct PdfPreviewView<Header: View>: View {
     let title: String
-    let subtitle: String
     let fileName: String
     let document: Data
     /// Encart d'aide propre à l'écran appelant, quand il y en a un.
     var help: (identifier: String, text: String)?
     let onClose: () -> Void
+    /// Contenu du bandeau incurvé : un simple libellé pour les relevés, les
+    /// flèches de changement d'année pour le planning annuel.
+    @ViewBuilder var header: Header
 
     @State private var fileToShare: URL?
 
@@ -39,7 +41,7 @@ struct PdfPreviewView: View {
             }
             .zIndex(1)
 
-            CurvedHeader { Text(subtitle) }
+            CurvedHeader { header }
 
             if let help {
                 HelpCard(identifier: help.identifier, text: help.text)

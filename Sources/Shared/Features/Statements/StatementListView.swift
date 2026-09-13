@@ -41,15 +41,15 @@ struct StatementListView: View {
         .fullScreenCover(item: $preview) { request in
             PdfPreviewView(
                 title: request.title,
-                subtitle: request.subtitle,
                 fileName: request.fileName,
                 document: request.document,
                 help: (
                     identifier: "pdf_statements",
                     text: "Rappel : ces relevés n'ont aucune valeur officielles. Vérifier la réglementation en vigueur pour savoir si vous pouvez les utiliser en tant que fiche de salaire ou justificatifs pour les impôts."
-                )
+                ),
+                onClose: { preview = nil }
             ) {
-                preview = nil
+                Text(request.subtitle)
             }
         }
     }
