@@ -92,7 +92,7 @@ la contrainte du projet.
 | Options — Relevés | **fait** : liste, décompte annuel et relevé mensuel en PDF |
 | Options — Planning hebdomadaire | **fait** : PDF recoupé au pixel avec la référence |
 | Options — Planning annuel | **fait** : PDF recoupé au pixel, sélecteur d'année compris |
-| Options — Planning des congés | à porter |
+| Options — Planning des congés | **fait** : saisie, bascule, suppression, tri |
 | Formulaire enfant | à porter |
 | Saisie des prestations | à porter |
 | Facturation | à porter, y compris le PDF et la relance par SMS |
@@ -347,6 +347,22 @@ Même méthode que l'hebdomadaire : flux de contenu du PDF de référence décom
 
 `Tests/YearlyScheduleTests.swift` couvre l'appartenance à une période de congés, le classement matin/après-midi, la coupure des initiales et le format de la page.
 
+**Planning des congés porté** (`Sources/Shared/Features/VacationPlanning/`). Une carte par période de l'année, dans l'ordre où la base les rend. L'interrupteur bascule entre une journée isolée et une période, les crayons ouvrent un sélecteur de date, la croix supprime **sans confirmation** — contrairement au reste de l'app, et comme côté Flutter.
+
+Les règles de saisie sont sorties de la vue dans `VacationPeriodEdit`, comme `ChildFolderAction` avant elles, pour être vérifiables :
+
+- Pousser le début au-delà de la fin **emmène la fin avec lui** ; poser une fin avant le début **tire le début avec elle**.
+- Allumer l'interrupteur ouvre la période sur son propre jour de début ; l'éteindre la referme sur une journée isolée.
+- Le tri classe par date de début puis de fin, une journée isolée passant avant une période qui commence le même jour, et renumérote les `sortOrder`. Flutter l'appelle en quittant l'écran et à chaque changement d'année par les flèches, **mais pas quand on touche l'année** pour revenir à l'année en cours. Incohérence conservée.
+
+**Le bouton « + » ne demande rien** : il crée une journée isolée à la dernière date connue — le 1er janvier tant que la liste est vide, sinon la plus tardive des dates affichées, **fins comprises**. Sur la base réelle, la dernière période de 2026 s'achevant le 1er janvier 2027, ajouter un congé depuis 2026 le crée en 2027, où il disparaît aussitôt de la liste. Vérifié sur simulateur : le congé atterrit bien au 1er janvier 2027 avec un `sortOrder` de 9999.
+
+*Écart* : côté Flutter cette dernière date se construit **au fil du défilement**, la liste étant paresseuse ; ajouter sans avoir déroulé jusqu'en bas retient une date plus ancienne. On prend ici toutes les périodes de l'année, c'est-à-dire ce que Flutter fait une fois la liste parcourue.
+
+Le `showDatePicker` de Material devient une feuille portant un `DatePicker` graphique, avec Annuler et OK — le calendrier du système, et la date retenue seulement si on valide, comme la boîte de dialogue Material. Bornes identiques : du 1er janvier de l'an dernier au 1er janvier dans dix ans.
+
+**Les quatre gestes éprouvés sur simulateur**, base réelle à l'appui : le crayon déplace le début du 1er au 5 janvier et la fin suit ; « + » crée la journée là où il est dit ci-dessus ; l'interrupteur ouvre puis referme la période ; la croix supprime la ligne. Chaque effet a été recoupé dans la base, et l'état de départ restitué.
+
 ### Piège récurrent : lire le mauvais fichier
 
 Trois fois dans la session, une fausse piste est née d'un chemin périmé ou ambigu. Le conteneur d'application change d'identifiant à chaque réinstallation. `UserDefaults` écrit sur disque de façon différée. Et surtout, **deux fichiers de préférences coexistent** pour une app de simulateur : celui du niveau appareil (`data/Library/Preferences/`) et celui du conteneur (`data/Containers/Data/Application/<id>/Library/Preferences/`). C'est le second que lit l'app. Un `find ... | head -1` tombe sur le premier.
@@ -394,11 +410,13 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
   - **Filtre des prestations techniques.** Le total du dossier enfant écarte `priceId >= 0`, le relevé mensuel écarte `priceId != -1`. Les deux sélectionnent exactement les mêmes lignes dans la base réelle : les seules valeurs non positives sont 269 prestations à `priceId = -1`, toutes de total nul. **Leur origine reste à élucider** : Yannick ne se souvient pas de ce qui les crée, et aucun écran porté à ce jour n'en produit. Les deux filtres divergeraient dès qu'un `priceId` valant 0 apparaîtrait.
   - **Calcul du net avec une déduction à montant fixe.** La liste des relevés retranche le montant **mois par mois** ; le PDF le multiplie par le nombre de mois du décompte. Les deux coïncident sur un pourcentage, ce qui est le cas actuel — la base ne contient qu'une déduction, en pourcentage. Une déduction à montant fixe les ferait diverger, et il faudrait alors savoir laquelle a raison.
 
+- **La saisie des congés est à revoir.** Le bouton « + » ne demande rien : il crée une journée à la dernière date connue, qu'il faut ensuite corriger au crayon, et qui peut atterrir dans une autre année que celle affichée. Reproduit à l'identique pour l'instant, sur décision de Yannick, mais l'écran mérite un vrai formulaire — choisir la ou les dates avant de créer, plutôt qu'après.
 - **Nettoyage de la base de données** — il y a du ménage à faire dans les données existantes. Yannick doit d'abord étudier ce qui est concerné ; à ne pas entreprendre avant cette analyse, et surtout pas pendant le portage, pour que les deux versions restent comparables sur des données identiques.
 
 ## Prochaine étape
 
-- **Le planning des congés**, qui achèverait le menu Options. C'est le seul des trois qui ne soit pas un PDF : un écran de saisie des périodes, dont le planning annuel consomme déjà les données.
+Le menu Options est **entièrement porté**. Restent deux blocs, et ils se valent :
+
 - **Le contenu du dossier enfant**, dont seule la coque existe : saisie des prestations, liste des factures, édition des informations. C'est le cœur de l'usage quotidien.
 - **La facturation**, le morceau le plus exposé avec les PDF de relevés, puisque la facture part chez les parents. Elle englobe la relance par SMS, dont le gabarit est déjà porté dans les paramètres.
 

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		06656A479C4C1B649CAEBA9A /* DeductionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F0F057A8E7E2481CFBB551 /* DeductionFormView.swift */; };
 		068AE792736686A813C55A6B /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 337523B1FFA6CF8E7367297A /* GRDB */; };
+		07A3336A9AE2BD9506A381B0 /* VacationPlanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFFFDBD35C3236A51E85995E /* VacationPlanningView.swift */; };
 		0D83B35BD9E119FD4E72B988 /* YearlySchedulePDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D8704FEAEE4BC47DE5B56A /* YearlySchedulePDF.swift */; };
 		0F99B31D6D6D55BA6259B391 /* WeeklySchedulePDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600ACB7C71511AA19FDDA893 /* WeeklySchedulePDF.swift */; };
 		124F385E0B488FF03FF241BE /* DeductionsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78B643AD9419AF190BFD1D /* DeductionsRepository.swift */; };
@@ -42,12 +43,14 @@
 		6C0F29EF9C3DBD5D3412EEE4 /* InvoiceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1926295757FCDC1168264CFC /* InvoiceSettingsView.swift */; };
 		6DE43AB8811212C827938D8B /* Gwendolyn-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 345A7955F3694CEDB2C7D984 /* Gwendolyn-Bold.ttf */; };
 		6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */; };
+		746CA8AA3A7349DEFA3DFF29 /* VacationPeriodEditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F8ABF4F162FCBEEDD201CE /* VacationPeriodEditTests.swift */; };
 		751F358F120AB404BBCB8687 /* VacationPeriodRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9073F029C8EE5452D02F3C57 /* VacationPeriodRepository.swift */; };
 		7FB274102193737589F09ACA /* ChildFolderAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360A922C5D5D61FADB87172 /* ChildFolderAction.swift */; };
 		7FD8513738C8A5BDDD4E5377 /* PriceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539F155AAA079AA413F838AE /* PriceListView.swift */; };
 		82ADF591C9251E897C301835 /* YearlyScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D506125149C903E5ABBB0C /* YearlyScheduleView.swift */; };
 		85D6EAAB5EF4DEF389708DF9 /* ChildDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5D5E045C206C6E0D388E2 /* ChildDetailView.swift */; };
 		89CDD7821194EF87A994CAF2 /* MainDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6B9CC10BF3DF696E938655 /* MainDrawer.swift */; };
+		8F20737453DCBBADCFFDD979 /* VacationPeriodEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A0E0CA2DF65070DC0D4042 /* VacationPeriodEdit.swift */; };
 		91E32F52820281EA7D63A64A /* Oswald-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4571301071B7EACE2F119BE7 /* Oswald-Regular.ttf */; };
 		964A8603979670353B347F23 /* YearlyScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60321178B69CA414E49AD8D6 /* YearlyScheduleTests.swift */; };
 		9D4A984E5E71EC8F5B38C7F5 /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */; };
@@ -109,6 +112,7 @@
 		345A7955F3694CEDB2C7D984 /* Gwendolyn-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gwendolyn-Bold.ttf"; sourceTree = "<group>"; };
 		35A7374C8175BA570B446B3F /* Snackbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snackbar.swift; sourceTree = "<group>"; };
 		36A4AB141591294EB28E4994 /* BackupRestoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRestoreView.swift; sourceTree = "<group>"; };
+		41F8ABF4F162FCBEEDD201CE /* VacationPeriodEditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPeriodEditTests.swift; sourceTree = "<group>"; };
 		4571301071B7EACE2F119BE7 /* Oswald-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Oswald-Regular.ttf"; sourceTree = "<group>"; };
 		47E19F732BAE4343A18FC9A2 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		49FCD1CA6D625BA7B8BFA1FB /* VacationPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPeriod.swift; sourceTree = "<group>"; };
@@ -124,6 +128,7 @@
 		6432A9D5A23C8026E77601D8 /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		69AEC803DAD11C0C9469E35D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesRepository.swift; sourceTree = "<group>"; };
+		74A0E0CA2DF65070DC0D4042 /* VacationPeriodEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPeriodEdit.swift; sourceTree = "<group>"; };
 		81413E81B9F887A907E51D56 /* CurvedHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvedHeader.swift; sourceTree = "<group>"; };
 		81C5A73BE113719713812763 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Italic.ttf"; sourceTree = "<group>"; };
 		81D8704FEAEE4BC47DE5B56A /* YearlySchedulePDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlySchedulePDF.swift; sourceTree = "<group>"; };
@@ -146,6 +151,7 @@
 		D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferences.swift; sourceTree = "<group>"; };
 		D5F0F057A8E7E2481CFBB551 /* DeductionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeductionFormView.swift; sourceTree = "<group>"; };
 		DA3421B826AF13DFA9BC2E56 /* Child.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Child.swift; sourceTree = "<group>"; };
+		DFFFDBD35C3236A51E85995E /* VacationPlanningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPlanningView.swift; sourceTree = "<group>"; };
 		E199B49199ADD037885DB36F /* STCaiyun.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = STCaiyun.ttf; sourceTree = "<group>"; };
 		E488B9C7ACD5BB59F3C46A34 /* WeeklyScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyScheduleView.swift; sourceTree = "<group>"; };
 		E4B720196ADB90F27A7D484C /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabase.swift; sourceTree = "<group>"; };
@@ -249,6 +255,7 @@
 				C8EFDC0648A9644C4C4324E6 /* PrivacySettings */,
 				C6946203AD78BDDD96509CE0 /* Shell */,
 				26A3DE22BB8424FB94087A4E /* Statements */,
+				D832C404FA0BD4B662F4384E /* VacationPlanning */,
 				D65E5FAA05F061AF205D35D0 /* WeeklySchedule */,
 				EB68D5423AAD44AA5EC7E31C /* YearlySchedule */,
 			);
@@ -342,6 +349,7 @@
 			children = (
 				301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */,
 				0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */,
+				41F8ABF4F162FCBEEDD201CE /* VacationPeriodEditTests.swift */,
 				0ECA73DB9C1C3E673A7F4AA0 /* WeeklyScheduleTests.swift */,
 				60321178B69CA414E49AD8D6 /* YearlyScheduleTests.swift */,
 			);
@@ -415,6 +423,15 @@
 				E488B9C7ACD5BB59F3C46A34 /* WeeklyScheduleView.swift */,
 			);
 			path = WeeklySchedule;
+			sourceTree = "<group>";
+		};
+		D832C404FA0BD4B662F4384E /* VacationPlanning */ = {
+			isa = PBXGroup;
+			children = (
+				74A0E0CA2DF65070DC0D4042 /* VacationPeriodEdit.swift */,
+				DFFFDBD35C3236A51E85995E /* VacationPlanningView.swift */,
+			);
+			path = VacationPlanning;
 			sourceTree = "<group>";
 		};
 		E5ECB338A97E12DA64ADC34C /* Preferences */ = {
@@ -615,7 +632,9 @@
 				186D5E4E536CD6BA77B44A7E /* TabMockups.swift in Sources */,
 				FCC5BC5D32A274EBDB02B6DB /* Theme.swift in Sources */,
 				675252EF32643B28FB9EED23 /* VacationPeriod.swift in Sources */,
+				8F20737453DCBBADCFFDD979 /* VacationPeriodEdit.swift in Sources */,
 				751F358F120AB404BBCB8687 /* VacationPeriodRepository.swift in Sources */,
+				07A3336A9AE2BD9506A381B0 /* VacationPlanningView.swift in Sources */,
 				0F99B31D6D6D55BA6259B391 /* WeeklySchedulePDF.swift in Sources */,
 				D57CA6C215AAF8A66D2E7E8F /* WeeklyScheduleView.swift in Sources */,
 				0D83B35BD9E119FD4E72B988 /* YearlySchedulePDF.swift in Sources */,
@@ -629,6 +648,7 @@
 			files = (
 				6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */,
 				1F7E84A469A1F341C026EE6B /* SchemaTests.swift in Sources */,
+				746CA8AA3A7349DEFA3DFF29 /* VacationPeriodEditTests.swift in Sources */,
 				21E4E2646C1DE3F073D84866 /* WeeklyScheduleTests.swift in Sources */,
 				964A8603979670353B347F23 /* YearlyScheduleTests.swift in Sources */,
 			);
