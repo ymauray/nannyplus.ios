@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		06656A479C4C1B649CAEBA9A /* DeductionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F0F057A8E7E2481CFBB551 /* DeductionFormView.swift */; };
 		068AE792736686A813C55A6B /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 337523B1FFA6CF8E7367297A /* GRDB */; };
+		0D83B35BD9E119FD4E72B988 /* YearlySchedulePDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D8704FEAEE4BC47DE5B56A /* YearlySchedulePDF.swift */; };
 		0F99B31D6D6D55BA6259B391 /* WeeklySchedulePDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600ACB7C71511AA19FDDA893 /* WeeklySchedulePDF.swift */; };
 		124F385E0B488FF03FF241BE /* DeductionsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78B643AD9419AF190BFD1D /* DeductionsRepository.swift */; };
 		129CC96B1B2D24FCA782B3D2 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C5A73BE113719713812763 /* Poppins-Italic.ttf */; };
@@ -35,16 +36,20 @@
 		65B1BE3210E9F04213263C62 /* Price.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75A7925C2E5F1F206A130D9 /* Price.swift */; };
 		65E8FDB0F717E5CCF64C8E69 /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618D696B74C3BD7A22BCF300 /* Schedule.swift */; };
 		66118BD641682145EBA08AA1 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2964775326877EA42EF9C8D9 /* Statement.swift */; };
+		675252EF32643B28FB9EED23 /* VacationPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FCD1CA6D625BA7B8BFA1FB /* VacationPeriod.swift */; };
 		680CCDD7177654E86E7D7187 /* InvoicesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */; };
 		68A61FA36259B4F785B499A4 /* StatementPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA73D46CD8A3EAF78D8BE35 /* StatementPDF.swift */; };
 		6C0F29EF9C3DBD5D3412EEE4 /* InvoiceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1926295757FCDC1168264CFC /* InvoiceSettingsView.swift */; };
 		6DE43AB8811212C827938D8B /* Gwendolyn-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 345A7955F3694CEDB2C7D984 /* Gwendolyn-Bold.ttf */; };
 		6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */; };
+		751F358F120AB404BBCB8687 /* VacationPeriodRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9073F029C8EE5452D02F3C57 /* VacationPeriodRepository.swift */; };
 		7FB274102193737589F09ACA /* ChildFolderAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360A922C5D5D61FADB87172 /* ChildFolderAction.swift */; };
 		7FD8513738C8A5BDDD4E5377 /* PriceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539F155AAA079AA413F838AE /* PriceListView.swift */; };
+		82ADF591C9251E897C301835 /* YearlyScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D506125149C903E5ABBB0C /* YearlyScheduleView.swift */; };
 		85D6EAAB5EF4DEF389708DF9 /* ChildDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5D5E045C206C6E0D388E2 /* ChildDetailView.swift */; };
 		89CDD7821194EF87A994CAF2 /* MainDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6B9CC10BF3DF696E938655 /* MainDrawer.swift */; };
 		91E32F52820281EA7D63A64A /* Oswald-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4571301071B7EACE2F119BE7 /* Oswald-Regular.ttf */; };
+		964A8603979670353B347F23 /* YearlyScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60321178B69CA414E49AD8D6 /* YearlyScheduleTests.swift */; };
 		9D4A984E5E71EC8F5B38C7F5 /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */; };
 		9EC2913241D4587828194AF3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5ED22141B66A7790C55941 /* Assets.xcassets */; };
 		9F9A31E8705D1E6FB5E66829 /* PdfPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2CB64F21FECC8E8046D824 /* PdfPreviewView.swift */; };
@@ -55,6 +60,7 @@
 		B4826C7BECFAEE232BEF70AA /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69AEC803DAD11C0C9469E35D /* MainTabView.swift */; };
 		B7A02F808FEECF316311A643 /* ServiceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FD14D0A98E5D2ED43F4E6DF /* ServiceInfo.swift */; };
 		C31FC6BAA85A3D166703DD3A /* ButterflyKids-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 117344E28ED1C4266C3F9BAE /* ButterflyKids-Regular.ttf */; };
+		C8118173F244671FAA2A1729 /* PdfText.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC80997490E138C98F8DEED1 /* PdfText.swift */; };
 		C9504CAE7943483EC2834C79 /* PlayfairDisplay-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 537D129475EC0ECDC05F9731 /* PlayfairDisplay-Italic.ttf */; };
 		CEAB64C8AB288E85E8C7A94C /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B447FAD7E04AF1A72D7CA2BE /* Schema.swift */; };
 		D1BC35624F2FF69B221C2316 /* Deduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0434C58A409C67206459E451 /* Deduction.swift */; };
@@ -105,12 +111,14 @@
 		36A4AB141591294EB28E4994 /* BackupRestoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRestoreView.swift; sourceTree = "<group>"; };
 		4571301071B7EACE2F119BE7 /* Oswald-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Oswald-Regular.ttf"; sourceTree = "<group>"; };
 		47E19F732BAE4343A18FC9A2 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		49FCD1CA6D625BA7B8BFA1FB /* VacationPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPeriod.swift; sourceTree = "<group>"; };
 		5156BE26DDF3E7CBB1E0E352 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		537D129475EC0ECDC05F9731 /* PlayfairDisplay-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlayfairDisplay-Italic.ttf"; sourceTree = "<group>"; };
 		539F155AAA079AA413F838AE /* PriceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceListView.swift; sourceTree = "<group>"; };
 		5C772AB631523D8507E5413D /* FrederickatheGreat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FrederickatheGreat-Regular.ttf"; sourceTree = "<group>"; };
 		5FA73D46CD8A3EAF78D8BE35 /* StatementPDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementPDF.swift; sourceTree = "<group>"; };
 		600ACB7C71511AA19FDDA893 /* WeeklySchedulePDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklySchedulePDF.swift; sourceTree = "<group>"; };
+		60321178B69CA414E49AD8D6 /* YearlyScheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlyScheduleTests.swift; sourceTree = "<group>"; };
 		618D696B74C3BD7A22BCF300 /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
 		62503E5CF4A87C9F67F0C303 /* Poppins-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-BoldItalic.ttf"; sourceTree = "<group>"; };
 		6432A9D5A23C8026E77601D8 /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
@@ -118,12 +126,16 @@
 		7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesRepository.swift; sourceTree = "<group>"; };
 		81413E81B9F887A907E51D56 /* CurvedHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvedHeader.swift; sourceTree = "<group>"; };
 		81C5A73BE113719713812763 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Italic.ttf"; sourceTree = "<group>"; };
+		81D8704FEAEE4BC47DE5B56A /* YearlySchedulePDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlySchedulePDF.swift; sourceTree = "<group>"; };
 		8219EF0B11F0D7FE0776DE9D /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
+		88D506125149C903E5ABBB0C /* YearlyScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlyScheduleView.swift; sourceTree = "<group>"; };
+		9073F029C8EE5452D02F3C57 /* VacationPeriodRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPeriodRepository.swift; sourceTree = "<group>"; };
 		95995A597391061C7718AE07 /* HelpCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpCard.swift; sourceTree = "<group>"; };
 		9F9E332D2893229808313E83 /* ChildListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildListViewModel.swift; sourceTree = "<group>"; };
 		A050463165E85DC968AB9506 /* NannyPlusTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NannyPlusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4E59059039919B4003F3F80 /* Poppins-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Poppins-OFL.txt"; sourceTree = "<group>"; };
 		A894B27BD58F5B3EB37EFFBE /* ChildrenRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildrenRepository.swift; sourceTree = "<group>"; };
+		AC80997490E138C98F8DEED1 /* PdfText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfText.swift; sourceTree = "<group>"; };
 		B447FAD7E04AF1A72D7CA2BE /* Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
 		B8192FDE8D5F7321BC723B49 /* StatementListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementListView.swift; sourceTree = "<group>"; };
 		C880A009ACE5DE3FE84842CF /* PrivacySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsView.swift; sourceTree = "<group>"; };
@@ -201,6 +213,7 @@
 				618D696B74C3BD7A22BCF300 /* Schedule.swift */,
 				0FD14D0A98E5D2ED43F4E6DF /* ServiceInfo.swift */,
 				2964775326877EA42EF9C8D9 /* Statement.swift */,
+				49FCD1CA6D625BA7B8BFA1FB /* VacationPeriod.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -237,6 +250,7 @@
 				C6946203AD78BDDD96509CE0 /* Shell */,
 				26A3DE22BB8424FB94087A4E /* Statements */,
 				D65E5FAA05F061AF205D35D0 /* WeeklySchedule */,
+				EB68D5423AAD44AA5EC7E31C /* YearlySchedule */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -318,6 +332,7 @@
 				222B93600CFF1B1258C0DABB /* PricesRepository.swift */,
 				E8779315372EC32E6E9736B0 /* ScheduleRepository.swift */,
 				314EB5838E5480F2A3714E41 /* ServicesRepository.swift */,
+				9073F029C8EE5452D02F3C57 /* VacationPeriodRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -328,6 +343,7 @@
 				301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */,
 				0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */,
 				0ECA73DB9C1C3E673A7F4AA0 /* WeeklyScheduleTests.swift */,
+				60321178B69CA414E49AD8D6 /* YearlyScheduleTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -426,9 +442,19 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		EB68D5423AAD44AA5EC7E31C /* YearlySchedule */ = {
+			isa = PBXGroup;
+			children = (
+				81D8704FEAEE4BC47DE5B56A /* YearlySchedulePDF.swift */,
+				88D506125149C903E5ABBB0C /* YearlyScheduleView.swift */,
+			);
+			path = YearlySchedule;
+			sourceTree = "<group>";
+		};
 		FB9BEF0FEB83FDF96E119918 /* Design */ = {
 			isa = PBXGroup;
 			children = (
+				AC80997490E138C98F8DEED1 /* PdfText.swift */,
 				47E19F732BAE4343A18FC9A2 /* Theme.swift */,
 			);
 			path = Design;
@@ -571,6 +597,7 @@
 				ED50AB7F153FE9AA382193DA /* NannyPlusApp.swift in Sources */,
 				55B35E619E94DD1C7B9C43A1 /* OptionsView.swift in Sources */,
 				9F9A31E8705D1E6FB5E66829 /* PdfPreviewView.swift in Sources */,
+				C8118173F244671FAA2A1729 /* PdfText.swift in Sources */,
 				65B1BE3210E9F04213263C62 /* Price.swift in Sources */,
 				DB3206950C36088710A7C335 /* PriceFormView.swift in Sources */,
 				7FD8513738C8A5BDDD4E5377 /* PriceListView.swift in Sources */,
@@ -587,8 +614,12 @@
 				68A61FA36259B4F785B499A4 /* StatementPDF.swift in Sources */,
 				186D5E4E536CD6BA77B44A7E /* TabMockups.swift in Sources */,
 				FCC5BC5D32A274EBDB02B6DB /* Theme.swift in Sources */,
+				675252EF32643B28FB9EED23 /* VacationPeriod.swift in Sources */,
+				751F358F120AB404BBCB8687 /* VacationPeriodRepository.swift in Sources */,
 				0F99B31D6D6D55BA6259B391 /* WeeklySchedulePDF.swift in Sources */,
 				D57CA6C215AAF8A66D2E7E8F /* WeeklyScheduleView.swift in Sources */,
+				0D83B35BD9E119FD4E72B988 /* YearlySchedulePDF.swift in Sources */,
+				82ADF591C9251E897C301835 /* YearlyScheduleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,6 +630,7 @@
 				6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */,
 				1F7E84A469A1F341C026EE6B /* SchemaTests.swift in Sources */,
 				21E4E2646C1DE3F073D84866 /* WeeklyScheduleTests.swift in Sources */,
+				964A8603979670353B347F23 /* YearlyScheduleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

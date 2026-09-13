@@ -1,4 +1,3 @@
-import CoreText
 import UIKit
 
 /// Réplique de `lib/views/weekly_schedule_pdf.dart`.
@@ -8,23 +7,16 @@ import UIKit
 /// couleur de l'enfant dès qu'un créneau le couvre.
 ///
 /// Le document est entièrement en **Helvetica 12**, police par défaut du paquet
-/// `pdf` de Flutter. Les hauteurs de texte reprennent ses métriques AFM plutôt
-/// que celles d'UIKit : `pdf` pose la ligne de base à partir de l'ascendante
-/// déclarée dans la police, soit 0,931 cadratin, et non à partir de la hauteur
-/// de ligne qu'emploie UIKit.
+/// `pdf` de Flutter ; les règles de composition sont dans [PdfText].
 enum WeeklySchedulePDF {
     /// A4 paysage, marge de 16 points sur les quatre côtés.
     private static let pageSize = CGSize(width: 841.889_76, height: 595.275_59)
     private static let margin: CGFloat = 16
     private static let rowHeight: CGFloat = 38
     private static let hourColumnWidth: CGFloat = 64
-    private static let fontSize: CGFloat = 12
-
-    private static let ascent: CGFloat = 0.931 * fontSize
-    private static let descent: CGFloat = 0.225 * fontSize
-    /// Hauteur du bloc de texte tel que le compose `pdf` : ascendante plus
-    /// descendante, soit 13,872 points à cette taille.
-    private static let textHeight: CGFloat = ascent + descent
+    private static let font = PdfText.helvetica(12)
+    private static var ascent: CGFloat { font.ascent }
+    private static var textHeight: CGFloat { font.lineHeight }
 
     private static let days: [(key: String, label: String)] = [
         ("monday", "Lundi"),
@@ -189,32 +181,24 @@ enum WeeklySchedulePDF {
                     $0.childId == childId && $0.covers(hour: hour, minute: minute)
                 }
 
-                ctx.setFillColor(
-                    covered
-                        ? color(schedule.color(for: childId)).cgColor
-                        : UIColor.white.cgColor
-                )
-                ctx.fill(CGRect(
+                let cell = CGRect(
                     x: cellX,
                     y: top + CGFloat(quarter) * quarterHeight,
                     width: cellWidth,
                     height: quarterHeight
-                ))
+                )
+
+                if covered {
+                    ctx.fill(cell, flutterColor: schedule.color(for: childId))
+                } else {
+                    ctx.setFillColor(UIColor.white.cgColor)
+                    ctx.fill(cell)
+                }
             }
         }
     }
 
     // MARK: Dessin
-
-    /// Une `Color` de Flutter, soit un ARGB sur 32 bits.
-    private static func color(_ value: Int64) -> UIColor {
-        UIColor(
-            red: CGFloat((value >> 16) & 0xFF) / 255,
-            green: CGFloat((value >> 8) & 0xFF) / 255,
-            blue: CGFloat(value & 0xFF) / 255,
-            alpha: CGFloat((value >> 24) & 0xFF) / 255
-        )
-    }
 
     private static func line(from start: CGPoint, to end: CGPoint, in ctx: CGContext) {
         ctx.beginPath()
@@ -223,11 +207,6 @@ enum WeeklySchedulePDF {
         ctx.strokePath()
     }
 
-    /// Texte centré dans une colonne, posé sur une ligne de base explicite.
-    ///
-    /// On passe par Core Text plutôt que par `NSAttributedString.draw` : seule
-    /// la ligne de base permet de retrouver au point près la composition du
-    /// paquet `pdf`, dont la hauteur de ligne n'est pas celle d'UIKit.
     private static func draw(
         _ string: String,
         centeredIn x: CGFloat,
@@ -235,29 +214,6 @@ enum WeeklySchedulePDF {
         baseline: CGFloat,
         in ctx: CGContext
     ) {
-        guard !string.isEmpty else { return }
-
-        let font = UIFont(name: "Helvetica", size: fontSize) ?? .systemFont(ofSize: fontSize)
-        let attributed = NSAttributedString(
-            string: string,
-            attributes: [
-                .font: font,
-                .foregroundColor: UIColor.black,
-                // Le paquet `pdf` avance d'une chasse à l'autre sans crénage ;
-                // Core Text, lui, en applique d'office. Sans ce zéro, « Vendredi »
-                // et « AC » se resserrent d'un tiers de point.
-                .kern: 0,
-            ]
-        )
-        let line = CTLineCreateWithAttributedString(attributed)
-        let textWidth = CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
-
-        ctx.saveGState()
-        // Le contexte d'un PDF UIKit a l'axe des ordonnées vers le bas ; sans
-        // cette symétrie, Core Text écrirait à l'envers.
-        ctx.textMatrix = CGAffineTransform(scaleX: 1, y: -1)
-        ctx.textPosition = CGPoint(x: x + (width - textWidth) / 2, y: baseline)
-        CTLineDraw(line, ctx)
-        ctx.restoreGState()
+        PdfText.draw(string, font: font, centeredIn: x, width: width, baseline: baseline, in: ctx)
     }
 }

@@ -24,6 +24,11 @@ extension Period {
 
     var endMinute: Int { hourTo * 60 + minuteTo }
 
+    /// Un créneau appartient au matin ou à l'après-midi selon sa **seule heure
+    /// de début** : une garde de 8:00 à 17:45 compte pour le matin. C'est ainsi
+    /// que le planning annuel classe ses demi-cases.
+    var isMorning: Bool { hourFrom < 12 }
+
     /// Le créneau couvre-t-il le quart d'heure commençant à `hour:minute` ?
     /// Début inclus, fin exclue, comme côté Flutter.
     func covers(hour: Int, minute: Int) -> Bool {
