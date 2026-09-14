@@ -75,6 +75,28 @@ struct InvoicesRepository: Sendable {
         }
     }
 
+    func invoice(id: Int64) async throws -> Invoice? {
+        try await database.writer().read { db in
+            try Invoice.fetchOne(db, key: id)
+        }
+    }
+
+    /// Les factures d'un enfant pour une année, la plus récente en tête —
+    /// `yearlyInvoicesProvider`.
+    func invoices(childId: Int64, year: Int) async throws -> [Invoice] {
+        try await database.writer().read { db in
+            try Invoice.fetchAll(
+                db,
+                sql: """
+                    SELECT * FROM invoices
+                    WHERE childId = ? AND SUBSTRING(date, 1, 4) = ?
+                    ORDER BY date DESC
+                    """,
+                arguments: [childId, String(year)]
+            )
+        }
+    }
+
     func markAsPaid(_ invoice: Invoice) async throws {
         guard let id = invoice.id else { return }
 

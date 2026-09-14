@@ -84,7 +84,7 @@ la contrainte du projet.
 | Tiroir — Réinitialiser les messages d'aide | **fait** |
 | Tiroir — Réinitialiser la base (debug) | **fait** |
 | Dossier enfant — onglet Prestations | **fait**, saisie comprise |
-| Dossier enfant — onglet Factures | **fait** : liste, filtre des payées, marquage et suppression |
+| Dossier enfant — onglet Factures | **fait** : liste, filtre des payées, marquage, suppression et les deux PDF |
 | Dossier enfant — onglet Information | **en maquette** |
 | Options — menu | **fait** |
 | Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
@@ -411,7 +411,7 @@ Le bouton flottant ouvre la saisie sur aujourd'hui et sur l'onglet des tarifs ; 
 - **Supprimer une facture rend ses prestations à facturer** plutôt que de les supprimer avec elle, d'où le rechargement du bandeau et de l'onglet des prestations.
 - Le menu d'une ligne reprend les trois entrées de Flutter, « Marquer comme payée » et « Supprimer » étant désactivées sur une facture déjà payée.
 
-**Ne sont pas portés**, faute de captures : la création d'une facture, le PDF d'une facture qu'ouvre un appui sur sa ligne, le décompte annuel de l'enfant qu'ouvre le bouton PDF, et la relance par SMS du menu. Les commandes sont en place, sans action.
+**Ne sont pas portés**, faute de captures : la création d'une facture et la relance par SMS du menu. Les commandes sont en place, sans action.
 
 **Vérifié sur simulateur** contre la référence : l'écart de position des huit lignes de 2026 va de 0,8 à 1,3 point, sans s'accumuler. Le cas des impayées, dont il n'existe pas de capture, a été éprouvé en désarchivant provisoirement un dossier qui en porte douze : les lignes sortent bien en rouge et sans italique. Le marquage d'une facture comme payée a été mené jusqu'en base puis défait, le dossier réarchivé.
 
@@ -422,6 +422,33 @@ Le bouton flottant ouvre la saisie sur aujourd'hui et sur l'onglet des tarifs ; 
 `toStringAsFixed(2)` de Dart arrondit la moitié **vers le haut** ; `String(format: "%.2f")` l'arrondit vers le **pair le plus proche**. Une moyenne de 636,125 s'écrivait donc « 636.12 » chez nous et « 636.13 » sur la référence. Corrigé dans `twoDecimals`, en arrondissant la valeur multipliée par cent.
 
 Reste un écart de principe, jugé sans conséquence : Dart arrondit la valeur binaire exacte du nombre, nous sa valeur multipliée par cent. Une valeur qui n'est qu'approximativement une moitié — 2,675 vaut en réalité 2,67499… — remonte ici à 2.68 quand Dart descend à 2.67. Aucun montant réel n'est dans ce cas, les moitiés exactes venant des moyennes.
+
+**Les deux PDF de facturation portés** (`Sources/Shared/Features/Invoices/`). La facture qu'ouvre un appui sur une ligne, et le relevé annuel de l'enfant qu'ouvre le bouton PDF d'une année. Tous deux en A4 portrait, marge 50, en-tête dans les polices des réglages de facture, logo ancré en haut à droite.
+
+Les deux documents sont bâtis sur les mêmes widgets côté Flutter, au point que leurs fonctions se recopient l'une l'autre ; `InvoiceDocument` ne les écrit qu'une fois — page, en-tête, cartouche, intitulés bleus, tableau, pied de page.
+
+**Le tableau reprend la mise en page d'un `pw.Table`** dont toutes les colonnes sont en `IntrinsicColumnWidth` sans flex. L'algorithme est simple une fois lu dans le paquet : la largeur intrinsèque de chaque colonne — la plus large de ses cellules — est **mise à l'échelle pour remplir la largeur disponible**, les proportions étant conservées. Rien à deviner, donc, et les colonnes tombent d'elles-mêmes aux bons endroits.
+
+**Trois détails qui ne se lisaient que dans la mesure** :
+
+- Les intitulés bleus du bloc méta sont des textes nus, sans la marge de 6 points que porte l'intitulé d'une colonne. La différence se voyait à 6 points par ligne, trois fois de suite.
+- L'écart entre un intitulé et sa valeur tient compte de la différence d'ascendante entre Helvetica-Bold et Helvetica, 0,43 point à 14.
+- Le total du relevé vit dans une `Row` dont un `SizedBox` fixe la hauteur à 70 points : l'alignement transversal le **centre** dans cette bande, il ne se pose pas en haut.
+
+**Contrôle au pixel**, logo exclu — celui du simulateur n'est pas celui du téléphone de Yannick : **505 pixels de différence sur 1 809 600 pour la facture**, soit 0,03 %, et **748 pour le relevé**, soit 0,04 %. Ce qui reste tient aux bords du cadre du titre et à quelques arêtes de glyphes.
+
+**Pagination de la facture reproduite** : quatorze unités de hauteur sur la première page, trente sur les suivantes, une unité et demie par journée plus une par prestation, et une page vide de plus si le pied de page n'a plus la place de tenir. Couverte par un test.
+
+### Ce que sont les prestations à `priceId = -1`
+
+La question traînait depuis le portage des relevés ; les documents de facturation y répondent. **Ce sont des marqueurs qui rattachent un enfant à une facture** : libellé vide, total nul, et une ligne par enfant concerné. Une facture peut en effet couvrir **plusieurs enfants**, pour regrouper une fratrie sur un seul document.
+
+La base en compte 269, réparties sur 212 factures — une seule pour la plupart, jusqu'à six pour l'une d'elles — et 42 factures couvrent plus d'un enfant.
+
+Les deux documents s'en servent différemment, et c'est ce qui les rend visibles :
+
+- **La facture** compose son titre à partir de *tous* les enfants de ses prestations, marqueurs compris — d'où « Maé et Ellie » —, puis **filtre les marqueurs** pour dresser son tableau, qui ne montre donc qu'une ligne.
+- **Le relevé d'un enfant** ne filtre rien : chaque enfant de la facture y gagne sa ligne, avec la somme de ses prestations. Un enfant qui n'a qu'un marqueur sort donc à 0.00 en face d'une facture pourtant payée.
 
 ### Piège récurrent : lire le mauvais fichier
 
@@ -467,7 +494,7 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
 - **Ordre de portage arrêté après discussion** : le menu Options d'abord (fait), puis « Paramètres de l'application ». Ce dernier ne contient que quatre champs, dont deux pilotent les notifications retirées. Son intérêt n'est pas de débloquer d'autres écrans — `AppPreferences` lit déjà tous les réglages et la liste des enfants les honore — mais de pouvoir enfin **faire varier** le tri et l'ordre d'affichage des noms, codés sans avoir jamais été éprouvés. Les six autres destinations sont des fonctionnalités à part entière, à porter dans l'ordre normal.
 - **Deux incohérences de requête héritées de Flutter, reproduites telles quelles.** Elles fonctionnent aujourd'hui, mais reposent sur des propriétés des données actuelles plutôt que sur une règle explicite. À trancher une fois le portage terminé, c'est-à-dire à décider si l'on unifie ou si l'on documente l'intention.
 
-  - **Filtre des prestations techniques.** Le total du dossier enfant écarte `priceId >= 0`, le relevé mensuel écarte `priceId != -1`. Les deux sélectionnent exactement les mêmes lignes dans la base réelle : les seules valeurs non positives sont 269 prestations à `priceId = -1`, toutes de total nul. **Leur origine reste à élucider** : Yannick ne se souvient pas de ce qui les crée, et aucun écran porté à ce jour n'en produit. Les deux filtres divergeraient dès qu'un `priceId` valant 0 apparaîtrait.
+  - **Filtre des prestations techniques.** Le total du dossier enfant écarte `priceId >= 0`, le relevé mensuel écarte `priceId != -1`. Les deux sélectionnent exactement les mêmes lignes dans la base réelle : les seules valeurs non positives sont 269 prestations à `priceId = -1`, toutes de total nul. Les deux filtres divergeraient dès qu'un `priceId` valant 0 apparaîtrait. *(Leur origine, elle, n'est plus un mystère — voir ci-dessous.)*
   - **Calcul du net avec une déduction à montant fixe.** La liste des relevés retranche le montant **mois par mois** ; le PDF le multiplie par le nombre de mois du décompte. Les deux coïncident sur un pourcentage, ce qui est le cas actuel — la base ne contient qu'une déduction, en pourcentage. Une déduction à montant fixe les ferait diverger, et il faudrait alors savoir laquelle a raison.
 
 - **La hauteur de ligne de Poppins.** Les fichiers de police déclarent 1,5 cadratin, Flutter s'y tient, UIKit compose sur environ 1,41 : chaque ligne de texte perd à peu près 1,2 point, et l'écart s'additionne dès qu'on empile des cartes — 11,8 points à la quatrième carte de la saisie de prestations. Les tailles de police, elles, sont justes : les hauteurs d'encre concordent. Le corriger suppose d'imposer la boîte de ligne à chaque texte, donc de reprendre tous les écrans déjà validés ; c'est un chantier à part, à mener d'un coup plutôt qu'écran par écran. Le détail est dans « Poppins compose plus serré qu'en Flutter » ci-dessus.

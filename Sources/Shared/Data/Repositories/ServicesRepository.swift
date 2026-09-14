@@ -114,6 +114,36 @@ struct ServicesRepository: Sendable {
             .sorted { (order[$0.priceId] ?? .max) < (order[$1.priceId] ?? .max) }
     }
 
+    /// Les prestations d'une facture, **marqueurs compris** : les lignes à
+    /// `priceId = -1` rattachent un enfant à la facture sans rien lui ajouter.
+    func services(invoiceId: Int64) async throws -> [Service] {
+        try await database.writer().read { db in
+            try Service.fetchAll(
+                db,
+                sql: "SELECT * FROM services WHERE invoiceId = ? ORDER BY date DESC",
+                arguments: [invoiceId]
+            )
+        }
+    }
+
+    /// Les prestations d'une facture classées pour son PDF : l'ordre de la
+    /// grille tarifaire, les marqueurs rejetés en fin de liste.
+    func invoiceServices(invoiceId: Int64) async throws -> [Service] {
+        let services = try await services(invoiceId: invoiceId)
+        let order = try await PricesRepository().priceList()
+            .reduce(into: [Int64: Int]()) { order, price in
+                guard let id = price.id else { return }
+                order[id] = price.sortOrder
+            }
+
+        return services.sorted { first, second in
+            if first.priceId == -1 { return false }
+            if second.priceId == -1 { return true }
+
+            return (order[first.priceId] ?? .max) < (order[second.priceId] ?? .max)
+        }
+    }
+
     /// Supprime toute une journée, facturée ou non — la requête Flutter ne
     /// filtre pas sur `invoiced`.
     func deleteDay(childId: Int64, date: String) async throws {

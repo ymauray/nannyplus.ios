@@ -38,6 +38,31 @@ enum PdfText {
         )
     }
 
+    /// Une police quelconque du bundle — celles que proposent les réglages de
+    /// facture. Ses métriques viennent de la police elle-même, comme le fait
+    /// `Font.ttf` du paquet `pdf`, et non d'une table AFM.
+    static func font(_ postScriptName: String, size: CGFloat) -> Font {
+        guard let uiFont = UIFont(name: postScriptName, size: size) else {
+            return helvetica(size)
+        }
+
+        let ctFont = uiFont as CTFont
+
+        return Font(
+            uiFont: uiFont,
+            ascent: CTFontGetAscent(ctFont),
+            descent: CTFontGetDescent(ctFont)
+        )
+    }
+
+    static func helveticaOblique(_ size: CGFloat) -> Font {
+        Font(
+            uiFont: UIFont(name: "Helvetica-Oblique", size: size) ?? .italicSystemFont(ofSize: size),
+            ascent: 0.931 * size,
+            descent: 0.225 * size
+        )
+    }
+
     static func width(of string: String, font: Font) -> CGFloat {
         guard !string.isEmpty else { return 0 }
 
@@ -73,6 +98,7 @@ enum PdfText {
     static func draw(
         _ string: String,
         font: Font,
+        color: UIColor = .black,
         at x: CGFloat,
         baseline: CGFloat,
         in ctx: CGContext
@@ -84,7 +110,7 @@ enum PdfText {
         // cette symétrie, Core Text écrirait à l'envers.
         ctx.textMatrix = CGAffineTransform(scaleX: 1, y: -1)
         ctx.textPosition = CGPoint(x: x, y: baseline)
-        CTLineDraw(line(string, font), ctx)
+        CTLineDraw(line(string, font, color), ctx)
         ctx.restoreGState()
     }
 
@@ -105,12 +131,16 @@ enum PdfText {
         )
     }
 
-    private static func line(_ string: String, _ font: Font) -> CTLine {
+    private static func line(
+        _ string: String,
+        _ font: Font,
+        _ color: UIColor = .black
+    ) -> CTLine {
         let attributed = NSAttributedString(
             string: string,
             attributes: [
                 .font: font.uiFont,
-                .foregroundColor: UIColor.black,
+                .foregroundColor: color,
                 .kern: 0,
             ]
         )
