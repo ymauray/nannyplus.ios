@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Réplique de `lib/src/tab_view/invoice_list_tab_view.dart`.
 ///
@@ -6,8 +7,7 @@ import SwiftUI
 /// facture sur l'année, un bouton PDF, puis une ligne par facture. Un bouton
 /// sous la liste montre ou masque les factures payées.
 ///
-/// **Ne sont pas portés** : la création d'une facture et la relance par SMS du
-/// menu.
+/// **N'est pas portée** : la création d'une facture.
 struct InvoiceListTabView: View {
     let child: Child
     /// Supprimer une facture rend ses prestations à facturer : le total du
@@ -192,7 +192,7 @@ struct InvoiceListTabView: View {
 
             Menu {
                 Button {
-                    // La relance par SMS n'est pas encore portée.
+                    notify(invoice)
                 } label: {
                     Label("Notifier", systemImage: "alarm")
                 }
@@ -225,6 +225,34 @@ struct InvoiceListTabView: View {
         }
         .padding(.leading, 12)
         .padding(.top, Theme.smallPadding)
+    }
+
+    /// Ouvre Messages avec le numéro du dossier et le gabarit de relance.
+    ///
+    /// Côté Flutter, un dossier sans numéro fait planter l'écran — le cubit
+    /// déréférence `child.phoneNumber!`. On signale l'échec à la place.
+    private func notify(_ invoice: Invoice) {
+        guard
+            let url = InvoiceNotification.url(
+                phoneNumber: child.phoneNumber ?? "",
+                message: InvoiceNotification.message(
+                    template: AppPreferences.shared.notificationMessage,
+                    invoice: invoice
+                )
+            )
+        else {
+            snackbar.failure("Impossible d'ouvrir l'application de SMS")
+
+            return
+        }
+
+        UIApplication.shared.open(url) { opened in
+            if opened {
+                snackbar.success("Notification envoyée")
+            } else {
+                snackbar.failure("Impossible d'ouvrir l'application de SMS")
+            }
+        }
     }
 
     // MARK: Documents

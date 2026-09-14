@@ -84,7 +84,7 @@ la contrainte du projet.
 | Tiroir — Réinitialiser les messages d'aide | **fait** |
 | Tiroir — Réinitialiser la base (debug) | **fait** |
 | Dossier enfant — onglet Prestations | **fait**, saisie comprise |
-| Dossier enfant — onglet Factures | **fait** : liste, filtre des payées, marquage, suppression et les deux PDF |
+| Dossier enfant — onglet Factures | **fait**, sauf la création d'une facture |
 | Dossier enfant — onglet Information | **en maquette** |
 | Options — menu | **fait** |
 | Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
@@ -411,7 +411,7 @@ Le bouton flottant ouvre la saisie sur aujourd'hui et sur l'onglet des tarifs ; 
 - **Supprimer une facture rend ses prestations à facturer** plutôt que de les supprimer avec elle, d'où le rechargement du bandeau et de l'onglet des prestations.
 - Le menu d'une ligne reprend les trois entrées de Flutter, « Marquer comme payée » et « Supprimer » étant désactivées sur une facture déjà payée.
 
-**Ne sont pas portés**, faute de captures : la création d'une facture et la relance par SMS du menu. Les commandes sont en place, sans action.
+**N'est pas portée**, faute de captures : la création d'une facture. Le bouton flottant est en place, sans action.
 
 **Vérifié sur simulateur** contre la référence : l'écart de position des huit lignes de 2026 va de 0,8 à 1,3 point, sans s'accumuler. Le cas des impayées, dont il n'existe pas de capture, a été éprouvé en désarchivant provisoirement un dossier qui en porte douze : les lignes sortent bien en rouge et sans italique. Le marquage d'une facture comme payée a été mené jusqu'en base puis défait, le dossier réarchivé.
 
@@ -422,6 +422,16 @@ Le bouton flottant ouvre la saisie sur aujourd'hui et sur l'onglet des tarifs ; 
 `toStringAsFixed(2)` de Dart arrondit la moitié **vers le haut** ; `String(format: "%.2f")` l'arrondit vers le **pair le plus proche**. Une moyenne de 636,125 s'écrivait donc « 636.12 » chez nous et « 636.13 » sur la référence. Corrigé dans `twoDecimals`, en arrondissant la valeur multipliée par cent.
 
 Reste un écart de principe, jugé sans conséquence : Dart arrondit la valeur binaire exacte du nombre, nous sa valeur multipliée par cent. Une valeur qui n'est qu'approximativement une moitié — 2,675 vaut en réalité 2,67499… — remonte ici à 2.68 quand Dart descend à 2.67. Aucun montant réel n'est dans ce cas, les moitiés exactes venant des moyennes.
+
+**Relance par SMS portée** (`InvoiceNotification.swift`). L'entrée « Notifier » du menu d'une facture ouvre Messages avec le destinataire et le texte déjà remplis ; l'app ne dessine rien d'autre que le bandeau qui dit si elle y est parvenue. Le gabarit vient des paramètres de la facture, `{{date}}` et `{{total}}` remplacés, et le numéro est débarrassé de tout ce qui n'est ni chiffre, ni point, ni tiret, ni plus — les libellés que l'utilisatrice y met.
+
+L'adresse prend la forme `sms:<numéro>&body=<message>`, l'esperluette étant ce qu'attend iOS là où Android prend un point d'interrogation.
+
+**Un écart technique nécessaire** : le message est encodé, ce que Flutter ne fait pas — il assemble l'adresse par interpolation et la confie telle quelle à `Uri.parse`. Sans encodage, `URL(string:)` refuse la moindre espace, et le gabarit par défaut en compte une trentaine. L'encodage couvre aussi `&` et `=`, pour qu'un gabarit qui en contiendrait ne coupe pas l'adresse en deux.
+
+**Un plantage évité** : côté Flutter, un dossier sans numéro déréférence `child.phoneNumber!` et fait tomber l'écran. On signale l'échec à la place. « Impossible d'ouvrir l'application de SMS » est par ailleurs écrit en français, `fr.po` ne traduisant pas ce message.
+
+Vérifié sur simulateur : toucher « Notifier » bascule bien sur Messages, la barre d'état affichant le retour vers Nanny+.
 
 **Les deux PDF de facturation portés** (`Sources/Shared/Features/Invoices/`). La facture qu'ouvre un appui sur une ligne, et le relevé annuel de l'enfant qu'ouvre le bouton PDF d'une année. Tous deux en A4 portrait, marge 50, en-tête dans les polices des réglages de facture, logo ancré en haut à droite.
 

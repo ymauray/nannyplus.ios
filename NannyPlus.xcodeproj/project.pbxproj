@@ -34,6 +34,7 @@
 		55B35E619E94DD1C7B9C43A1 /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6432A9D5A23C8026E77601D8 /* OptionsView.swift */; };
 		561C42A17F0F174403C7E062 /* InvoiceDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6E333B3F047B9DA556DAA /* InvoiceDocument.swift */; };
 		57265E437650AE531A5BBF5E /* InvoicePDFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E8C110F493823D81DFEDBA /* InvoicePDFTests.swift */; };
+		5888419AEB8BEDB2BCBF1EE9 /* InvoiceNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D947A807727E3EEEA71DD67 /* InvoiceNotificationTests.swift */; };
 		58DFE42763E5C6016E308B5E /* HelpCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95995A597391061C7718AE07 /* HelpCard.swift */; };
 		5AFFADA1661B1BE0609F5A74 /* Snackbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A7374C8175BA570B446B3F /* Snackbar.swift */; };
 		5B06F4B86931717E270861C2 /* CurvedHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81413E81B9F887A907E51D56 /* CurvedHeader.swift */; };
@@ -59,6 +60,7 @@
 		84B347EB4784B7B363B26AD7 /* TimeInputDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC48DB4DD278E90496A8ECB /* TimeInputDialog.swift */; };
 		85D6EAAB5EF4DEF389708DF9 /* ChildDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5D5E045C206C6E0D388E2 /* ChildDetailView.swift */; };
 		89CDD7821194EF87A994CAF2 /* MainDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6B9CC10BF3DF696E938655 /* MainDrawer.swift */; };
+		8D6F7FEB1DC757D8DF58F554 /* InvoiceNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC93E49182344CC9F62BFE1 /* InvoiceNotification.swift */; };
 		8F20737453DCBBADCFFDD979 /* VacationPeriodEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A0E0CA2DF65070DC0D4042 /* VacationPeriodEdit.swift */; };
 		91E32F52820281EA7D63A64A /* Oswald-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4571301071B7EACE2F119BE7 /* Oswald-Regular.ttf */; };
 		9626AB33EC668A3BAC9FCE4F /* ServiceListTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA6446F5A5030DC851DFDDE /* ServiceListTabView.swift */; };
@@ -112,6 +114,7 @@
 		06367E739B61AF51F7C4FF04 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Bold.ttf"; sourceTree = "<group>"; };
 		07E011B5A74D7242C1087C31 /* DeductionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeductionListView.swift; sourceTree = "<group>"; };
 		0AA6446F5A5030DC851DFDDE /* ServiceListTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceListTabView.swift; sourceTree = "<group>"; };
+		0AC93E49182344CC9F62BFE1 /* InvoiceNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceNotification.swift; sourceTree = "<group>"; };
 		0AE9F69D4053C285DF097217 /* Poppins-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Medium.ttf"; sourceTree = "<group>"; };
 		0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaTests.swift; sourceTree = "<group>"; };
 		0ECA73DB9C1C3E673A7F4AA0 /* WeeklyScheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyScheduleTests.swift; sourceTree = "<group>"; };
@@ -148,6 +151,7 @@
 		6432A9D5A23C8026E77601D8 /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		6867D9DAB2F0090AEB3C6B73 /* FlexRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexRow.swift; sourceTree = "<group>"; };
 		69AEC803DAD11C0C9469E35D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		6D947A807727E3EEEA71DD67 /* InvoiceNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceNotificationTests.swift; sourceTree = "<group>"; };
 		7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesRepository.swift; sourceTree = "<group>"; };
 		74A0E0CA2DF65070DC0D4042 /* VacationPeriodEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPeriodEdit.swift; sourceTree = "<group>"; };
 		7F8D966840B26450D3C2E74D /* ServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTests.swift; sourceTree = "<group>"; };
@@ -385,6 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */,
+				6D947A807727E3EEEA71DD67 /* InvoiceNotificationTests.swift */,
 				11E8C110F493823D81DFEDBA /* InvoicePDFTests.swift */,
 				8A27175114630AF1A175E323 /* InvoiceTests.swift */,
 				0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */,
@@ -516,6 +521,7 @@
 			children = (
 				ECE52E08139CF9ACF86516C2 /* ChildStatementPDF.swift */,
 				C6F6E333B3F047B9DA556DAA /* InvoiceDocument.swift */,
+				0AC93E49182344CC9F62BFE1 /* InvoiceNotification.swift */,
 				04671C3A8821B0057F71C6F7 /* InvoicePDF.swift */,
 			);
 			path = Invoices;
@@ -666,6 +672,7 @@
 				19681AB429C84C04F844D388 /* Invoice.swift in Sources */,
 				561C42A17F0F174403C7E062 /* InvoiceDocument.swift in Sources */,
 				482A2150E14FD494BF2F5604 /* InvoiceListTabView.swift in Sources */,
+				8D6F7FEB1DC757D8DF58F554 /* InvoiceNotification.swift in Sources */,
 				ADB33BF1D380C37049CF095C /* InvoicePDF.swift in Sources */,
 				6C0F29EF9C3DBD5D3412EEE4 /* InvoiceSettingsView.swift in Sources */,
 				680CCDD7177654E86E7D7187 /* InvoicesRepository.swift in Sources */,
@@ -712,6 +719,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */,
+				5888419AEB8BEDB2BCBF1EE9 /* InvoiceNotificationTests.swift in Sources */,
 				57265E437650AE531A5BBF5E /* InvoicePDFTests.swift in Sources */,
 				61C1326F1CD8FCAE587125A9 /* InvoiceTests.swift in Sources */,
 				1F7E84A469A1F341C026EE6B /* SchemaTests.swift in Sources */,
