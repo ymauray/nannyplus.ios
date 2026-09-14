@@ -6,9 +6,8 @@ import SwiftUI
 /// facture sur l'année, un bouton PDF, puis une ligne par facture. Un bouton
 /// sous la liste montre ou masque les factures payées.
 ///
-/// **Ne sont pas portés** : la création d'une facture, le PDF d'une facture
-/// qu'ouvre un appui sur sa ligne, le décompte annuel de l'enfant qu'ouvre le
-/// bouton PDF, et la relance par SMS du menu.
+/// **Ne sont pas portés** : la création d'une facture et la relance par SMS du
+/// menu.
 struct InvoiceListTabView: View {
     let child: Child
     /// Supprimer une facture rend ses prestations à facturer : le total du
@@ -20,6 +19,7 @@ struct InvoiceListTabView: View {
     @State private var showPaid = false
     @State private var invoiceToDelete: Invoice?
     @State private var invoiceToMarkPaid: Invoice?
+    @State private var preview: PreviewRequest?
     @State private var snackbar = SnackbarPresenter()
 
     private let repository = InvoicesRepository()
@@ -49,6 +49,16 @@ struct InvoiceListTabView: View {
         }
         .snackbar(snackbar)
         .task { await load() }
+        .fullScreenCover(item: $preview) { request in
+            PdfPreviewView(
+                title: request.title,
+                fileName: request.fileName,
+                document: request.document,
+                onClose: { preview = nil }
+            ) {
+                Text(request.subtitle)
+            }
+        }
         .alert(
             "Supprimer",
             isPresented: .constant(invoiceToDelete != nil),
@@ -127,7 +137,7 @@ struct InvoiceListTabView: View {
                     .flex(0)
 
                 Button {
-                    // `ChildStatementView` n'est pas encore porté.
+                    Task { await openStatement(year.year) }
                 } label: {
                     // `Icons.picture_as_pdf` n'a pas d'équivalent : aucun
                     // symbole SF ne porte la mention « PDF ».
@@ -170,11 +180,15 @@ struct InvoiceListTabView: View {
                 .font(font)
                 .foregroundStyle(color)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(.rect)
+                .onTapGesture { Task { await openInvoice(invoice) } }
 
             Text(invoice.total.twoDecimals)
                 .font(font)
                 .foregroundStyle(color)
                 .padding(.trailing, Theme.smallPadding)
+                .contentShape(.rect)
+                .onTapGesture { Task { await openInvoice(invoice) } }
 
             Menu {
                 Button {
@@ -211,6 +225,89 @@ struct InvoiceListTabView: View {
         }
         .padding(.leading, 12)
         .padding(.top, Theme.smallPadding)
+    }
+
+    // MARK: Documents
+
+    struct PreviewRequest: Identifiable {
+        let id = UUID()
+        let title: String
+        let subtitle: String
+        let fileName: String
+        let document: Data
+    }
+
+    /// Les enfants d'une facture viennent de **toutes** ses prestations,
+    /// marqueurs compris : c'est ce qui fait apparaître une fratrie dans le
+    /// cartouche du titre.
+    private func openInvoice(_ invoice: Invoice) async {
+        guard let id = invoice.id else { return }
+
+        do {
+            let services = ServicesRepository()
+            let rows = try await services.invoiceServices(invoiceId: id)
+            var ordered: [Int64] = []
+            for service in rows where !ordered.contains(service.childId) {
+                ordered.append(service.childId)
+            }
+
+            let repository = ChildrenRepository()
+            var names: [(id: Int64, firstName: String)] = []
+            for childId in ordered {
+                names.append((
+                    id: childId,
+                    firstName: try await repository.read(id: childId)?.firstName ?? ""
+                ))
+            }
+
+            preview = PreviewRequest(
+                title: child.displayName,
+                subtitle: "Facture du \(Self.longDate(invoice.date))",
+                fileName: "facture_\(invoice.number).pdf",
+                document: InvoicePDF.document(for: InvoicePDF.Content(
+                    invoice: invoice,
+                    services: rows,
+                    children: names
+                ))
+            )
+        } catch {
+            snackbar.failure(String(describing: error))
+        }
+    }
+
+    private func openStatement(_ year: Int) async {
+        guard let childId = child.id else { return }
+
+        do {
+            let services = ServicesRepository()
+            let repository = ChildrenRepository()
+            var entries: [ChildStatementPDF.Entry] = []
+
+            for invoice in try await self.repository.invoices(childId: childId, year: year) {
+                let rows = try await services.services(invoiceId: invoice.id ?? 0)
+                let amounts = ChildStatementPDF.amounts(of: invoice, services: rows)
+                var line: [(id: Int64, name: String, amount: Double)] = []
+
+                for id in Set(rows.map(\.childId)).sorted() {
+                    line.append((
+                        id: id,
+                        name: try await repository.read(id: id)?.displayName ?? String(id),
+                        amount: amounts[id] ?? 0
+                    ))
+                }
+
+                entries.append(ChildStatementPDF.Entry(invoice: invoice, children: line))
+            }
+
+            preview = PreviewRequest(
+                title: child.displayName,
+                subtitle: "Décompte annuel \(year)",
+                fileName: "relevé_\(year).pdf",
+                document: ChildStatementPDF.document(year: year, entries: entries)
+            )
+        } catch {
+            snackbar.failure(String(describing: error))
+        }
     }
 
     // MARK: Données
