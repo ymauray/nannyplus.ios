@@ -11,23 +11,27 @@ import SwiftUI
 struct TimeInputDialog: View {
     let initialHours: Int?
     let initialMinutes: Int?
+    /// De 0 à 12 pour une durée, de 7 à 19 pour une heure de la journée.
+    let hours: [Int]
     let onSave: (Int, Int) -> Void
     let onDismiss: () -> Void
 
-    @State private var hours: Int?
+    @State private var selectedHours: Int?
     @State private var minutes: Int?
 
     init(
         initialHours: Int? = nil,
         initialMinutes: Int? = nil,
+        hours: [Int] = Array(0 ... 12),
         onSave: @escaping (Int, Int) -> Void,
         onDismiss: @escaping () -> Void
     ) {
         self.initialHours = initialHours
         self.initialMinutes = initialMinutes
+        self.hours = hours
         self.onSave = onSave
         self.onDismiss = onDismiss
-        _hours = State(initialValue: initialHours)
+        _selectedHours = State(initialValue: initialHours)
         _minutes = State(initialValue: initialMinutes)
     }
 
@@ -39,7 +43,7 @@ struct TimeInputDialog: View {
 
             VStack(spacing: Theme.smallPadding) {
                 HStack(spacing: Theme.smallPadding) {
-                    dropdown("Heures", selection: $hours, values: Array(0 ... 12)) {
+                    dropdown("Heures", selection: $selectedHours, values: hours) {
                         String($0)
                     }
 
@@ -49,7 +53,7 @@ struct TimeInputDialog: View {
                 }
 
                 Button {
-                    onSave(hours ?? 0, minutes ?? 0)
+                    onSave(selectedHours ?? 0, minutes ?? 0)
                 } label: {
                     Text("Enregistrer")
                         .font(Poppins.regular(14))
