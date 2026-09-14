@@ -84,7 +84,8 @@ la contrainte du projet.
 | Tiroir — Réinitialiser les messages d'aide | **fait** |
 | Tiroir — Réinitialiser la base (debug) | **fait** |
 | Dossier enfant — onglet Prestations | **fait**, saisie comprise |
-| Dossier enfant — onglets Factures et Information | **en maquette** |
+| Dossier enfant — onglet Factures | **fait** : liste, filtre des payées, marquage et suppression |
+| Dossier enfant — onglet Information | **en maquette** |
 | Options — menu | **fait** |
 | Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
 | Options — Déductions | **fait**, idem |
@@ -403,6 +404,25 @@ Le bouton flottant ouvre la saisie sur aujourd'hui et sur l'onglet des tarifs ; 
 
 **Une icône sans équivalent** : `Icons.edit_calendar` — un calendrier frappé d'un crayon — n'a pas de symbole SF correspondant. On affiche un simple `calendar`. C'est l'approximation la plus faible du lot, avec celle du planning hebdomadaire.
 
+**Onglet Factures porté** (`Sources/Shared/Features/ChildDetail/InvoiceListTabView.swift`, `Invoice.swift`). Une carte par année, la plus récente en haut : l'année, la moyenne d'une facture sur l'année, un bouton PDF, puis une ligne par facture. Sous la liste, un bouton montre ou masque les factures payées ; sans facture ouverte, une carte annonce « Aucune facture ouverte trouvée ».
+
+- **Une facture payée s'écrit en italique, une facture en retard en rouge.** Le retard se mesure au délai des paramètres de l'application, dix jours par défaut. Le style est `bodyLarge`, soit Poppins Medium 14 ; l'italique retombe sur la graisse normale, seule fonte italique embarquée.
+- **La moyenne ignore le filtre** : elle porte sur toutes les factures de l'année, payées comprises, alors que la liste n'en montre qu'une partie. Recoupé sur la référence — 636.13 en 2026, 285.68 en 2025.
+- **Supprimer une facture rend ses prestations à facturer** plutôt que de les supprimer avec elle, d'où le rechargement du bandeau et de l'onglet des prestations.
+- Le menu d'une ligne reprend les trois entrées de Flutter, « Marquer comme payée » et « Supprimer » étant désactivées sur une facture déjà payée.
+
+**Ne sont pas portés**, faute de captures : la création d'une facture, le PDF d'une facture qu'ouvre un appui sur sa ligne, le décompte annuel de l'enfant qu'ouvre le bouton PDF, et la relance par SMS du menu. Les commandes sont en place, sans action.
+
+**Vérifié sur simulateur** contre la référence : l'écart de position des huit lignes de 2026 va de 0,8 à 1,3 point, sans s'accumuler. Le cas des impayées, dont il n'existe pas de capture, a été éprouvé en désarchivant provisoirement un dossier qui en porte douze : les lignes sortent bien en rouge et sans italique. Le marquage d'une facture comme payée a été mené jusqu'en base puis défait, le dossier réarchivé.
+
+**Deux défauts de mise en page corrigés au passage.** Un `.padding(.bottom, 8)` posé sur un `ForEach` s'applique à **chaque** élément et non une fois en bas : les rangs faisaient 64 points au lieu de 56, et l'écart s'accumulait de carte en carte. Et `FlexRow` alignait ses enfants en haut, là où une `Row` de Flutter les centre sur l'axe transversal.
+
+### L'arrondi des montants
+
+`toStringAsFixed(2)` de Dart arrondit la moitié **vers le haut** ; `String(format: "%.2f")` l'arrondit vers le **pair le plus proche**. Une moyenne de 636,125 s'écrivait donc « 636.12 » chez nous et « 636.13 » sur la référence. Corrigé dans `twoDecimals`, en arrondissant la valeur multipliée par cent.
+
+Reste un écart de principe, jugé sans conséquence : Dart arrondit la valeur binaire exacte du nombre, nous sa valeur multipliée par cent. Une valeur qui n'est qu'approximativement une moitié — 2,675 vaut en réalité 2,67499… — remonte ici à 2.68 quand Dart descend à 2.67. Aucun montant réel n'est dans ce cas, les moitiés exactes venant des moyennes.
+
 ### Piège récurrent : lire le mauvais fichier
 
 Trois fois dans la session, une fausse piste est née d'un chemin périmé ou ambigu. Le conteneur d'application change d'identifiant à chaque réinstallation. `UserDefaults` écrit sur disque de façon différée. Et surtout, **deux fichiers de préférences coexistent** pour une app de simulateur : celui du niveau appareil (`data/Library/Preferences/`) et celui du conteneur (`data/Containers/Data/Application/<id>/Library/Preferences/`). C'est le second que lit l'app. Un `find ... | head -1` tombe sur le premier.
@@ -458,7 +478,7 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
 
 Le menu Options est **entièrement porté**. Restent deux blocs, et ils se valent :
 
-- **Le contenu du dossier enfant**, dont seule la coque existe : saisie des prestations, liste des factures, édition des informations. C'est le cœur de l'usage quotidien.
-- **La facturation**, le morceau le plus exposé avec les PDF de relevés, puisque la facture part chez les parents. Elle englobe la relance par SMS, dont le gabarit est déjà porté dans les paramètres.
+- **La facturation**, le morceau le plus exposé avec les PDF de relevés, puisque la facture part chez les parents : création d'une facture, PDF de la facture, décompte annuel de l'enfant, et relance par SMS dont le gabarit est déjà porté dans les paramètres.
+- **L'onglet Information du dossier enfant**, dernier des trois à rester une maquette, et le formulaire enfant qui va avec.
 
 Demander à Yannick une capture de l'écran visé avant de commencer, selon la méthode convenue.

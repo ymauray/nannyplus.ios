@@ -40,10 +40,11 @@ struct FlexRow: Layout {
         var x = bounds.minX
 
         for (subview, width) in zip(subviews, widths(in: bounds.width, subviews: subviews)) {
+            // Une `Row` de Flutter centre ses enfants sur l'axe transversal.
             subview.place(
-                at: CGPoint(x: x, y: bounds.minY),
-                anchor: .topLeading,
-                proposal: ProposedViewSize(width: width, height: bounds.height)
+                at: CGPoint(x: x, y: bounds.midY),
+                anchor: .leading,
+                proposal: ProposedViewSize(width: width, height: nil)
             )
             x += width
         }

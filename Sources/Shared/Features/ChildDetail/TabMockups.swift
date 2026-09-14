@@ -1,37 +1,8 @@
 import SwiftUI
 
-// Maquettes des onglets du dossier enfant qui restent à porter : la liste des
-// factures et l'édition des informations. Elles reproduisent ce que montrent
-// les captures de référence, afin de juger la coque, sans rien lire ni écrire.
-
-/// Maquette de `InvoiceListTabView`.
-struct InvoicesTabMockup: View {
-    var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            VStack(spacing: 0) {
-                MockupCard {
-                    Text("Aucune facture ouverte trouvée")
-                        .font(Poppins.regular(14))
-                        .foregroundStyle(Theme.almostBlack)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-
-                Button("Afficher les factures payées") {}
-                    .font(Poppins.regular(14))
-                    .foregroundStyle(Theme.primary)
-                    .buttonStyle(.plain)
-                    .focusEffectDisabled()
-                    .padding(.top, Theme.smallPadding)
-
-                Spacer()
-            }
-            .padding(Theme.smallPadding)
-
-            FloatingActionButton {}
-                .padding(Theme.defaultPadding)
-        }
-    }
-}
+// Maquette du dernier onglet du dossier enfant qui reste à porter : l'édition
+// des informations. Les valeurs viennent du dossier réel, mais rien n'est
+// modifiable et le planning n'est pas lu.
 
 /// Maquette de `ChildInfoTabView`. Les valeurs viennent du dossier réel, seule
 /// la mise en forme est provisoire — pas d'édition, et le planning n'est pas lu.
