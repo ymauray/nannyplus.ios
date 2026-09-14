@@ -85,7 +85,7 @@ la contrainte du projet.
 | Tiroir — Réinitialiser la base (debug) | **fait** |
 | Dossier enfant — onglet Prestations | **fait**, saisie comprise |
 | Dossier enfant — onglet Factures | **fait**, création comprise |
-| Dossier enfant — onglet Information | **fait**, sauf le planning de l'enfant |
+| Dossier enfant — onglet Information | **fait**, planning de l'enfant compris |
 | Options — menu | **fait** |
 | Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
 | Options — Déductions | **fait**, idem |
@@ -422,13 +422,22 @@ L'onglet est désormais complet.
 
 Reste un écart de principe, jugé sans conséquence : Dart arrondit la valeur binaire exacte du nombre, nous sa valeur multipliée par cent. Une valeur qui n'est qu'approximativement une moitié — 2,675 vaut en réalité 2,67499… — remonte ici à 2.68 quand Dart descend à 2.67. Aucun montant réel n'est dans ce cas, les moitiés exactes venant des moyennes.
 
+**Planning de l'enfant porté** (`ChildScheduleView.swift`). Le crayon de la première carte de la fiche ouvre l'écran : la couleur de l'enfant dans les plannings, puis un créneau par carte — le jour, l'heure de début, l'heure de fin, et de quoi dupliquer ou supprimer. Le « + » de la barre de titre ajoute un créneau sans jour, de 7:00 à 18:00.
+
+- **Le tri a lieu à la fermeture**, pas à chaque changement : les créneaux se renumérotent par jour, puis par heure de début, puis de fin. Un créneau sans jour passe en dernier, et la liste s'affiche entre-temps dans l'ordre où elle a été laissée.
+- **Lire la couleur d'un enfant la crée** : un dossier qui n'en a pas s'en voit attribuer une, violette, enregistrée aussitôt. Défaut conservé.
+- La boîte de saisie des heures est celle des prestations, avec une autre plage : de 7 à 19 heures ici, de 0 à 12 là-bas, puisqu'on saisit une heure de la journée et non une durée.
+- **Samedi et dimanche ne sont pas proposés** par le menu des jours, alors que la base les accepte et que le tri sait les classer.
+
+**Deux substitutions natives** : le choix de couleur passe du nuancier Material de `flex_color_picker` à celui du système, et `ColorIndicator` devient un simple rectangle de 40 points, sa hauteur par défaut.
+
+**Vérifié sur simulateur** contre la référence, puis en base : le « + » crée bien un créneau sans jour de 7:00 à 18:00 en fin de liste, et la croix le retire. Deux corrections de mise en page au passage — les heures passaient à la ligne faute de `fixedSize`, et le rectangle de couleur faisait 60 points au lieu de 40.
+
 **Onglet Information porté** (`ChildInfoTabView.swift`, `Document.swift`). Une carte par information : un libellé en petit, la valeur en gras dessous, et parfois une commande à droite. La photo de profil coiffe la liste quand le dossier en porte une ; les téléphones secondaires et le texte libre n'apparaissent que s'ils sont remplis.
 
 - **La réserve d'heures se règle ici**, par deux boutons qui écrivent aussitôt en base. Rien n'empêche de descendre sous zéro, comme côté Flutter.
 - **Les documents montrent où ils se trouvent** : un cylindre vert pour ceux rangés dans la base, une coche verte pour un fichier retrouvé sur le disque, un point d'exclamation rouge sinon. C'est le défaut que les SPECS annonçaient — deux générations de code coexistent, et la base réelle en porte cinq de l'ancienne et trois de la nouvelle. Les toucher ouvre le document dans le visualiseur du système, l'équivalent d'`OpenFile`.
 - **« Pas d'allergie connue » ne remplace qu'un champ nul**, pas un champ vidé : un dossier dont on a effacé les allergies affiche une carte sans valeur. Défaut conservé.
-
-**N'est pas porté** : le planning de l'enfant qu'ouvre le crayon de la première carte — `ChildScheduleView` est un écran à part entière, à traiter avec le formulaire enfant.
 
 **Vérifié sur simulateur** contre la référence : les sept cartes de Zoé Mauray tombent à 4 points près au départ, l'écart se réduisant ensuite — c'est la hauteur de ligne de Poppins, déjà au carnet. La réserve d'heures a été montée puis redescendue jusqu'en base, et le PDF d'une convention rangée en base s'est ouvert en aperçu.
 

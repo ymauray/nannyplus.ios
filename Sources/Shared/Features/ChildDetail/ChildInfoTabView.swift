@@ -8,8 +8,7 @@ import SwiftUI
 /// et le planning en portent une ; tout le reste se modifie par le crayon de la
 /// barre de titre.
 ///
-/// **N'est pas porté** : le planning de l'enfant qu'ouvre le crayon de la
-/// première carte — `ChildScheduleView` est un écran à part entière.
+/// Le crayon de la première carte ouvre le planning de l'enfant.
 struct ChildInfoTabView: View {
     let child: Child
 
@@ -17,6 +16,7 @@ struct ChildInfoTabView: View {
     @State private var hasSchedule: Bool?
     @State private var documents: [Document] = []
     @State private var preview: URL?
+    @State private var isEditingSchedule = false
     @State private var snackbar = SnackbarPresenter()
 
     init(child: Child) {
@@ -70,15 +70,19 @@ struct ChildInfoTabView: View {
         .snackbar(snackbar)
         .task { await load() }
         .quickLook(item: $preview)
+        .fullScreenCover(isPresented: $isEditingSchedule) {
+            ChildScheduleView(child: child) {
+                isEditingSchedule = false
+                Task { await load() }
+            }
+        }
     }
 
     // MARK: Cartes particulières
 
     private var schedule: some View {
         card("Planning", scheduleLabel) {
-            Button {
-                // `ChildScheduleView` n'est pas encore porté.
-            } label: {
+            Button { isEditingSchedule = true } label: {
                 Image(systemName: "pencil")
                     .font(.system(size: 24))
                     .foregroundStyle(Theme.almostBlack)

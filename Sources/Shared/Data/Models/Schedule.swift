@@ -29,6 +29,30 @@ extension Period {
     /// que le planning annuel classe ses demi-cases.
     var isMorning: Bool { hourFrom < 12 }
 
+    /// `HH:mm`, heures et minutes sur deux chiffres.
+    var fromLabel: String { String(format: "%02d:%02d", hourFrom, minuteFrom) }
+
+    var toLabel: String { String(format: "%02d:%02d", hourTo, minuteTo) }
+
+    /// L'ordre dans lequel le planning se range : par jour de la semaine, puis
+    /// par heure de début, puis par heure de fin. Un jour inconnu passe en
+    /// dernier.
+    static func isBefore(_ first: Period, _ second: Period) -> Bool {
+        let firstDay = dayOrder(first.day)
+        let secondDay = dayOrder(second.day)
+
+        if firstDay != secondDay { return firstDay < secondDay }
+        if first.startMinute != second.startMinute { return first.startMinute < second.startMinute }
+
+        return first.endMinute < second.endMinute
+    }
+
+    static func dayOrder(_ day: String) -> Int {
+        ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+            .firstIndex(of: day)
+            .map { $0 + 1 } ?? 9999
+    }
+
     /// Le créneau couvre-t-il le quart d'heure commençant à `hour:minute` ?
     /// Début inclus, fin exclue, comme côté Flutter.
     func covers(hour: Int, minute: Int) -> Bool {

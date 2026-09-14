@@ -17,6 +17,7 @@
 		0F99B31D6D6D55BA6259B391 /* WeeklySchedulePDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600ACB7C71511AA19FDDA893 /* WeeklySchedulePDF.swift */; };
 		124F385E0B488FF03FF241BE /* DeductionsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78B643AD9419AF190BFD1D /* DeductionsRepository.swift */; };
 		129CC96B1B2D24FCA782B3D2 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C5A73BE113719713812763 /* Poppins-Italic.ttf */; };
+		13740A2136DD33434EAC3B35 /* ChildScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78E2A2F5DD7DE3AF95B084FC /* ChildScheduleView.swift */; };
 		19681AB429C84C04F844D388 /* Invoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34453B01BBD51D22F1BB4B8E /* Invoice.swift */; };
 		1B2BFBF043C6C5C80B894374 /* DeductionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E011B5A74D7242C1087C31 /* DeductionListView.swift */; };
 		1F7E84A469A1F341C026EE6B /* SchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */; };
@@ -77,6 +78,7 @@
 		A6524FDC6BEB3DA667E3913C /* MysteryQuest-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3093814810C52DEF35676C2 /* MysteryQuest-Regular.ttf */; };
 		A8539E46F3C89BA7F21DD56A /* STCaiyun.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E199B49199ADD037885DB36F /* STCaiyun.ttf */; };
 		ADB33BF1D380C37049CF095C /* InvoicePDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04671C3A8821B0057F71C6F7 /* InvoicePDF.swift */; };
+		B17CF26272C9AA6829EBE4E7 /* ChildScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C418215313D0CBB6BA712611 /* ChildScheduleTests.swift */; };
 		B2A9EC078F7132B28F2C4BDE /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5156BE26DDF3E7CBB1E0E352 /* Poppins-Regular.ttf */; };
 		B438D78DB8E314ED50BE48B2 /* PricesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222B93600CFF1B1258C0DABB /* PricesRepository.swift */; };
 		B4826C7BECFAEE232BEF70AA /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69AEC803DAD11C0C9469E35D /* MainTabView.swift */; };
@@ -161,6 +163,7 @@
 		6D947A807727E3EEEA71DD67 /* InvoiceNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceNotificationTests.swift; sourceTree = "<group>"; };
 		7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesRepository.swift; sourceTree = "<group>"; };
 		74A0E0CA2DF65070DC0D4042 /* VacationPeriodEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPeriodEdit.swift; sourceTree = "<group>"; };
+		78E2A2F5DD7DE3AF95B084FC /* ChildScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildScheduleView.swift; sourceTree = "<group>"; };
 		7F8D966840B26450D3C2E74D /* ServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTests.swift; sourceTree = "<group>"; };
 		81413E81B9F887A907E51D56 /* CurvedHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvedHeader.swift; sourceTree = "<group>"; };
 		81C5A73BE113719713812763 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Italic.ttf"; sourceTree = "<group>"; };
@@ -184,6 +187,7 @@
 		B447FAD7E04AF1A72D7CA2BE /* Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
 		B8192FDE8D5F7321BC723B49 /* StatementListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementListView.swift; sourceTree = "<group>"; };
 		BDC48DB4DD278E90496A8ECB /* TimeInputDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInputDialog.swift; sourceTree = "<group>"; };
+		C418215313D0CBB6BA712611 /* ChildScheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildScheduleTests.swift; sourceTree = "<group>"; };
 		C6F6E333B3F047B9DA556DAA /* InvoiceDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDocument.swift; sourceTree = "<group>"; };
 		C880A009ACE5DE3FE84842CF /* PrivacySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsView.swift; sourceTree = "<group>"; };
 		CB32BD9D0B330BFE250733A9 /* ServiceFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceFormView.swift; sourceTree = "<group>"; };
@@ -244,6 +248,7 @@
 			children = (
 				FAD5D5E045C206C6E0D388E2 /* ChildDetailView.swift */,
 				CB73F8B4CA3E6B440AE13B99 /* ChildInfoTabView.swift */,
+				78E2A2F5DD7DE3AF95B084FC /* ChildScheduleView.swift */,
 				A26F1C37C0DD88B65C0B1B7D /* InvoiceListTabView.swift */,
 				CB32BD9D0B330BFE250733A9 /* ServiceFormView.swift */,
 				0AA6446F5A5030DC851DFDDE /* ServiceListTabView.swift */,
@@ -404,6 +409,7 @@
 			children = (
 				301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */,
 				AEDA4902D7C4F89D09B26521 /* ChildInfoTests.swift */,
+				C418215313D0CBB6BA712611 /* ChildScheduleTests.swift */,
 				534DE5A61751A534E5B02061 /* InvoiceFormTests.swift */,
 				6D947A807727E3EEEA71DD67 /* InvoiceNotificationTests.swift */,
 				11E8C110F493823D81DFEDBA /* InvoicePDFTests.swift */,
@@ -677,6 +683,7 @@
 				E6EAA47FC0A215B61B1F0880 /* ChildInfoTabView.swift in Sources */,
 				4E39B812D04B13209D73BEE5 /* ChildListView.swift in Sources */,
 				FCBD99A4EDF383674E1F06E8 /* ChildListViewModel.swift in Sources */,
+				13740A2136DD33434EAC3B35 /* ChildScheduleView.swift in Sources */,
 				A06959E658B47C0A470674AF /* ChildStatementPDF.swift in Sources */,
 				654368449C79DF2402ACF468 /* ChildrenRepository.swift in Sources */,
 				5B06F4B86931717E270861C2 /* CurvedHeader.swift in Sources */,
@@ -742,6 +749,7 @@
 			files = (
 				6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */,
 				922BC60C7DD55C71EF72F0B6 /* ChildInfoTests.swift in Sources */,
+				B17CF26272C9AA6829EBE4E7 /* ChildScheduleTests.swift in Sources */,
 				0D61E07163A225047044DA6A /* InvoiceFormTests.swift in Sources */,
 				5888419AEB8BEDB2BCBF1EE9 /* InvoiceNotificationTests.swift in Sources */,
 				57265E437650AE531A5BBF5E /* InvoicePDFTests.swift in Sources */,
