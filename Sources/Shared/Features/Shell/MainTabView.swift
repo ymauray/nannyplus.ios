@@ -175,8 +175,14 @@ private struct BottomNavigationBar: View {
 extension Double {
     /// `toStringAsFixed(2)` de Dart : point décimal, pas de séparateur de
     /// milliers, quelle que soit la locale.
+    ///
+    /// La moitié s'arrondit **vers le haut**, là où `%.2f` seul l'arrondit vers
+    /// le pair le plus proche : une moyenne de 636,125 s'écrit « 636.13 » et
+    /// non « 636.12 ». Reste un écart de principe sur les valeurs qui ne sont
+    /// qu'approximativement des moitiés, 2,675 remontant ici à 2.68 quand Dart
+    /// descend à 2.67 ; aucun montant réel n'est dans ce cas.
     var twoDecimals: String {
-        String(format: "%.2f", self)
+        String(format: "%.2f", (self * 100).rounded(.toNearestOrAwayFromZero) / 100)
     }
 }
 
