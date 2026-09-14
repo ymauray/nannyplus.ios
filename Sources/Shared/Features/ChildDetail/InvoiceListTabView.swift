@@ -7,7 +7,7 @@ import UIKit
 /// facture sur l'année, un bouton PDF, puis une ligne par facture. Un bouton
 /// sous la liste montre ou masque les factures payées.
 ///
-/// **N'est pas portée** : la création d'une facture.
+/// Le bouton flottant ouvre la création d'une facture.
 struct InvoiceListTabView: View {
     let child: Child
     /// Supprimer une facture rend ses prestations à facturer : le total du
@@ -20,6 +20,7 @@ struct InvoiceListTabView: View {
     @State private var invoiceToDelete: Invoice?
     @State private var invoiceToMarkPaid: Invoice?
     @State private var preview: PreviewRequest?
+    @State private var isCreating = false
     @State private var snackbar = SnackbarPresenter()
 
     private let repository = InvoicesRepository()
@@ -43,12 +44,23 @@ struct InvoiceListTabView: View {
             .scrollIndicators(.hidden)
 
             FloatingActionButton {
-                // `InvoiceForm` n'est pas encore porté.
+                isCreating = true
             }
             .padding(Theme.defaultPadding)
         }
         .snackbar(snackbar)
         .task { await load() }
+        .fullScreenCover(isPresented: $isCreating) {
+            InvoiceFormView(child: child) {
+                isCreating = false
+                Task {
+                    await load()
+                    // Facturer marque les prestations : le bandeau et l'onglet
+                    // des prestations changent avec elles.
+                    onChange()
+                }
+            }
+        }
         .fullScreenCover(item: $preview) { request in
             PdfPreviewView(
                 title: request.title,
