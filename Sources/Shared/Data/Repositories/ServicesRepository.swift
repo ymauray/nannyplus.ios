@@ -144,6 +144,47 @@ struct ServicesRepository: Sendable {
         }
     }
 
+    /// Les mois qui ont quelque chose à facturer, du plus ancien au plus
+    /// récent, au format `yyyy-MM`.
+    ///
+    /// **Tous les enfants comptent**, pas seulement celui du dossier : le
+    /// sélecteur peut donc proposer un mois où seul un autre enfant a des
+    /// prestations. Et le filtre porte sur `invoiceId IS NULL` et un total
+    /// positif, ce qui écarte au passage les marqueurs.
+    func invoiceableMonths() async throws -> [String] {
+        try await database.writer().read { db in
+            try String.fetchAll(
+                db,
+                sql: """
+                    SELECT DISTINCT SUBSTR(date, 1, 7) AS month FROM services
+                    WHERE invoiceId IS NULL AND total > 0
+                    ORDER BY month
+                    """
+            )
+        }
+    }
+
+    /// Ajoute le marqueur qui rattache un enfant à une facture : `priceId = -1`,
+    /// total nul, daté du jour.
+    @discardableResult
+    func addMarker(childId: Int64) async throws -> Service {
+        try await create(Service(
+            childId: childId,
+            date: Self.today(),
+            priceId: -1,
+            isFixedPrice: 1,
+            total: 0
+        ))
+    }
+
+    static func today() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+
+        return formatter.string(from: Date())
+    }
+
     /// Supprime toute une journée, facturée ou non — la requête Flutter ne
     /// filtre pas sur `invoiced`.
     func deleteDay(childId: Int64, date: String) async throws {

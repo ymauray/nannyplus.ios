@@ -97,6 +97,93 @@ struct InvoicesRepository: Sendable {
         }
     }
 
+    /// Le numéro suivant : le plus grand déjà employé, plus un.
+    func nextNumber() async throws -> Int {
+        try await database.writer().read { db in
+            try Int.fetchOne(db, sql: "SELECT MAX(number) FROM invoices").map { $0 + 1 } ?? 1
+        }
+    }
+
+    /// Crée la facture d'un mois pour un enfant et, le cas échéant, la fratrie
+    /// qui l'accompagne. Rend `false` quand il n'y a rien à facturer.
+    ///
+    /// **Le contrôle porte sur toutes les prestations non facturées**, pas sur
+    /// celles du mois retenu : une facture peut donc naître d'un mois vide et
+    /// ne porter que ses marqueurs, pour un total nul. Défaut conservé.
+    func createInvoice(for child: Child, with others: [Child], month: String) async throws -> Bool {
+        guard let childId = child.id else { return false }
+
+        let services = ServicesRepository()
+        let children = [child] + others
+        var pending: [Service] = []
+
+        for one in children {
+            guard let id = one.id else { continue }
+            pending += try await services.serviceDays(childId: id).flatMap(\.services)
+        }
+
+        guard !pending.isEmpty else { return false }
+
+        var invoice = try await create(Invoice(
+            number: try await nextNumber(),
+            childId: childId,
+            childFirstName: child.firstName,
+            childLastName: child.lastName ?? "",
+            date: ServicesRepository.today(),
+            total: 0,
+            parentsName: child.parentsName ?? "",
+            address: child.address ?? "",
+            paid: 0,
+            hourCredits: ""
+        ))
+
+        var total = 0.0
+
+        for one in children {
+            guard let id = one.id else { continue }
+
+            let marker = try await services.addMarker(childId: id)
+            let billed = try await services.serviceDays(childId: id)
+                .flatMap(\.services)
+                .filter { $0.date.prefix(7) == month }
+
+            for service in [marker] + billed {
+                var invoiced = service
+                invoiced.invoiced = 1
+                invoiced.invoiceId = invoice.id
+                try await services.update(invoiced)
+                total += service.total
+            }
+        }
+
+        invoice.total = total
+        invoice.hourCredits = Self.hourCredits(of: children)
+        try await update(invoice)
+
+        return true
+    }
+
+    /// « Maé: 0, Ellie: 0 » — c'est ce que porte l'en-tête de la facture.
+    static func hourCredits(of children: [Child]) -> String {
+        children.map { "\($0.firstName): \($0.hourCredits)" }.joined(separator: ", ")
+    }
+
+    @discardableResult
+    func create(_ invoice: Invoice) async throws -> Invoice {
+        try await database.writer().write { db in
+            var inserted = invoice
+            try inserted.insert(db)
+
+            return inserted
+        }
+    }
+
+    func update(_ invoice: Invoice) async throws {
+        try await database.writer().write { db in
+            try invoice.update(db)
+        }
+    }
+
     func markAsPaid(_ invoice: Invoice) async throws {
         guard let id = invoice.id else { return }
 

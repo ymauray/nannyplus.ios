@@ -84,7 +84,7 @@ la contrainte du projet.
 | Tiroir — Réinitialiser les messages d'aide | **fait** |
 | Tiroir — Réinitialiser la base (debug) | **fait** |
 | Dossier enfant — onglet Prestations | **fait**, saisie comprise |
-| Dossier enfant — onglet Factures | **fait**, sauf la création d'une facture |
+| Dossier enfant — onglet Factures | **fait**, création comprise |
 | Dossier enfant — onglet Information | **en maquette** |
 | Options — menu | **fait** |
 | Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
@@ -97,7 +97,6 @@ la contrainte du projet.
 | Options — Planning des congés | **fait** : saisie, bascule, suppression, tri |
 | Formulaire enfant | à porter |
 | Saisie des prestations | à porter |
-| Facturation | à porter, y compris le PDF et la relance par SMS |
 | Jeu de données de démonstration | à porter avec l'onboarding |
 
 ## État d'avancement
@@ -411,7 +410,7 @@ Le bouton flottant ouvre la saisie sur aujourd'hui et sur l'onglet des tarifs ; 
 - **Supprimer une facture rend ses prestations à facturer** plutôt que de les supprimer avec elle, d'où le rechargement du bandeau et de l'onglet des prestations.
 - Le menu d'une ligne reprend les trois entrées de Flutter, « Marquer comme payée » et « Supprimer » étant désactivées sur une facture déjà payée.
 
-**N'est pas portée**, faute de captures : la création d'une facture. Le bouton flottant est en place, sans action.
+L'onglet est désormais complet.
 
 **Vérifié sur simulateur** contre la référence : l'écart de position des huit lignes de 2026 va de 0,8 à 1,3 point, sans s'accumuler. Le cas des impayées, dont il n'existe pas de capture, a été éprouvé en désarchivant provisoirement un dossier qui en porte douze : les lignes sortent bien en rouge et sans italique. Le marquage d'une facture comme payée a été mené jusqu'en base puis défait, le dossier réarchivé.
 
@@ -422,6 +421,22 @@ Le bouton flottant ouvre la saisie sur aujourd'hui et sur l'onglet des tarifs ; 
 `toStringAsFixed(2)` de Dart arrondit la moitié **vers le haut** ; `String(format: "%.2f")` l'arrondit vers le **pair le plus proche**. Une moyenne de 636,125 s'écrivait donc « 636.12 » chez nous et « 636.13 » sur la référence. Corrigé dans `twoDecimals`, en arrondissant la valeur multipliée par cent.
 
 Reste un écart de principe, jugé sans conséquence : Dart arrondit la valeur binaire exacte du nombre, nous sa valeur multipliée par cent. Une valeur qui n'est qu'approximativement une moitié — 2,675 vaut en réalité 2,67499… — remonte ici à 2.68 quand Dart descend à 2.67. Aucun montant réel n'est dans ce cas, les moitiés exactes venant des moyennes.
+
+**Création d'une facture portée** (`InvoiceFormView.swift`). Deux cartes : celle du haut nomme l'enfant du dossier et laisse choisir le mois, celle du bas coche les autres enfants à joindre au même document. Une disquette dans la barre de titre enregistre.
+
+Ce que fait l'enregistrement, repris pas à pas : une facture est créée au numéro suivant, datée du jour, avec le nom des parents et l'adresse **de l'enfant du dossier** ; puis, pour chaque enfant retenu, un marqueur est ajouté et ses prestations du mois choisi sont rattachées à la facture et marquées facturées ; le total est la somme de ce qui a été rattaché, et les crédits d'heures s'écrivent « Maé: 0, Ellie: 0 ».
+
+**Trois défauts conservés :**
+
+- **Le sélecteur propose les mois de tous les enfants**, pas seulement ceux du dossier ouvert. On peut donc retenir un mois où l'enfant du dossier n'a rien, et produire une facture qui ne porte que ses marqueurs, pour un total nul.
+- **Le contrôle « y a-t-il quelque chose à facturer » porte sur toutes les prestations non facturées**, pas sur celles du mois retenu. C'est ce qui rend le cas ci-dessus possible.
+- **Le mois retenu d'office est le plus ancien**, la liste étant triée par ordre croissant.
+
+Deux plantages évités : le nom des parents et l'adresse sont déréférencés de force côté Flutter, et manquent parfois ; on prend la chaîne vide.
+
+**Vérifié en base** sur le dossier de Maé, puis défait : facture n° 284 datée du jour, total 1281.00, crédits « Maé: 0 », la prestation du 1er septembre rattachée et marquée facturée, et le marqueur créé avec elle.
+
+**Une mesure utile** : un `DropdownButton` de Material n'est jamais plus court que la hauteur tactile minimale. Sans ce plancher de 48 points, le rang se tassait et tout l'écran remontait de 12 points. Après quoi les positions concordent à 2 points près sur les neuf premières lignes, sans dérive.
 
 **Relance par SMS portée** (`InvoiceNotification.swift`). L'entrée « Notifier » du menu d'une facture ouvre Messages avec le destinataire et le texte déjà remplis ; l'app ne dessine rien d'autre que le bandeau qui dit si elle y est parvenue. Le gabarit vient des paramètres de la facture, `{{date}}` et `{{total}}` remplacés, et le numéro est débarrassé de tout ce qui n'est ni chiffre, ni point, ni tiret, ni plus — les libellés que l'utilisatrice y met.
 
