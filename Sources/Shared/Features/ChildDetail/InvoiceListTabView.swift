@@ -188,7 +188,7 @@ struct InvoiceListTabView: View {
         let color = late ? Color.red : Theme.almostBlack
 
         return HStack(spacing: 0) {
-            Text(Self.longDate(invoice.date))
+            Text(FrenchDate.long(invoice.date))
                 .font(font)
                 .foregroundStyle(color)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -302,7 +302,7 @@ struct InvoiceListTabView: View {
 
             preview = PreviewRequest(
                 title: child.displayName,
-                subtitle: "Facture du \(Self.longDate(invoice.date))",
+                subtitle: "Facture du \(FrenchDate.long(invoice.date))",
                 fileName: "facture_\(invoice.number).pdf",
                 document: InvoicePDF.document(for: InvoicePDF.Content(
                     invoice: invoice,
@@ -383,29 +383,5 @@ struct InvoiceListTabView: View {
         } catch {
             snackbar.failure(String(describing: error))
         }
-    }
-
-    // MARK: Dates
-
-    private static let shortFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd"
-
-        return formatter
-    }()
-
-    private static let longFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "fr_FR")
-        formatter.setLocalizedDateFormatFromTemplate("yMMMMd")
-
-        return formatter
-    }()
-
-    static func longDate(_ value: String) -> String {
-        guard let date = shortFormatter.date(from: value) else { return value }
-
-        return longFormatter.string(from: date)
     }
 }

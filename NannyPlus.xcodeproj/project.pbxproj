@@ -11,12 +11,12 @@
 		06656A479C4C1B649CAEBA9A /* DeductionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F0F057A8E7E2481CFBB551 /* DeductionFormView.swift */; };
 		068AE792736686A813C55A6B /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 337523B1FFA6CF8E7367297A /* GRDB */; };
 		07A3336A9AE2BD9506A381B0 /* VacationPlanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFFFDBD35C3236A51E85995E /* VacationPlanningView.swift */; };
+		0AF9656C4D5ED07A2645A08C /* FrenchDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902181EC3F4BE77A80F41CE3 /* FrenchDate.swift */; };
 		0D61E07163A225047044DA6A /* InvoiceFormTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534DE5A61751A534E5B02061 /* InvoiceFormTests.swift */; };
 		0D83B35BD9E119FD4E72B988 /* YearlySchedulePDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D8704FEAEE4BC47DE5B56A /* YearlySchedulePDF.swift */; };
 		0F99B31D6D6D55BA6259B391 /* WeeklySchedulePDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600ACB7C71511AA19FDDA893 /* WeeklySchedulePDF.swift */; };
 		124F385E0B488FF03FF241BE /* DeductionsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78B643AD9419AF190BFD1D /* DeductionsRepository.swift */; };
 		129CC96B1B2D24FCA782B3D2 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C5A73BE113719713812763 /* Poppins-Italic.ttf */; };
-		186D5E4E536CD6BA77B44A7E /* TabMockups.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973CEE04D63A27D82B3E92E /* TabMockups.swift */; };
 		19681AB429C84C04F844D388 /* Invoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34453B01BBD51D22F1BB4B8E /* Invoice.swift */; };
 		1B2BFBF043C6C5C80B894374 /* DeductionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E011B5A74D7242C1087C31 /* DeductionListView.swift */; };
 		1F7E84A469A1F341C026EE6B /* SchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E94375B211BD2DEE4DD45C3 /* SchemaTests.swift */; };
@@ -57,6 +57,7 @@
 		751F358F120AB404BBCB8687 /* VacationPeriodRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9073F029C8EE5452D02F3C57 /* VacationPeriodRepository.swift */; };
 		7FB274102193737589F09ACA /* ChildFolderAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360A922C5D5D61FADB87172 /* ChildFolderAction.swift */; };
 		7FD8513738C8A5BDDD4E5377 /* PriceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539F155AAA079AA413F838AE /* PriceListView.swift */; };
+		8021E9D8AAF85123A11D1462 /* DocumentsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACB49FAB482C365BCA9F39 /* DocumentsRepository.swift */; };
 		82ADF591C9251E897C301835 /* YearlyScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D506125149C903E5ABBB0C /* YearlyScheduleView.swift */; };
 		84B347EB4784B7B363B26AD7 /* TimeInputDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC48DB4DD278E90496A8ECB /* TimeInputDialog.swift */; };
 		85D6EAAB5EF4DEF389708DF9 /* ChildDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5D5E045C206C6E0D388E2 /* ChildDetailView.swift */; };
@@ -64,6 +65,7 @@
 		8D6F7FEB1DC757D8DF58F554 /* InvoiceNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC93E49182344CC9F62BFE1 /* InvoiceNotification.swift */; };
 		8F20737453DCBBADCFFDD979 /* VacationPeriodEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A0E0CA2DF65070DC0D4042 /* VacationPeriodEdit.swift */; };
 		91E32F52820281EA7D63A64A /* Oswald-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4571301071B7EACE2F119BE7 /* Oswald-Regular.ttf */; };
+		922BC60C7DD55C71EF72F0B6 /* ChildInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA4902D7C4F89D09B26521 /* ChildInfoTests.swift */; };
 		9626AB33EC668A3BAC9FCE4F /* ServiceListTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA6446F5A5030DC851DFDDE /* ServiceListTabView.swift */; };
 		964A8603979670353B347F23 /* YearlyScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60321178B69CA414E49AD8D6 /* YearlyScheduleTests.swift */; };
 		9D4A984E5E71EC8F5B38C7F5 /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */; };
@@ -92,6 +94,8 @@
 		E407E0A9968BE7D7B4B4FD47 /* ScheduleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8779315372EC32E6E9736B0 /* ScheduleRepository.swift */; };
 		E4A624268EE1C4D2179F4773 /* FrederickatheGreat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C772AB631523D8507E5413D /* FrederickatheGreat-Regular.ttf */; };
 		E6DF519EDAC2B1898FB3FAB1 /* ServicesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB5838E5480F2A3714E41 /* ServicesRepository.swift */; };
+		E6EAA47FC0A215B61B1F0880 /* ChildInfoTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB73F8B4CA3E6B440AE13B99 /* ChildInfoTabView.swift */; };
+		ECA0BAB5852EB42508323B1D /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9759F61F35BAE11F696A2133 /* Document.swift */; };
 		ED50AB7F153FE9AA382193DA /* NannyPlusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0191AFB20905E332D3AC811 /* NannyPlusApp.swift */; };
 		F27C5611121028985BD848C7 /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 62503E5CF4A87C9F67F0C303 /* Poppins-BoldItalic.ttf */; };
 		FC8CCF11C0E2D9A76695E352 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8219EF0B11F0D7FE0776DE9D /* AppSettingsView.swift */; };
@@ -164,27 +168,31 @@
 		8219EF0B11F0D7FE0776DE9D /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
 		88D506125149C903E5ABBB0C /* YearlyScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlyScheduleView.swift; sourceTree = "<group>"; };
 		8A27175114630AF1A175E323 /* InvoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTests.swift; sourceTree = "<group>"; };
+		902181EC3F4BE77A80F41CE3 /* FrenchDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrenchDate.swift; sourceTree = "<group>"; };
 		9073F029C8EE5452D02F3C57 /* VacationPeriodRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPeriodRepository.swift; sourceTree = "<group>"; };
 		95995A597391061C7718AE07 /* HelpCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpCard.swift; sourceTree = "<group>"; };
 		97172AC812D15F92F53781D3 /* DatePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheet.swift; sourceTree = "<group>"; };
+		9759F61F35BAE11F696A2133 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		9F9E332D2893229808313E83 /* ChildListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildListViewModel.swift; sourceTree = "<group>"; };
 		A050463165E85DC968AB9506 /* NannyPlusTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NannyPlusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A26F1C37C0DD88B65C0B1B7D /* InvoiceListTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceListTabView.swift; sourceTree = "<group>"; };
 		A4E59059039919B4003F3F80 /* Poppins-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Poppins-OFL.txt"; sourceTree = "<group>"; };
 		A894B27BD58F5B3EB37EFFBE /* ChildrenRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildrenRepository.swift; sourceTree = "<group>"; };
 		AC80997490E138C98F8DEED1 /* PdfText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfText.swift; sourceTree = "<group>"; };
+		AEDA4902D7C4F89D09B26521 /* ChildInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildInfoTests.swift; sourceTree = "<group>"; };
 		B032EA5DE33C230B994E5D01 /* InvoiceFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceFormView.swift; sourceTree = "<group>"; };
 		B447FAD7E04AF1A72D7CA2BE /* Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
 		B8192FDE8D5F7321BC723B49 /* StatementListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementListView.swift; sourceTree = "<group>"; };
 		BDC48DB4DD278E90496A8ECB /* TimeInputDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInputDialog.swift; sourceTree = "<group>"; };
 		C6F6E333B3F047B9DA556DAA /* InvoiceDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDocument.swift; sourceTree = "<group>"; };
 		C880A009ACE5DE3FE84842CF /* PrivacySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsView.swift; sourceTree = "<group>"; };
-		C973CEE04D63A27D82B3E92E /* TabMockups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabMockups.swift; sourceTree = "<group>"; };
 		CB32BD9D0B330BFE250733A9 /* ServiceFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceFormView.swift; sourceTree = "<group>"; };
+		CB73F8B4CA3E6B440AE13B99 /* ChildInfoTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildInfoTabView.swift; sourceTree = "<group>"; };
 		CF6B9CC10BF3DF696E938655 /* MainDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainDrawer.swift; sourceTree = "<group>"; };
 		D3093814810C52DEF35676C2 /* MysteryQuest-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MysteryQuest-Regular.ttf"; sourceTree = "<group>"; };
 		D4CACA2C2254283075A7D246 /* FloatingActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButton.swift; sourceTree = "<group>"; };
 		D56B89FC3BDA9A1BD5F31E87 /* AppPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferences.swift; sourceTree = "<group>"; };
+		D5ACB49FAB482C365BCA9F39 /* DocumentsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsRepository.swift; sourceTree = "<group>"; };
 		D5F0F057A8E7E2481CFBB551 /* DeductionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeductionFormView.swift; sourceTree = "<group>"; };
 		DA3421B826AF13DFA9BC2E56 /* Child.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Child.swift; sourceTree = "<group>"; };
 		DFFFDBD35C3236A51E85995E /* VacationPlanningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VacationPlanningView.swift; sourceTree = "<group>"; };
@@ -235,10 +243,10 @@
 			isa = PBXGroup;
 			children = (
 				FAD5D5E045C206C6E0D388E2 /* ChildDetailView.swift */,
+				CB73F8B4CA3E6B440AE13B99 /* ChildInfoTabView.swift */,
 				A26F1C37C0DD88B65C0B1B7D /* InvoiceListTabView.swift */,
 				CB32BD9D0B330BFE250733A9 /* ServiceFormView.swift */,
 				0AA6446F5A5030DC851DFDDE /* ServiceListTabView.swift */,
-				C973CEE04D63A27D82B3E92E /* TabMockups.swift */,
 				BDC48DB4DD278E90496A8ECB /* TimeInputDialog.swift */,
 			);
 			path = ChildDetail;
@@ -257,6 +265,7 @@
 			children = (
 				DA3421B826AF13DFA9BC2E56 /* Child.swift */,
 				0434C58A409C67206459E451 /* Deduction.swift */,
+				9759F61F35BAE11F696A2133 /* Document.swift */,
 				34453B01BBD51D22F1BB4B8E /* Invoice.swift */,
 				E75A7925C2E5F1F206A130D9 /* Price.swift */,
 				618D696B74C3BD7A22BCF300 /* Schedule.swift */,
@@ -380,6 +389,7 @@
 			children = (
 				A894B27BD58F5B3EB37EFFBE /* ChildrenRepository.swift */,
 				2F78B643AD9419AF190BFD1D /* DeductionsRepository.swift */,
+				D5ACB49FAB482C365BCA9F39 /* DocumentsRepository.swift */,
 				7394AA75F2E9F273CBA0079B /* InvoicesRepository.swift */,
 				222B93600CFF1B1258C0DABB /* PricesRepository.swift */,
 				E8779315372EC32E6E9736B0 /* ScheduleRepository.swift */,
@@ -393,6 +403,7 @@
 			isa = PBXGroup;
 			children = (
 				301B893C6CF4E73693A97968 /* ChildFolderActionTests.swift */,
+				AEDA4902D7C4F89D09B26521 /* ChildInfoTests.swift */,
 				534DE5A61751A534E5B02061 /* InvoiceFormTests.swift */,
 				6D947A807727E3EEEA71DD67 /* InvoiceNotificationTests.swift */,
 				11E8C110F493823D81DFEDBA /* InvoicePDFTests.swift */,
@@ -536,6 +547,7 @@
 		FB9BEF0FEB83FDF96E119918 /* Design */ = {
 			isa = PBXGroup;
 			children = (
+				902181EC3F4BE77A80F41CE3 /* FrenchDate.swift */,
 				AC80997490E138C98F8DEED1 /* PdfText.swift */,
 				47E19F732BAE4343A18FC9A2 /* Theme.swift */,
 			);
@@ -662,6 +674,7 @@
 				61AE8820EA613DEF70A96B45 /* Child.swift in Sources */,
 				85D6EAAB5EF4DEF389708DF9 /* ChildDetailView.swift in Sources */,
 				7FB274102193737589F09ACA /* ChildFolderAction.swift in Sources */,
+				E6EAA47FC0A215B61B1F0880 /* ChildInfoTabView.swift in Sources */,
 				4E39B812D04B13209D73BEE5 /* ChildListView.swift in Sources */,
 				FCBD99A4EDF383674E1F06E8 /* ChildListViewModel.swift in Sources */,
 				A06959E658B47C0A470674AF /* ChildStatementPDF.swift in Sources */,
@@ -672,8 +685,11 @@
 				06656A479C4C1B649CAEBA9A /* DeductionFormView.swift in Sources */,
 				1B2BFBF043C6C5C80B894374 /* DeductionListView.swift in Sources */,
 				124F385E0B488FF03FF241BE /* DeductionsRepository.swift in Sources */,
+				ECA0BAB5852EB42508323B1D /* Document.swift in Sources */,
+				8021E9D8AAF85123A11D1462 /* DocumentsRepository.swift in Sources */,
 				5FB25360D67E5744F6ED0263 /* FlexRow.swift in Sources */,
 				D5FB15975AEF040693EA22B4 /* FloatingActionButton.swift in Sources */,
+				0AF9656C4D5ED07A2645A08C /* FrenchDate.swift in Sources */,
 				58DFE42763E5C6016E308B5E /* HelpCard.swift in Sources */,
 				19681AB429C84C04F844D388 /* Invoice.swift in Sources */,
 				561C42A17F0F174403C7E062 /* InvoiceDocument.swift in Sources */,
@@ -707,7 +723,6 @@
 				37560600E5FE38D6C0D25F33 /* StatementListView.swift in Sources */,
 				68A61FA36259B4F785B499A4 /* StatementPDF.swift in Sources */,
 				BF9FF618585CF9BE2D650A8A /* TabBar.swift in Sources */,
-				186D5E4E536CD6BA77B44A7E /* TabMockups.swift in Sources */,
 				FCC5BC5D32A274EBDB02B6DB /* Theme.swift in Sources */,
 				84B347EB4784B7B363B26AD7 /* TimeInputDialog.swift in Sources */,
 				675252EF32643B28FB9EED23 /* VacationPeriod.swift in Sources */,
@@ -726,6 +741,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FB16CCBDA15651250BEAB1A /* ChildFolderActionTests.swift in Sources */,
+				922BC60C7DD55C71EF72F0B6 /* ChildInfoTests.swift in Sources */,
 				0D61E07163A225047044DA6A /* InvoiceFormTests.swift in Sources */,
 				5888419AEB8BEDB2BCBF1EE9 /* InvoiceNotificationTests.swift in Sources */,
 				57265E437650AE531A5BBF5E /* InvoicePDFTests.swift in Sources */,

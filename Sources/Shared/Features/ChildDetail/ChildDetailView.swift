@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Réplique de `lib/src/tab_view/tab_view.dart` — le dossier d'un enfant.
 ///
-/// Les onglets Prestations et Factures sont portés. Information reste une
-/// maquette, à reprendre depuis `ChildInfoTabView`.
+/// Les trois onglets sont portés. Seul le crayon de la barre de titre reste
+/// sans action, `ChildForm` n'étant pas repris.
 struct ChildDetailView: View {
     let child: Child
     let onBack: () -> Void
@@ -59,7 +59,7 @@ struct ChildDetailView: View {
             InvoiceListTabView(child: child) {
                 Task { await loadPendingTotal() }
             }
-        default: InformationTabMockup(child: child)
+        default: ChildInfoTabView(child: child)
         }
     }
 

@@ -48,6 +48,20 @@ struct ChildrenRepository: Sendable {
         }
     }
 
+    /// La réserve d'heures, que les boutons de la fiche font monter et
+    /// descendre. Rien ne l'empêche de passer sous zéro.
+    @discardableResult
+    func changeHourCredits(of child: Child, by delta: Int) async throws -> Int {
+        guard let id = child.id, var updated = try await read(id: id) else {
+            return child.hourCredits
+        }
+
+        updated.hourCredits += delta
+        try await update(updated)
+
+        return updated.hourCredits
+    }
+
     @discardableResult
     func create(_ child: Child) async throws -> Child {
         try await database.writer().write { db in

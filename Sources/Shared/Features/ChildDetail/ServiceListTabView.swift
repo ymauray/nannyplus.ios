@@ -110,7 +110,7 @@ struct ServiceListTabView: View {
 
     private func header(_ day: ServiceDay) -> some View {
         HStack(spacing: 0) {
-            Text(Self.longDate(day.date))
+            Text(FrenchDate.long(day.date))
                 .font(Poppins.bold(16))
                 .foregroundStyle(Theme.almostBlack)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -190,30 +190,5 @@ struct ServiceListTabView: View {
         } catch {
             snackbar.failure(String(describing: error))
         }
-    }
-
-    // MARK: Dates
-
-    private static let shortFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd"
-
-        return formatter
-    }()
-
-    /// `DateFormat.yMMMMd` en français : « 10 septembre 2026 ».
-    private static let longFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "fr_FR")
-        formatter.setLocalizedDateFormatFromTemplate("yMMMMd")
-
-        return formatter
-    }()
-
-    static func longDate(_ value: String) -> String {
-        guard let date = shortFormatter.date(from: value) else { return value }
-
-        return longFormatter.string(from: date)
     }
 }

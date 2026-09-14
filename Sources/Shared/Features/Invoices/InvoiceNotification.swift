@@ -10,7 +10,7 @@ enum InvoiceNotification {
     /// remplacés.
     static func message(template: String, invoice: Invoice) -> String {
         template
-            .replacingOccurrences(of: "{{date}}", with: InvoicePDF.longDate(invoice.date))
+            .replacingOccurrences(of: "{{date}}", with: FrenchDate.long(invoice.date))
             .replacingOccurrences(of: "{{total}}", with: invoice.total.twoDecimals)
     }
 
