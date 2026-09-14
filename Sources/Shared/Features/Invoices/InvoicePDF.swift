@@ -126,7 +126,7 @@ enum InvoicePDF {
 
         left = metaLabel("Date", at: left, x: InvoiceDocument.margin, alignment: .left)
         InvoiceDocument.draw(
-            longDate(invoice.date),
+            FrenchDate.long(invoice.date),
             font: body,
             x: InvoiceDocument.margin,
             width: half,
@@ -238,7 +238,7 @@ enum InvoicePDF {
 
         for day in days {
             rows.append(InvoiceDocument.Row(
-                cells: [InvoiceDocument.Cell(longDate(day.date), font: body, verticalPadding: 8)],
+                cells: [InvoiceDocument.Cell(FrenchDate.long(day.date), font: body, verticalPadding: 8)],
                 borderColor: InvoiceDocument.grey
             ))
 
@@ -310,29 +310,5 @@ enum InvoicePDF {
         }
 
         return pages
-    }
-
-    // MARK: Dates
-
-    private static let shortFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd"
-
-        return formatter
-    }()
-
-    private static let longFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "fr_FR")
-        formatter.setLocalizedDateFormatFromTemplate("yMMMMd")
-
-        return formatter
-    }()
-
-    static func longDate(_ value: String) -> String {
-        guard let date = shortFormatter.date(from: value) else { return value }
-
-        return longFormatter.string(from: date)
     }
 }

@@ -85,7 +85,7 @@ la contrainte du projet.
 | Tiroir — Réinitialiser la base (debug) | **fait** |
 | Dossier enfant — onglet Prestations | **fait**, saisie comprise |
 | Dossier enfant — onglet Factures | **fait**, création comprise |
-| Dossier enfant — onglet Information | **en maquette** |
+| Dossier enfant — onglet Information | **fait**, sauf le planning de l'enfant |
 | Options — menu | **fait** |
 | Options — Tarifs | **fait** : lecture, création, modification, suppression, réordonnancement |
 | Options — Déductions | **fait**, idem |
@@ -421,6 +421,18 @@ L'onglet est désormais complet.
 `toStringAsFixed(2)` de Dart arrondit la moitié **vers le haut** ; `String(format: "%.2f")` l'arrondit vers le **pair le plus proche**. Une moyenne de 636,125 s'écrivait donc « 636.12 » chez nous et « 636.13 » sur la référence. Corrigé dans `twoDecimals`, en arrondissant la valeur multipliée par cent.
 
 Reste un écart de principe, jugé sans conséquence : Dart arrondit la valeur binaire exacte du nombre, nous sa valeur multipliée par cent. Une valeur qui n'est qu'approximativement une moitié — 2,675 vaut en réalité 2,67499… — remonte ici à 2.68 quand Dart descend à 2.67. Aucun montant réel n'est dans ce cas, les moitiés exactes venant des moyennes.
+
+**Onglet Information porté** (`ChildInfoTabView.swift`, `Document.swift`). Une carte par information : un libellé en petit, la valeur en gras dessous, et parfois une commande à droite. La photo de profil coiffe la liste quand le dossier en porte une ; les téléphones secondaires et le texte libre n'apparaissent que s'ils sont remplis.
+
+- **La réserve d'heures se règle ici**, par deux boutons qui écrivent aussitôt en base. Rien n'empêche de descendre sous zéro, comme côté Flutter.
+- **Les documents montrent où ils se trouvent** : un cylindre vert pour ceux rangés dans la base, une coche verte pour un fichier retrouvé sur le disque, un point d'exclamation rouge sinon. C'est le défaut que les SPECS annonçaient — deux générations de code coexistent, et la base réelle en porte cinq de l'ancienne et trois de la nouvelle. Les toucher ouvre le document dans le visualiseur du système, l'équivalent d'`OpenFile`.
+- **« Pas d'allergie connue » ne remplace qu'un champ nul**, pas un champ vidé : un dossier dont on a effacé les allergies affiche une carte sans valeur. Défaut conservé.
+
+**N'est pas porté** : le planning de l'enfant qu'ouvre le crayon de la première carte — `ChildScheduleView` est un écran à part entière, à traiter avec le formulaire enfant.
+
+**Vérifié sur simulateur** contre la référence : les sept cartes de Zoé Mauray tombent à 4 points près au départ, l'écart se réduisant ensuite — c'est la hauteur de ligne de Poppins, déjà au carnet. La réserve d'heures a été montée puis redescendue jusqu'en base, et le PDF d'une convention rangée en base s'est ouvert en aperçu.
+
+**`FrenchDate` factorise le format de date** (`Sources/Shared/Design/FrenchDate.swift`). Les deux formateurs — celui de la base et celui que lit l'utilisatrice — existaient en quatre exemplaires, dans les deux onglets, le PDF de facture et cette fiche.
 
 **Création d'une facture portée** (`InvoiceFormView.swift`). Deux cartes : celle du haut nomme l'enfant du dossier et laisse choisir le mois, celle du bas coche les autres enfants à joindre au même document. Une disquette dans la barre de titre enregistre.
 

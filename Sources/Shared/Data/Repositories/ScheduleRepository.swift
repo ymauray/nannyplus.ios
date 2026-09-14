@@ -19,6 +19,17 @@ struct ScheduleRepository: Sendable {
         }
     }
 
+    /// Les créneaux d'un enfant, dans l'ordre où l'écran les montre.
+    func periods(childId: Int64) async throws -> [Period] {
+        try await database.writer().read { db in
+            try Period.fetchAll(
+                db,
+                sql: "SELECT * FROM periods WHERE childId = ? ORDER BY sortOrder ASC",
+                arguments: [childId]
+            )
+        }
+    }
+
     func readScheduleColors() async throws -> [ScheduleColor] {
         try await database.writer().read { db in
             try ScheduleColor.fetchAll(db, sql: "SELECT * FROM schedule_colors")

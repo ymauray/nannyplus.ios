@@ -104,7 +104,7 @@ enum ChildStatementPDF {
             rows.append(InvoiceDocument.Row(
                 cells: [
                     InvoiceDocument.Cell(
-                        InvoicePDF.longDate(entry.invoice.date),
+                        FrenchDate.long(entry.invoice.date),
                         font: body,
                         verticalPadding: 2
                     ),
