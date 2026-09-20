@@ -536,6 +536,26 @@ Le relevé mensuel partage la coque du décompte annuel mais change de tableau :
 
 Première archive signée et livrée : **2.0.0 (3)**, les deux premiers numéros ayant été consommés par les essais de configuration.
 
+### Livraison de la version de développement
+
+Depuis le 20 septembre 2026, **Xcode Cloud surveille `dev`** et livre sur la
+fiche d'app de `ch.yannickmauray.nannyplusios`, celle du bundle identifier de
+développement. `main` ne déclenche plus rien ; on y fusionne pour marquer un
+jalon. La chaîne est éprouvée de bout en bout : la build est arrivée sur le
+téléphone de Yannick par TestFlight, à côté de la 1.26.4 de production et
+reconnaissable à son icône violette.
+
+**Le cycle de travail** qui va avec : on travaille sur `dev`, on fusionne en
+rebase quand un jalon est prêt, puis on efface `dev` et on la recrée depuis
+`main` — le rebase ayant récrit les commits, la rattacher évite un push forcé.
+
+**La première chose à faire sur le téléphone** : l'app démarre sur une base
+vide, le conteneur n'étant plus celui de l'app Flutter. Passer par
+« Sauvegarder » côté Flutter puis « Restaurer » côté natif pour y retrouver les
+dossiers. **Fait, et sans accroc** : c'est la première fois que le portage tourne
+sur les données réelles d'un vrai appareil, et non sur une copie de la base
+posée dans un simulateur.
+
 ## À revoir une fois le portage initial terminé
 
 Points volontairement laissés de côté pendant le portage, à traiter après.

@@ -154,7 +154,7 @@ après que l'écart avec les commits d'avant la protection a été remarqué.)*
 
 Le workflow GitHub se déclenche sur **toutes** les branches, sans déclencheur `pull_request` : une exécution lancée par un push satisfait déjà le check exigé, GitHub rattachant les résultats au commit de tête et non à l'événement. Le mode strict referme le seul angle mort de ce choix, la branche devant contenir tout `main` avant fusion.
 
-**Une fusion sur `main` déclenche une livraison TestFlight**, Xcode Cloud surveillant cette branche. Ce n'est donc pas un geste anodin.
+**Un push sur `dev` déclenche une livraison TestFlight**, Xcode Cloud surveillant cette branche depuis le 20 septembre 2026, sur la fiche d'app du bundle identifier de développement. `main` ne déclenche plus rien : on y fusionne pour marquer un jalon, pas pour livrer. *(Auparavant, c'était `main` qui était surveillée, et toute fusion livrait.)*
 
 Les commits restent soumis aux six règles ci-dessus : jamais sans invitation, et la suppression d'une branche fusionnée en squash réclame `git branch -D`, le squash ayant récrit les commits. Vérifier `git diff main <branche>` avant de forcer.
 
