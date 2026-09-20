@@ -528,6 +528,10 @@ Le relevé mensuel partage la coque du décompte annuel mais change de tableau :
 
 3. **Le train de version.** L'archive partait en `1.26.4 (196)`, soit le train de l'app Flutter en production. Le portage étant une réécriture, il ouvre le sien : `2.0.0`. Un build déposé dans l'ancien train aurait cohabité sur TestFlight avec la 1.26.4 (195) sous un libellé quasi identique, et y aurait enfermé le portage pour la suite.
 
+4. **Une erreur de concurrence que seul Xcode Cloud voyait.** `statements` sortait des `Row` de GRDB de son bloc de lecture ; `Row` est explicitement non-`Sendable`, et franchir la frontière d'isolation avec elle est une erreur. La conversion se fait désormais à l'intérieur du bloc, vers une petite structure `Sendable`. Les quatre autres requêtes qui manipulent des `Row` consommaient déjà les leurs sur place.
+
+   À retenir : **la compilation locale et GitHub Actions passaient toutes les deux**, avec Xcode 26.6 et Swift 6.3.3. Xcode Cloud compile avec un toolchain plus récent, qui applique la concurrence stricte plus complètement. C'est la deuxième asymétrie entre les pipelines après celle de `Package.resolved`, et elle va dans l'autre sens : ici c'est Xcode Cloud qui est le plus sévère.
+
 **Le numéro de build vient d'Xcode Cloud, pas de `project.yml`.** Xcode Cloud tient un compteur (`$CI_BUILD_NUMBER`) mais ne l'écrit pas dans l'app : `ci_scripts/ci_post_clone.sh` le reporte dans `project.yml` avant `xcodegen generate`. Sans cela, chaque exécution reprendrait le même numéro et App Store Connect la rejetterait comme doublon — un numéro de build ne sert jamais deux fois sur un même train. L'injection a lieu **avant** la génération du projet, `CFBundleVersion` venant d'un build setting via `GENERATE_INFOPLIST_FILE` ; la faire plus tard obligerait à régénérer après la résolution des paquets. Le `"1"` inscrit dans `project.yml` n'est plus qu'une valeur de repli pour les compilations locales.
 
 Première archive signée et livrée : **2.0.0 (3)**, les deux premiers numéros ayant été consommés par les essais de configuration.

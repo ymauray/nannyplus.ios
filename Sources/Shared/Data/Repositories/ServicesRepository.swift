@@ -192,8 +192,16 @@ struct ServicesRepository: Sendable {
         }
     }
 
+    /// Le total d'un mois, sorti du bloc de lecture à la place d'une `Row` —
+    /// celle de GRDB n'est pas `Sendable` et ne peut donc pas franchir la
+    /// frontière d'isolation.
+    private struct MonthTotal: Sendable {
+        let month: String
+        let total: Double
+    }
+
     func statements(deductions: [Deduction]) async throws -> [YearlyStatement] {
-        let rows = try await database.writer().read { db in
+        let totals = try await database.writer().read { db in
             try Row.fetchAll(db, sql: """
                 SELECT STRFTIME('%Y-%m', s.date) AS month, SUM(s.total) AS total
                 FROM services s, invoices i
@@ -201,13 +209,15 @@ struct ServicesRepository: Sendable {
                 GROUP BY month
                 ORDER BY month DESC
                 """)
+            .map { MonthTotal(month: $0["month"] ?? "", total: $0["total"] ?? 0) }
         }
 
         let currentMonth = DateFormatter.month.string(from: Date())
         var byYear: [Int: [MonthlyStatement]] = [:]
 
-        for row in rows {
-            guard let month: String = row["month"], month != currentMonth else { continue }
+        for row in totals {
+            let month = row.month
+            guard !month.isEmpty, month != currentMonth else { continue }
 
             let parts = month.split(separator: "-")
             guard parts.count == 2,
@@ -215,7 +225,7 @@ struct ServicesRepository: Sendable {
                   let monthNumber = Int(parts[1])
             else { continue }
 
-            let amount: Double = row["total"] ?? 0
+            let amount = row.total
             byYear[year, default: []].append(
                 MonthlyStatement(
                     year: year,
