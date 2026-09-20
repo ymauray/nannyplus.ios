@@ -157,9 +157,9 @@ Seul « Réinitialiser les messages d'aide » est fonctionnel (suppression des c
 - Il tourne sur une copie de la base réelle. Pour la réinjecter après une réinstallation :
 
   ```sh
-  xcrun simctl terminate <appareil> ch.frenchguy.nannyplus
+  xcrun simctl terminate <appareil> ch.yannickmauray.nannyplusios
   cp ~/Library/Containers/ch.frenchguy.nannyplus/Data/Documents/childcare.db \
-     "$(xcrun simctl get_app_container <appareil> ch.frenchguy.nannyplus data)/Documents/"
+     "$(xcrun simctl get_app_container <appareil> ch.yannickmauray.nannyplusios data)/Documents/"
   ```
 
   Attention : le conteneur change d'identifiant à chaque réinstallation, il faut donc le résoudre à nouveau et non réutiliser un chemin noté plus tôt.
@@ -543,6 +543,9 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
   - **Filtre des prestations techniques.** Le total du dossier enfant écarte `priceId >= 0`, le relevé mensuel écarte `priceId != -1`. Les deux sélectionnent exactement les mêmes lignes dans la base réelle : les seules valeurs non positives sont 269 prestations à `priceId = -1`, toutes de total nul. Les deux filtres divergeraient dès qu'un `priceId` valant 0 apparaîtrait. *(Leur origine, elle, n'est plus un mystère — voir ci-dessous.)*
   - **Calcul du net avec une déduction à montant fixe.** La liste des relevés retranche le montant **mois par mois** ; le PDF le multiplie par le nombre de mois du décompte. Les deux coïncident sur un pourcentage, ce qui est le cas actuel — la base ne contient qu'une déduction, en pourcentage. Une déduction à montant fixe les ferait diverger, et il faudrait alors savoir laquelle a raison.
 
+- **Revenir au bundle identifier et à l'icône de production.** Le portage porte depuis le 20 septembre 2026 l'identifiant `ch.yannickmauray.nannyplusios` et une icône violette, pour que sa build TestFlight cohabite avec la 1.26.4 au lieu de la remplacer, et qu'on distingue les deux sur le téléphone. **Les deux changements sont à défaire avant la mise en production** : reprendre `ch.frenchguy.nannyplus` dans `project.yml`, et remettre l'icône bleue mise de côté dans [`icone-production/`](icone-production/).
+
+  Tant que l'identifiant diffère, **le conteneur diffère aussi** : la version native n'ouvre pas la base de l'app Flutter mais la sienne, et ne reprend donc plus les données toute seule — il faut passer par une sauvegarde puis une restauration. Reprendre l'identifiant d'origine rendra la base existante visible sans import, le chemin étant resté le même. Côté App Store Connect, l'identifiant provisoire demande une fiche d'app distincte, avec son propre compteur de builds, et un profil de provisionnement qui le couvre.
 - **La hauteur de ligne de Poppins.** Les fichiers de police déclarent 1,5 cadratin, Flutter s'y tient, UIKit compose sur environ 1,41 : chaque ligne de texte perd à peu près 1,2 point, et l'écart s'additionne dès qu'on empile des cartes — 11,8 points à la quatrième carte de la saisie de prestations. Les tailles de police, elles, sont justes : les hauteurs d'encre concordent. Le corriger suppose d'imposer la boîte de ligne à chaque texte, donc de reprendre tous les écrans déjà validés ; c'est un chantier à part, à mener d'un coup plutôt qu'écran par écran. Le détail est dans « Poppins compose plus serré qu'en Flutter » ci-dessus.
 - **La saisie des congés est à revoir.** Le bouton « + » ne demande rien : il crée une journée à la dernière date connue, qu'il faut ensuite corriger au crayon, et qui peut atterrir dans une autre année que celle affichée. Reproduit à l'identique pour l'instant, sur décision de Yannick, mais l'écran mérite un vrai formulaire — choisir la ou les dates avant de créer, plutôt qu'après.
 - **Nettoyage de la base de données** — il y a du ménage à faire dans les données existantes. Yannick doit d'abord étudier ce qui est concerné ; à ne pas entreprendre avant cette analyse, et surtout pas pendant le portage, pour que les deux versions restent comparables sur des données identiques.
