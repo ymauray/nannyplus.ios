@@ -1,6 +1,6 @@
 name: NannyPlus
 options:
-  bundleIdPrefix: ch.frenchguy
+  bundleIdPrefix: ch.yannickmauray
   deploymentTarget:
     iOS: "26.0"
   # Le français est la langue principale : sans ça, les menus système fournis par
@@ -51,7 +51,12 @@ targets:
       - package: GRDB
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ch.frenchguy.nannyplus
+        # Identifiant distinct de celui de l'app Flutter, pour que les deux
+        # cohabitent sur TestFlight le temps du portage. **Conséquence : le
+        # conteneur n'est plus le même, l'app n'ouvre donc plus la base de
+        # l'app Flutter mais la sienne, vide.** À remettre à
+        # ch.frenchguy.nannyplus le jour du remplacement sur l'App Store.
+        PRODUCT_BUNDLE_IDENTIFIER: ch.yannickmauray.nannyplusios
         PRODUCT_NAME: NannyPlus
         TARGETED_DEVICE_FAMILY: "1,2"  # iPhone et iPad
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
@@ -75,7 +80,7 @@ targets:
       - package: GRDB
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ch.frenchguy.nannyplus.tests
+        PRODUCT_BUNDLE_IDENTIFIER: ch.yannickmauray.nannyplusios.tests
         # XcodeGen déduit l'hôte de test du nom de la cible ; il faut le corriger
         # ici, le produit s'appelant NannyPlus et la cible NannyPlus-iOS.
         TEST_HOST: $(BUILT_PRODUCTS_DIR)/NannyPlus.app/NannyPlus

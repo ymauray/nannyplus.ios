@@ -75,5 +75,14 @@ détail, et les trois pièges rencontrés à la mise en place, sont dans la sect
 ## Base de données
 
 L'app ouvre `Documents/childcare.db`, exactement le chemin utilisé par sqflite
-côté Flutter. Avec le même bundle identifier (`ch.frenchguy.nannyplus`), elle
-reprend donc la base existante sans import ni conversion.
+côté Flutter.
+
+**Elle n'ouvre pourtant pas la base de l'app Flutter**, parce qu'elle porte
+désormais un autre bundle identifier — `ch.yannickmauray.nannyplusios` — pour
+cohabiter avec la version de production sur TestFlight. Le conteneur diffère,
+donc la base aussi : la version native démarre sur une base vide et se remplit
+soit par une restauration, soit par le jeu de démonstration.
+
+Le jour du remplacement sur l'App Store, reprendre `ch.frenchguy.nannyplus`
+rendra la base existante visible sans import ni conversion, le chemin étant le
+même.

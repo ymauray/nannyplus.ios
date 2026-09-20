@@ -794,7 +794,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.yannickmauray.nannyplusios;
 				PRODUCT_NAME = NannyPlus;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -886,7 +886,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.yannickmauray.nannyplusios;
 				PRODUCT_NAME = NannyPlus;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -902,7 +902,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.yannickmauray.nannyplusios.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NannyPlus.app/NannyPlus";
@@ -989,7 +989,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.frenchguy.nannyplus.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.yannickmauray.nannyplusios.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NannyPlus.app/NannyPlus";
