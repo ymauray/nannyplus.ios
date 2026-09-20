@@ -46,9 +46,11 @@ Six règles, sans exception : jamais de commit ni de push sans y être invité, 
 pas les suggérer non plus, s'identifier comme co-auteur, messages en français au
 format *conventional commits*.
 
-`main` est protégée. Le travail passe par une branche puis une *pull request*,
-fusionnée en squash ou en rebase, jamais par un commit de fusion. **Une fusion
-sur `main` déclenche une livraison TestFlight** : ce n'est pas un geste anodin.
+`main` est protégée. Le travail se fait sur `dev`, et passe par une *pull
+request* fusionnée en squash ou en rebase, jamais par un commit de fusion.
+**Depuis le 20 septembre 2026, c'est un push sur `dev` qui déclenche une
+livraison TestFlight** ; `main` ne déclenche plus rien, on y fusionne pour
+marquer un jalon. Pousser n'est donc pas un geste anodin.
 
 ## Données
 

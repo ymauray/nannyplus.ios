@@ -95,8 +95,7 @@ la contrainte du projet.
 | Options — Planning hebdomadaire | **fait** : PDF recoupé au pixel avec la référence |
 | Options — Planning annuel | **fait** : PDF recoupé au pixel, sélecteur d'année compris |
 | Options — Planning des congés | **fait** : saisie, bascule, suppression, tri |
-| Formulaire enfant | à porter |
-| Saisie des prestations | à porter |
+| Formulaire enfant | **à porter** : création, modification et duplication |
 | Jeu de données de démonstration | à porter avec l'onboarding |
 
 ## État d'avancement
@@ -576,9 +575,14 @@ Points volontairement laissés de côté pendant le portage, à traiter après.
 
 ## Prochaine étape
 
-Le menu Options est **entièrement porté**. Restent deux blocs, et ils se valent :
+Le menu Options et le dossier enfant sont **entièrement portés**. Il ne reste
+qu'un écran au portage initial : le **formulaire enfant**. Il manque à trois
+endroits, tous en place mais sans action — le crayon de la barre de titre du
+dossier, le bouton flottant de la liste des enfants, et « Dupliquer le dossier »
+de son menu contextuel. Côté Flutter, création, modification et duplication
+passent par le même `ChildForm` : les trois se portent d'un bloc.
 
-- **La facturation**, le morceau le plus exposé avec les PDF de relevés, puisque la facture part chez les parents : création d'une facture, PDF de la facture, décompte annuel de l'enfant, et relance par SMS dont le gabarit est déjà porté dans les paramètres.
-- **L'onglet Information du dossier enfant**, dernier des trois à rester une maquette, et le formulaire enfant qui va avec.
+Restent ensuite le jeu de données de démonstration et la fenêtre d'accueil de la
+liste, à prendre avec l'onboarding qui les commande tous les deux.
 
 Demander à Yannick une capture de l'écran visé avant de commencer, selon la méthode convenue.
